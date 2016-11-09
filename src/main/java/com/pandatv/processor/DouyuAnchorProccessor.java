@@ -13,11 +13,13 @@ import java.util.List;
  */
 public class DouyuAnchorProccessor extends PandaProcessor {
     private static String url = "https://www.douyu.com/directory/all?isAjax=1&page=";
+    private static int pageTotal = 0;
 
     public static void crawler(String[] args) {
         String task = args[0];
+        String firstUrl = "https://www.douyu.com/directory/all";
         String url = "https://www.douyu.com/directory/all?isAjax=1&page=1";
-        Spider.create(new DouyuAnchorProccessor()).addUrl(url).thread(1).addPipeline(new DouyuAnchorPipeline(task)).run();
+        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(1).addPipeline(new DouyuAnchorPipeline(task)).run();
     }
 
     @Override
@@ -33,10 +35,16 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         page.putField("titles",titles);
         page.putField("popularities",popularities);
         page.putField("categories",categories);
-        int pageNum = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
-        if (rids.size()==120){
-            page.addTargetRequest(url + pageNum);
+        if (curUrl.equals("https://www.douyu.com/directory/all")){
+            page.addTargetRequest("https://www.douyu.com/directory/all?isAjax=1&page=1");
+        }else {
+            int pageNum = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
+            if (pageNum<=pageTotal){
+                page.addTargetRequest(url + pageNum);
+            }
         }
+
+
     }
 
     @Override
