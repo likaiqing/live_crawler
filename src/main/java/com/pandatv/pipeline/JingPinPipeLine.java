@@ -1,6 +1,7 @@
 package com.pandatv.pipeline;
 
 import com.pandatv.common.Const;
+import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.IOTools;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
@@ -42,9 +43,19 @@ public class JingPinPipeLine implements Pipeline {
         List<String> titles = resultItems.get("titles");
         List<String> categories = resultItems.get("categories");
         for (int i = 0; i < names.size(); i++) {
+            Anchor anchor = new Anchor();
             String popularitiyStr = popularities.get(i);
             int popularitiyNum = createNum(popularitiyStr);
-            String result = new StringBuffer(rids.get(i)).append(Const.SEP).append(names.get(i)).append(Const.SEP).append(titles.get(i).trim()).append(Const.SEP).append(categories.get(i)).append(Const.SEP).append(popularitiyStr).append(Const.SEP).append(popularitiyNum).append(Const.SEP).append(job).append(Const.SEP).append(plat).append(Const.SEP).append(gameCategory).toString();
+            anchor.setRid(Integer.parseInt(rids.get(i)));
+            anchor.setName(names.get(i));
+            anchor.setTitle(titles.get(i));
+            anchor.setCategory(categories.get(i));
+            anchor.setPopularityStr(popularitiyStr);
+            anchor.setPopularityNum(popularitiyNum);
+            anchor.setJob(job);
+            anchor.setPlat(plat);
+            anchor.setGame(gameCategory);
+            String result = anchor.toString();
             urls.add(result);
         }
         IOTools.writeList(urls, Const.FILEDIR + job + "_" + plat + "_" + gameCategory + "_" + hour + ".csv");
