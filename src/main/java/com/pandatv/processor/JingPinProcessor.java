@@ -49,7 +49,7 @@ public class JingPinProcessor extends PandaProcessor {
         return site;
     }
 
-    public static void competitiveProducts(String[] args) {
+    public static void crawler(String[] args) {
         task = args[0];//jingpin
         plat = args[1];//douyu
         gameCategory = args[2];//lol

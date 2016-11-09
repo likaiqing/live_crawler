@@ -2,6 +2,7 @@ package com.pandatv.work;
 
 import com.pandatv.common.Const;
 import com.pandatv.processor.DouyuAnchorProccessor;
+import com.pandatv.processor.DouyuNewLiveProccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.pandatv.processor.JingPinProcessor;
@@ -20,10 +21,14 @@ public class Work {
             case Const.JINGPIN://jingpin douyu lol 4  :在四点的时候竞品抓取斗鱼的lol游戏
                 judgeParam(args,4);
                 //斗鱼竞品抓取,抓取https://www.douyu.com/directory/game/下面根据args[1]来决定的url的第一页数据
-                JingPinProcessor.competitiveProducts(args);
+                JingPinProcessor.crawler(args);
                 break;
             case Const.DOUYUANCHOR://douyuanchor
                 DouyuAnchorProccessor.crawler(args);
+                break;
+            case Const.DOUYUNEWLIVE://douyunewlive
+                DouyuNewLiveProccessor.crawler(args);
+                break;
 
         }
     }

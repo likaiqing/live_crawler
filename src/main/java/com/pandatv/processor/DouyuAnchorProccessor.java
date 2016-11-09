@@ -34,7 +34,9 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         page.putField("popularities",popularities);
         page.putField("categories",categories);
         int pageNum = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
-        page.addTargetRequest(url + pageNum);
+        if (rids.size()==120){
+            page.addTargetRequest(url + pageNum);
+        }
     }
 
     @Override
