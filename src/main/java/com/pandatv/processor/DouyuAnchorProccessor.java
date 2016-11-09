@@ -24,8 +24,15 @@ public class DouyuAnchorProccessor extends PandaProcessor {
     public void process(Page page) {
         String curUrl = page.getUrl().toString();
         List<String> rids = page.getHtml().xpath("//body/li/@data-rid").all();
-        List<String> names = page.getHtml().xpath("//body/li").all();
-
+        List<String> names = page.getHtml().xpath("//body/li/a/div[@class='mes']/p/span[@class='dy-name ellipsis fl']/text()").all();
+        List<String> titles = page.getHtml().xpath("//body/li/a/@title").all();
+        List<String> popularities = page.getHtml().xpath("//body/li/a/div[@class='mes']/p/span[@class='dy-num fr']/text()").all();
+        List<String> categories = page.getHtml().xpath("//body/li/a/div[@class='mes']/div[@class='mes-tit']/span/text()").all();
+        page.putField("rids",rids);
+        page.putField("names",names);
+        page.putField("titles",titles);
+        page.putField("popularities",popularities);
+        page.putField("categories",categories);
         int pageNum = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
         page.addTargetRequest(url + pageNum);
     }
@@ -33,5 +40,10 @@ public class DouyuAnchorProccessor extends PandaProcessor {
     @Override
     public Site getSite() {
         return this.site;
+    }
+
+    public static void main(String[] args) {
+        args=new String[]{"live"};
+        crawler(args);
     }
 }

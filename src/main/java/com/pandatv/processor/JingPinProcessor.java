@@ -26,9 +26,9 @@ public class JingPinProcessor extends PandaProcessor {
         List<String> titles = null;
         List<String> categories = null;
         if (plat.equals("douyu")) {
+            rids = page.getHtml().xpath("//ul[@class='clearfix play-list']/li/@data-rid").all();
             names = page.getHtml().xpath("//ul[@class='clearfix play-list']/li/a/div[@class='mes']/p/span[@class='dy-name ellipsis fl']/text()").all();
             popularities = page.getHtml().xpath("//ul[@class='clearfix play-list']/li/a/div[@class='mes']/p/span[@class='dy-num fr']/text()").all();
-            rids = page.getHtml().xpath("//ul[@class='clearfix play-list']/li/@data-rid").all();
             titles = page.getHtml().xpath("//ul[@class='clearfix play-list']/li/a/div[@class='mes']/div[@class='mes-tit']/h3/text()").all();
             categories = page.getHtml().xpath("//ul[@class='clearfix play-list']/li/a/div[@class='mes']/div[@class='mes-tit']/span/text()").all();
         }
