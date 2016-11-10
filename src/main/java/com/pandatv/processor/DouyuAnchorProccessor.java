@@ -31,8 +31,10 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         List<String> popularities = null;
         List<String> categories = null;
         if (curUrl.equals("https://www.douyu.com/directory/all")) {
-            List<String> pages = page.getHtml().xpath("//div[@class='tcd-page-code']/a[@class='shark-pager-item']/text()").all();
-            int endPage = Integer.parseInt(pages.get(pages.size() - 1));
+//            List<String> pages = page.getHtml().xpath("//div[@class='tcd-page-code']/a[@class='shark-pager-item']/text()").all();
+//            int endPage = Integer.parseInt(pages.get(pages.size() - 1));
+            //TODO  先默认70页
+            int endPage=70;
             for (int i = 1; i < endPage; i++) {
                 page.addTargetRequest("https://www.douyu.com/directory/all?isAjax=1&page=" + i);
             }
