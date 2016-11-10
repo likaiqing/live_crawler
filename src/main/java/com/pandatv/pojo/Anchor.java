@@ -105,7 +105,7 @@ public class Anchor {
     }
 
     public String toString(){
-        StringBuffer sb = new StringBuffer(this.rid);
-        return sb.append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.category).append(Const.SEP).append(this.popularityStr).append(Const.SEP).append(this.popularityNum).append(Const.SEP).append(this.job).append(Const.SEP).append(this.plat).append(Const.SEP).append(this.game).toString();
+        StringBuffer sb = new StringBuffer();
+        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.category).append(Const.SEP).append(this.popularityStr).append(Const.SEP).append(this.popularityNum).append(Const.SEP).append(this.job).append(Const.SEP).append(this.plat).append(Const.SEP).append(this.game).toString();
     }
 }
