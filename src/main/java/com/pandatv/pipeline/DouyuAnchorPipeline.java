@@ -7,6 +7,7 @@ import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 
+import java.io.BufferedWriter;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ import java.util.List;
  */
 public class DouyuAnchorPipeline implements Pipeline {
     private static String job;
+    private static BufferedWriter bw;
 
     public DouyuAnchorPipeline() {
         super();
@@ -21,11 +23,12 @@ public class DouyuAnchorPipeline implements Pipeline {
 
     public DouyuAnchorPipeline(String job) {
         this.job = job;
+        bw = IOTools.getBW(Const.FILEDIR + job + ".csv");
     }
 
     @Override
     public void process(ResultItems resultItems, Task task) {
         List<String> urls = CommonTools.getUrls(resultItems, job, Const.DOUYU, Const.GAMEALL);
-        IOTools.writeList(urls, Const.FILEDIR + job + ".csv");
+        IOTools.writeList(urls, bw);
     }
 }

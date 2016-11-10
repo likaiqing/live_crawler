@@ -1,6 +1,12 @@
 package com.pandatv.downloader.selenium;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,7 +14,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -30,16 +39,16 @@ public class WebDriverPool {
     /*
      * new fields for configuring phantomJS
      */
-//    private WebDriver mDriver = null;
+    private WebDriver mDriver = null;
     private boolean mAutoQuitDriver = true;
 
-    private static final String CONFIG_FILE = "/Users/Bingo/Documents/workspace/webmagic/webmagic-selenium/config.ini";
+    private static final String CONFIG_FILE = "/Users/likaiqing/space/panda/live_crawler/src/main/resources/config.ini";
     private static final String DRIVER_FIREFOX = "firefox";
     private static final String DRIVER_CHROME = "chrome";
     private static final String DRIVER_PHANTOMJS = "phantomjs";
 
     protected static Properties sConfig;
-//    protected static DesiredCapabilities sCaps;
+    protected static DesiredCapabilities sCaps;
 
     /**
      * Configure the GhostDriver, and initialize a WebDriver instance. This part
@@ -55,9 +64,9 @@ public class WebDriverPool {
         sConfig.load(new FileReader(CONFIG_FILE));
 
         // Prepare capabilities
-//        sCaps = new DesiredCapabilities();
-//        sCaps.setJavascriptEnabled(true);
-//        sCaps.setCapability("takesScreenshot", false);
+        sCaps = new DesiredCapabilities();
+        sCaps.setJavascriptEnabled(true);
+        sCaps.setCapability("takesScreenshot", false);
 
         String driver = sConfig.getProperty("driver", DRIVER_PHANTOMJS);
 
@@ -65,21 +74,21 @@ public class WebDriverPool {
         if (driver.equals(DRIVER_PHANTOMJS)) {
             // "phantomjs_exec_path"
             if (sConfig.getProperty("phantomjs_exec_path") != null) {
-//                sCaps.setCapability(
-//                        PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-//                        sConfig.getProperty("phantomjs_exec_path"));
+                sCaps.setCapability(
+                        PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                        sConfig.getProperty("phantomjs_exec_path"));
             } else {
-//                throw new IOException(
-//                        String.format(
-//                                "Property '%s' not set!",
-//                                PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY));
+                throw new IOException(
+                        String.format(
+                                "Property '%s' not set!",
+                                PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY));
             }
             // "phantomjs_driver_path"
             if (sConfig.getProperty("phantomjs_driver_path") != null) {
                 System.out.println("Test will use an external GhostDriver");
-//                sCaps.setCapability(
-//                        PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_PATH_PROPERTY,
-//                        sConfig.getProperty("phantomjs_driver_path"));
+                sCaps.setCapability(
+                        PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_PATH_PROPERTY,
+                        sConfig.getProperty("phantomjs_driver_path"));
             } else {
                 System.out
                         .println("Test will use PhantomJS internal GhostDriver");
@@ -99,27 +108,27 @@ public class WebDriverPool {
         cliArgsCap.add("--web-security=false");
         cliArgsCap.add("--ssl-protocol=any");
         cliArgsCap.add("--ignore-ssl-errors=true");
-//        sCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,
-//                cliArgsCap);
+        sCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,
+                cliArgsCap);
 
         // Control LogLevel for GhostDriver, via CLI arguments
-//        sCaps.setCapability(
-//                PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS,
-//                new String[] { "--logLevel="
-//                        + (sConfig.getProperty("phantomjs_driver_loglevel") != null ? sConfig
-//                        .getProperty("phantomjs_driver_loglevel")
-//                        : "INFO") });
+        sCaps.setCapability(
+                PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS,
+                new String[] { "--logLevel="
+                        + (sConfig.getProperty("phantomjs_driver_loglevel") != null ? sConfig
+                        .getProperty("phantomjs_driver_loglevel")
+                        : "INFO") });
 
         // String driver = sConfig.getProperty("driver", DRIVER_PHANTOMJS);
 
         // Start appropriate Driver
         if (isUrl(driver)) {
-//            sCaps.setBrowserName("phantomjs");
-//            mDriver = new RemoteWebDriver(new URL(driver), sCaps);
+            sCaps.setBrowserName("phantomjs");
+            mDriver = new RemoteWebDriver(new URL(driver), sCaps);
         } else if (driver.equals(DRIVER_FIREFOX)) {
-//            mDriver = new FirefoxDriver(sCaps);
+            mDriver = new FirefoxDriver(sCaps);
         } else if (driver.equals(DRIVER_CHROME)) {
-//            mDriver = new ChromeDriver(sCaps);
+            mDriver = new ChromeDriver(sCaps);
         } else if (driver.equals(DRIVER_PHANTOMJS)) {
 //            mDriver = new PhantomJSDriver(sCaps);
         }
@@ -144,13 +153,13 @@ public class WebDriverPool {
     /**
      * store webDrivers created
      */
-//    private List<WebDriver> webDriverList = Collections
-//            .synchronizedList(new ArrayList<WebDriver>());
-//
-//    /**
-//     * store webDrivers available
-//     */
-//    private BlockingDeque<WebDriver> innerQueue = new LinkedBlockingDeque<WebDriver>();
+    private List<WebDriver> webDriverList = Collections
+            .synchronizedList(new ArrayList<WebDriver>());
+
+    /**
+     * store webDrivers available
+     */
+    private BlockingDeque<WebDriver> innerQueue = new LinkedBlockingDeque<WebDriver>();
 
     public WebDriverPool(int capacity) {
         this.capacity = capacity;
@@ -165,40 +174,40 @@ public class WebDriverPool {
      * @return
      * @throws InterruptedException
      */
-//    public WebDriver get() throws InterruptedException {
-//        checkRunning();
-//        WebDriver poll = innerQueue.poll();
-//        if (poll != null) {
-//            return poll;
-//        }
-//        if (webDriverList.size() < capacity) {
-//            synchronized (webDriverList) {
-//                if (webDriverList.size() < capacity) {
-//
-//                    // add new WebDriver instance into pool
-//                    try {
-//                        configure();
-//                        innerQueue.add(mDriver);
-//                        webDriverList.add(mDriver);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    // ChromeDriver e = new ChromeDriver();
-//                    // WebDriver e = getWebDriver();
-//                    // innerQueue.add(e);
-//                    // webDriverList.add(e);
-//                }
-//            }
-//
-//        }
-//        return innerQueue.take();
-//    }
+    public WebDriver get() throws InterruptedException {
+        checkRunning();
+        WebDriver poll = innerQueue.poll();
+        if (poll != null) {
+            return poll;
+        }
+        if (webDriverList.size() < capacity) {
+            synchronized (webDriverList) {
+                if (webDriverList.size() < capacity) {
 
-//    public void returnToPool(WebDriver webDriver) {
-//        checkRunning();
-//        innerQueue.add(webDriver);
-//    }
+                    // add new WebDriver instance into pool
+                    try {
+                        configure();
+                        innerQueue.add(mDriver);
+                        webDriverList.add(mDriver);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // ChromeDriver e = new ChromeDriver();
+                    // WebDriver e = getWebDriver();
+                    // innerQueue.add(e);
+                    // webDriverList.add(e);
+                }
+            }
+
+        }
+        return innerQueue.take();
+    }
+
+    public void returnToPool(WebDriver webDriver) {
+        checkRunning();
+        innerQueue.add(webDriver);
+    }
 
     protected void checkRunning() {
         if (!stat.compareAndSet(STAT_RUNNING, STAT_RUNNING)) {
@@ -211,10 +220,10 @@ public class WebDriverPool {
         if (!b) {
             throw new IllegalStateException("Already closed!");
         }
-//        for (WebDriver webDriver : webDriverList) {
-//            logger.info("Quit webDriver" + webDriver);
-//            webDriver.quit();
-//            webDriver = null;
-//        }
+        for (WebDriver webDriver : webDriverList) {
+            logger.info("Quit webDriver" + webDriver);
+            webDriver.quit();
+            webDriver = null;
+        }
     }
 }
