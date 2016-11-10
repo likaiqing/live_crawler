@@ -33,4 +33,9 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
         String job = args[0];
         Spider.create(new DouyuNewLiveProccessor()).addUrl(url+"1").thread(1).addPipeline(new DouyuNewlivePipeline(job)).run();
     }
+
+    public static void main(String[] args) {
+        args = new String[]{"newlive"};
+        crawler(args);
+    }
 }
