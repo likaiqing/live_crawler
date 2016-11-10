@@ -56,47 +56,47 @@ public class SeleniumDownloader implements Downloader, Closeable {
 
     @Override
     public Page download(Request request, Task task) {
-        checkInit();
-        WebDriver webDriver;
-        try {
-            webDriver = webDriverPool.get();
-        } catch (InterruptedException e) {
-            logger.warn("interrupted", e);
-            return null;
-        }
-        logger.info("downloading page " + request.getUrl());
-        webDriver.get(request.getUrl());
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        WebDriver.Options manage = webDriver.manage();
-        Site site = task.getSite();
-        if (site.getCookies() != null) {
-            for (Map.Entry<String, String> cookieEntry : site.getCookies()
-                    .entrySet()) {
-                Cookie cookie = new Cookie(cookieEntry.getKey(),
-                        cookieEntry.getValue());
-                manage.addCookie(cookie);
-            }
-        }
-
-		/*
-		 * TODO You can add mouse event or other processes
-		 *
-		 * @author: bob.li.0718@gmail.com
-		 */
-
-        WebElement webElement = webDriver.findElement(By.xpath("/html"));
-        String content = webElement.getAttribute("outerHTML");
+//        checkInit();
+//        WebDriver webDriver;
+//        try {
+//            webDriver = webDriverPool.get();
+//        } catch (InterruptedException e) {
+//            logger.warn("interrupted", e);
+//            return null;
+//        }
+//        logger.info("downloading page " + request.getUrl());
+//        webDriver.get(request.getUrl());
+//        try {
+//            Thread.sleep(sleepTime);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        WebDriver.Options manage = webDriver.manage();
+//        Site site = task.getSite();
+//        if (site.getCookies() != null) {
+//            for (Map.Entry<String, String> cookieEntry : site.getCookies()
+//                    .entrySet()) {
+//                Cookie cookie = new Cookie(cookieEntry.getKey(),
+//                        cookieEntry.getValue());
+//                manage.addCookie(cookie);
+//            }
+//        }
+//
+//		/*
+//		 * TODO You can add mouse event or other processes
+//		 *
+//		 * @author: bob.li.0718@gmail.com
+//		 */
+//
+//        WebElement webElement = webDriver.findElement(By.xpath("/html"));
+//        String content = webElement.getAttribute("outerHTML");
         Page page = new Page();
-        page.setRawText(content);
-        page.setHtml(new Html(UrlUtils.fixAllRelativeHrefs(content,
-                request.getUrl())));
-        page.setUrl(new PlainText(request.getUrl()));
-        page.setRequest(request);
-        webDriverPool.returnToPool(webDriver);
+//        page.setRawText(content);
+//        page.setHtml(new Html(UrlUtils.fixAllRelativeHrefs(content,
+//                request.getUrl())));
+//        page.setUrl(new PlainText(request.getUrl()));
+//        page.setRequest(request);
+//        webDriverPool.returnToPool(webDriver);
         return page;
     }
 
