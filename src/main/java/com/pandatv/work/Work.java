@@ -3,6 +3,7 @@ package com.pandatv.work;
 import com.pandatv.common.Const;
 import com.pandatv.processor.DouyuAnchorProccessor;
 import com.pandatv.processor.DouyuNewLiveProccessor;
+import com.pandatv.processor.HuyaAnchorProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.pandatv.processor.JingPinProcessor;
@@ -30,6 +31,8 @@ public class Work {
             case Const.DOUYUNEWLIVE://douyunewlive
                 DouyuNewLiveProccessor.crawler(args);
                 break;
+            case Const.HUYAANCHOR://huyaanchor 20161111 15
+                HuyaAnchorProcessor.crawler(args);
 
         }
     }

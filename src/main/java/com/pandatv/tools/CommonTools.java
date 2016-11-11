@@ -21,7 +21,7 @@ public class CommonTools {
             Anchor anchor = new Anchor();
             String popularitiyStr = popularities.get(i);
             int popularitiyNum = createNum(popularitiyStr);
-            anchor.setRid(Integer.parseInt(rids.get(i)));
+            anchor.setRid(rids.get(i));
             anchor.setName(names.get(i));
             anchor.setTitle(titles.get(i));
             anchor.setCategory(categories.get(i));

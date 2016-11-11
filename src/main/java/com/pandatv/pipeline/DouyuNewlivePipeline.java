@@ -39,7 +39,7 @@ public class DouyuNewlivePipeline implements Pipeline {
                 String name = JsonPath.read(room, "$.nickname");
                 String title = JsonPath.read(room, "$.roomname");
                 String category = JsonPath.read(room, "$.gamename");
-                anchor.setRid(Integer.parseInt(roomId));
+                anchor.setRid(roomId);
 
             }
             IOTools.writeList(urls, Const.FILEDIR + job + ".csv");

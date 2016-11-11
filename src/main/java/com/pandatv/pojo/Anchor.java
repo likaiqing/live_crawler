@@ -11,7 +11,7 @@ import java.util.Objects;
  * Created by likaiqing on 2016/11/7.
  */
 public class Anchor {
-    private int rid;
+    private String rid;
     private String name;
     private String title;
     private String category;
@@ -41,11 +41,11 @@ public class Anchor {
         this.name = name;
     }
 
-    public int getRid() {
+    public String getRid() {
         return rid;
     }
 
-    public void setRid(int rid) {
+    public void setRid(String rid) {
         this.rid = rid;
     }
 

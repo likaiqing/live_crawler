@@ -13,4 +13,5 @@ public class Const {
     public static final String DOUYUANCHOR = "douyuanchor";
     public static final String GAMEALL = "all";
     public static final String DOUYUNEWLIVE = "douyunewlive";
+    public static final String HUYAANCHOR = "huyaanchor";
 }
