@@ -1,13 +1,14 @@
 package com.pandatv.processor;
 
+import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
-import com.pandatv.downloader.selenium.SeleniumDownloader;
 import com.pandatv.pipeline.DouyuAnchorPipeline;
-import org.jsoup.nodes.Element;
+import com.pandatv.tools.IOTools;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 
+import java.io.BufferedWriter;
 import java.util.List;
 
 /**
@@ -18,11 +19,15 @@ public class DouyuAnchorProccessor extends PandaProcessor {
     private static int pageTotal = 0;
 
     public static void crawler(String[] args) {
-        String task = args[0];
+        String job = args[0];//douyuanchor
+        String date = args[1];
+        String hour = args[2];
+        BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         String firstUrl = "https://www.douyu.com/directory/all";
 //        String url = "https://www.douyu.com/directory/all?isAjax=1&page=1";
 //        .setDownloader(new SeleniumDownloader("/Users/likaiqing/Downloads/chromedriver_mac"))
-        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(1).addPipeline(new DouyuAnchorPipeline(task)).run();
+        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(1).addPipeline(new DouyuAnchorPipeline(job, bw)).run();
+        IOTools.closeBw(bw);
     }
 
     @Override
@@ -37,7 +42,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 //            List<String> pages = page.getHtml().xpath("//div[@class='tcd-page-code']/a[@class='shark-pager-item']/text()").all();
 //            int endPage = Integer.parseInt(pages.get(pages.size() - 1));
             String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
-            int endPage=Integer.parseInt(js.substring(js.indexOf("count:")+8,js.lastIndexOf(',')-1));
+            int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));
             for (int i = 1; i < endPage; i++) {
                 page.addTargetRequest("https://www.douyu.com/directory/all?isAjax=1&page=" + i);
             }
@@ -61,7 +66,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
     }
 
     public static void main(String[] args) {
-        args = new String[]{"live"};
+        args = new String[]{"douyuanchor"};
         crawler(args);
     }
 }

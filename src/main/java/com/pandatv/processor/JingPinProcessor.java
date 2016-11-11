@@ -53,12 +53,13 @@ public class JingPinProcessor extends PandaProcessor {
         task = args[0];//jingpin
         plat = args[1];//douyu
         gameCategory = args[2];//lol
-        String hour = args[3];
+        String date = args[3];
+        String hour = args[4];
 //        BufferedWriter bw = IOTools.getBW(Const.FILEDIR + task + "/" + gameCategory);
         String url = "https://www.douyu.com/directory/game/" + gameCategory;
         if (plat.equals("")){
             url="";//新的平台更换新的url
         }
-        Spider.create(new JingPinProcessor()).addUrl(url).thread(1).addPipeline(new JingPinPipeLine(gameCategory, task, plat,hour)).run();
+        Spider.create(new JingPinProcessor()).addUrl(url).thread(1).addPipeline(new JingPinPipeLine(gameCategory, task, plat,date,hour)).run();
     }
 }

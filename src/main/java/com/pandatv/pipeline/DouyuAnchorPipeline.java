@@ -21,9 +21,9 @@ public class DouyuAnchorPipeline implements Pipeline {
         super();
     }
 
-    public DouyuAnchorPipeline(String job) {
+    public DouyuAnchorPipeline(String job,BufferedWriter bw) {
         this.job = job;
-        bw = IOTools.getBW(Const.FILEDIR + job + ".csv");
+        this.bw = bw;
     }
 
     @Override

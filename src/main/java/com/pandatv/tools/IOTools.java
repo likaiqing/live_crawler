@@ -74,4 +74,14 @@ public class IOTools {
             e.printStackTrace();
         }
     }
+
+    public static void closeBw(BufferedWriter bw) {
+        if (null !=  bw){
+            try {
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
