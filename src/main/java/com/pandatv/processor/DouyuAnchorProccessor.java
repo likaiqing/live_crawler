@@ -4,6 +4,8 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.pipeline.DouyuAnchorPipeline;
 import com.pandatv.tools.IOTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -15,6 +17,7 @@ import java.util.List;
  * Created by likaiqing on 2016/11/9.
  */
 public class DouyuAnchorProccessor extends PandaProcessor {
+    private static final Logger logger = LoggerFactory.getLogger(DouyuAnchorProccessor.class);
     private static String url = "https://www.douyu.com/directory/all?isAjax=1&page=";
     private static int pageTotal = 0;
 
@@ -38,6 +41,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         List<String> titles = null;
         List<String> popularities = null;
         List<String> categories = null;
+        logger.info("process url:{}",curUrl);
         if (curUrl.equals("https://www.douyu.com/directory/all")) {
 //            List<String> pages = page.getHtml().xpath("//div[@class='tcd-page-code']/a[@class='shark-pager-item']/text()").all();
 //            int endPage = Integer.parseInt(pages.get(pages.size() - 1));
