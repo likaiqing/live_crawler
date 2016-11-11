@@ -2,6 +2,9 @@ package com.pandatv.pojo;
 
 import com.pandatv.common.Const;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -105,7 +108,8 @@ public class Anchor {
     }
 
     public String toString(){
+        String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.category).append(Const.SEP).append(this.popularityStr).append(Const.SEP).append(this.popularityNum).append(Const.SEP).append(this.job).append(Const.SEP).append(this.plat).append(Const.SEP).append(this.game).toString();
+        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.category).append(Const.SEP).append(this.popularityStr).append(Const.SEP).append(this.popularityNum).append(Const.SEP).append(this.job).append(Const.SEP).append(this.plat).append(Const.SEP).append(this.game).append(Const.SEP).append(createTime).toString();
     }
 }
