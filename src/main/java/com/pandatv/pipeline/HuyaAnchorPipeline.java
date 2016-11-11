@@ -7,7 +7,6 @@ import net.minidev.json.JSONArray;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
-import us.codecraft.webmagic.selector.Json;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
@@ -45,6 +44,9 @@ public class HuyaAnchorPipeline implements Pipeline {
             anchor.setCategory(category);
             anchor.setPopularityStr(popularityStr);
             anchor.setPopularityNum(popularityNum);
+            anchor.setJob(job);
+            anchor.setPlat("huya");
+            anchor.setGame("");
             results.add(anchor.toString());
         }
         IOTools.writeList(results, bw);
