@@ -11,7 +11,8 @@ import java.util.List;
  */
 public class CommonTools {
     public static List<String> getUrls(ResultItems resultItems, String job, String plat, String gameCategory) {
-        List<String> urls = new ArrayList<>();
+        List<String> results = new ArrayList<>();
+        String url = resultItems.getRequest().getUrl();
         List<String> names = resultItems.get("names");
         List<String> popularities = resultItems.get("popularities");
         List<String> rids = resultItems.get("rids");
@@ -30,10 +31,11 @@ public class CommonTools {
             anchor.setJob(job);
             anchor.setPlat(plat);
             anchor.setGame(gameCategory);
+            anchor.setUrl(url);
             String result = anchor.toString();
-            urls.add(result);
+            results.add(result);
         }
-        return urls;
+        return results;
     }
 
     private static int createNum(String popularitiyStr) {

@@ -4,6 +4,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.IOTools;
 import net.minidev.json.JSONArray;
+import org.apache.commons.lang.StringUtils;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
@@ -29,8 +30,8 @@ public class HuyaAnchorPipeline implements Pipeline {
         String json = resultItems.get("json").toString();
         JSONArray list = JsonPath.read(json, "$.data.list");
         List<String> results = new ArrayList<>();
+        String url = resultItems.getRequest().getUrl();
         for (int i = 0; i < list.size(); i++) {
-            Anchor anchor = new Anchor();
             String jsonStr = list.get(i).toString();
             String rid = JsonPath.read(jsonStr, "$.privateHost");
             String name = JsonPath.read(jsonStr, "$.nick");
@@ -38,6 +39,10 @@ public class HuyaAnchorPipeline implements Pipeline {
             String category = JsonPath.read(jsonStr, "$.gameFullName");
             String popularityStr = JsonPath.read(jsonStr, "$.totalCount");
             int popularityNum = Integer.parseInt(popularityStr);
+            if (StringUtils.isEmpty(rid) || StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(category) || StringUtils.isEmpty(popularityStr)) {
+                continue;
+            }
+            Anchor anchor = new Anchor();
             anchor.setRid(rid);
             anchor.setName(name);
             anchor.setTitle(title);
@@ -46,7 +51,8 @@ public class HuyaAnchorPipeline implements Pipeline {
             anchor.setPopularityNum(popularityNum);
             anchor.setJob(job);
             anchor.setPlat("huya");
-            anchor.setGame("");
+            anchor.setGame("all");
+            anchor.setUrl(url);
             results.add(anchor.toString());
         }
         IOTools.writeList(results, bw);
