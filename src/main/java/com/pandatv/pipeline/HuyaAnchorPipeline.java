@@ -5,6 +5,8 @@ import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.IOTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
@@ -17,6 +19,7 @@ import java.util.List;
  * Created by likaiqing on 2016/11/11.
  */
 public class HuyaAnchorPipeline implements Pipeline {
+    private static final Logger logger = LoggerFactory.getLogger(HuyaAnchorPipeline.class);
     private static String job;
     private static BufferedWriter bw;
 
@@ -41,6 +44,9 @@ public class HuyaAnchorPipeline implements Pipeline {
             int popularityNum = Integer.parseInt(popularityStr);
             if (StringUtils.isEmpty(rid) || StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(category) || StringUtils.isEmpty(popularityStr)) {
                 continue;
+            }
+            if (rid.contains("\u0001")){
+                logger.info("rid contains SEP,url:{},rid:{}",url,rid);
             }
             Anchor anchor = new Anchor();
             anchor.setRid(rid);
