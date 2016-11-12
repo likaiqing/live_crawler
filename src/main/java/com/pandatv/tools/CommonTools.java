@@ -31,6 +31,9 @@ public class CommonTools {
             if (rid.contains("\u0001")){
                 logger.info("rid contains SEP,url:{},rid:{}",url,rid);
             }
+            if (!isValidUnicode(rid)){
+                logger.info("rid is not valid unicode,url:{},rid:{}",url,rid);
+            }
             anchor.setRid(rid);
             anchor.setName(names.get(i));
             anchor.setTitle(titles.get(i));

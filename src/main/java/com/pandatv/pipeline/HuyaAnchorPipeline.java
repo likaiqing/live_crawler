@@ -2,6 +2,7 @@ package com.pandatv.pipeline;
 
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.pojo.Anchor;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.IOTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
@@ -47,6 +48,9 @@ public class HuyaAnchorPipeline implements Pipeline {
             }
             if (rid.contains("\u0001")){
                 logger.info("rid contains SEP,url:{},rid:{}",url,rid);
+            }
+            if (!CommonTools.isValidUnicode(rid)){
+                logger.info("rid is not valid unicode,url:{},rid:{}",url,rid);
             }
             Anchor anchor = new Anchor();
             anchor.setRid(rid);
