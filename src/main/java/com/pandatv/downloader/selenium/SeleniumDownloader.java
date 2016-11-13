@@ -30,7 +30,7 @@ public class SeleniumDownloader implements Downloader, Closeable {
 
     private int poolSize = 1;
 
-    private static final String DRIVER_PHANTOMJS = "phantomjs";
+//    private static final String DRIVER_PHANTOMJS = "phantomjs";
 
     /**
      * 新建
@@ -40,6 +40,7 @@ public class SeleniumDownloader implements Downloader, Closeable {
     public SeleniumDownloader(String chromeDriverPath) {
         System.getProperties().setProperty("webdriver.chrome.driver",
                 chromeDriverPath);
+        logger.info("seleniumDownloader setproperty ,chromeDriverPath:"+chromeDriverPath);
     }
 
     /**

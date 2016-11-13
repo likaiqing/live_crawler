@@ -3,12 +3,8 @@ package com.pandatv.downloader.selenium;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,7 +38,7 @@ public class WebDriverPool {
     private WebDriver mDriver = null;
     private boolean mAutoQuitDriver = true;
 
-    private static final String CONFIG_FILE = "/Users/likaiqing/space/panda/live_crawler/src/main/resources/config.ini";
+    private static final String CONFIG_FILE = "src/main/resources/config.ini";
     private static final String DRIVER_FIREFOX = "firefox";
     private static final String DRIVER_CHROME = "chrome";
     private static final String DRIVER_PHANTOMJS = "phantomjs";
@@ -55,45 +51,45 @@ public class WebDriverPool {
      * of code comes from GhostDriver.
      * https://github.com/detro/ghostdriver/tree/master/test/java/src/test/java/ghostdriver
      *
-     * @author bob.li.0718@gmail.com
      * @throws IOException
+     * @author bob.li.0718@gmail.com
      */
     public void configure() throws IOException {
         // Read config file
-        sConfig = new Properties();
-        sConfig.load(new FileReader(CONFIG_FILE));
-
-        // Prepare capabilities
-        sCaps = new DesiredCapabilities();
-        sCaps.setJavascriptEnabled(true);
-        sCaps.setCapability("takesScreenshot", false);
-
-        String driver = sConfig.getProperty("driver", DRIVER_PHANTOMJS);
-
-        // Fetch PhantomJS-specific configuration parameters
-        if (driver.equals(DRIVER_PHANTOMJS)) {
-            // "phantomjs_exec_path"
-            if (sConfig.getProperty("phantomjs_exec_path") != null) {
-                sCaps.setCapability(
-                        PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                        sConfig.getProperty("phantomjs_exec_path"));
-            } else {
-                throw new IOException(
-                        String.format(
-                                "Property '%s' not set!",
-                                PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY));
-            }
-            // "phantomjs_driver_path"
-            if (sConfig.getProperty("phantomjs_driver_path") != null) {
-                System.out.println("Test will use an external GhostDriver");
-                sCaps.setCapability(
-                        PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_PATH_PROPERTY,
-                        sConfig.getProperty("phantomjs_driver_path"));
-            } else {
-                System.out
-                        .println("Test will use PhantomJS internal GhostDriver");
-            }
-        }
+//        sConfig = new Properties();
+//        sConfig.load(new FileReader(CONFIG_FILE));
+//
+//        // Prepare capabilities
+//        sCaps = new DesiredCapabilities();
+//        sCaps.setJavascriptEnabled(true);
+//        sCaps.setCapability("takesScreenshot", false);
+//
+//        String driver = sConfig.getProperty("driver", DRIVER_PHANTOMJS);
+//
+//        // Fetch PhantomJS-specific configuration parameters
+//        if (driver.equals(DRIVER_PHANTOMJS)) {
+//            // "phantomjs_exec_path"
+//            if (sConfig.getProperty("phantomjs_exec_path") != null) {
+//                sCaps.setCapability(
+//                        PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+//                        sConfig.getProperty("phantomjs_exec_path"));
+//            } else {
+//                throw new IOException(
+//                        String.format(
+//                                "Property '%s' not set!",
+//                                PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY));
+//            }
+//            // "phantomjs_driver_path"
+//            if (sConfig.getProperty("phantomjs_driver_path") != null) {
+//                System.out.println("Test will use an external GhostDriver");
+//                sCaps.setCapability(
+//                        PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_PATH_PROPERTY,
+//                        sConfig.getProperty("phantomjs_driver_path"));
+//            } else {
+//                System.out
+//                        .println("Test will use PhantomJS internal GhostDriver");
+//            }
+//        }
 
         // Disable "web-security", enable all possible "ssl-protocols" and
         // "ignore-ssl-errors" for PhantomJSDriver
@@ -104,42 +100,43 @@ public class WebDriverPool {
         // "--ignore-ssl-errors=true"
         // });
 
-        ArrayList<String> cliArgsCap = new ArrayList<String>();
-        cliArgsCap.add("--web-security=false");
-        cliArgsCap.add("--ssl-protocol=any");
-        cliArgsCap.add("--ignore-ssl-errors=true");
-        sCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,
-                cliArgsCap);
-
-        // Control LogLevel for GhostDriver, via CLI arguments
-        sCaps.setCapability(
-                PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS,
-                new String[] { "--logLevel="
-                        + (sConfig.getProperty("phantomjs_driver_loglevel") != null ? sConfig
-                        .getProperty("phantomjs_driver_loglevel")
-                        : "INFO") });
+//        ArrayList<String> cliArgsCap = new ArrayList<String>();
+//        cliArgsCap.add("--web-security=false");
+//        cliArgsCap.add("--ssl-protocol=any");
+//        cliArgsCap.add("--ignore-ssl-errors=true");
+//        sCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,
+//                cliArgsCap);
+//
+//        // Control LogLevel for GhostDriver, via CLI arguments
+//        sCaps.setCapability(
+//                PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS,
+//                new String[] { "--logLevel="
+//                        + (sConfig.getProperty("phantomjs_driver_loglevel") != null ? sConfig
+//                        .getProperty("phantomjs_driver_loglevel")
+//                        : "INFO") });
 
         // String driver = sConfig.getProperty("driver", DRIVER_PHANTOMJS);
 
         // Start appropriate Driver
-        if (isUrl(driver)) {
-            sCaps.setBrowserName("phantomjs");
-            mDriver = new RemoteWebDriver(new URL(driver), sCaps);
-        } else if (driver.equals(DRIVER_FIREFOX)) {
-            mDriver = new FirefoxDriver(sCaps);
-        } else if (driver.equals(DRIVER_CHROME)) {
-            mDriver = new ChromeDriver(sCaps);
-        } else if (driver.equals(DRIVER_PHANTOMJS)) {
+//        if (isUrl(driver)) {
+//            sCaps.setBrowserName("phantomjs");
+//            mDriver = new RemoteWebDriver(new URL(driver), sCaps);
+//        } else if (driver.equals(DRIVER_FIREFOX)) {
+//            mDriver = new FirefoxDriver(sCaps);
+//        } else if (driver.equals(DRIVER_CHROME)) {
+//            mDriver = new ChromeDriver(sCaps);
+//        } else if (driver.equals(DRIVER_PHANTOMJS)) {
 //            mDriver = new PhantomJSDriver(sCaps);
-        }
+//        }
+        mDriver = new ChromeDriver();
     }
 
     /**
      * check whether input is a valid URL
      *
-     * @author bob.li.0718@gmail.com
      * @param urlString urlString
      * @return true means yes, otherwise no.
+     * @author bob.li.0718@gmail.com
      */
     private boolean isUrl(String urlString) {
         try {
@@ -170,7 +167,6 @@ public class WebDriverPool {
     }
 
     /**
-     *
      * @return
      * @throws InterruptedException
      */
