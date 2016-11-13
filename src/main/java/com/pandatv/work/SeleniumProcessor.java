@@ -20,6 +20,12 @@ public class SeleniumProcessor extends PandaProcessor {
     public void process(Page page) {
         List<String> pages = page.getHtml().xpath("//div[@class='items items01 item-data clearfix']/ul/li/a/@href").all();
         System.out.println(pages.get(9));
+        String curUrl = page.getUrl().toString();
+        for (String url : pages){
+//            spider.setDownloader(null);
+//            spider.run();
+            page.addTargetRequest(url);
+        }
     }
 
     @Override
@@ -27,11 +33,11 @@ public class SeleniumProcessor extends PandaProcessor {
         return this.site;
     }
 
-    public static void crawler(String[] args) {
+    public static void main(String[] args) {
 //        System.getProperties().setProperty("webdriver.chrome.driver","src/doc/mac/chromedriver");
         logger.info("seleniumprocessor start");
         String chromeDriverPath = "/home/likaiqing/hive-tool/chromedriver";
 //        String chromeDriverPath = "/Users/likaiqing/space/panda/live_crawler/src/doc/mac/chromedriver";
-        Spider.create(new SeleniumProcessor()).thread(2).addPipeline(new ConsolePipeline()).addUrl("https://www.douyu.com/directory/all").setDownloader(new SeleniumDownloader(chromeDriverPath)).run();
+        Spider.create(new SeleniumProcessor()).thread(5).addPipeline(new ConsolePipeline()).addUrl("https://www.douyu.com/directory/all").setDownloader(new SeleniumDownloader(chromeDriverPath)).run();
     }
 }

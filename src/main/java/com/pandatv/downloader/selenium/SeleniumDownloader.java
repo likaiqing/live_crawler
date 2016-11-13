@@ -26,11 +26,7 @@ public class SeleniumDownloader implements Downloader, Closeable {
 
     private Logger logger = Logger.getLogger(getClass());
 
-    private int sleepTime = 0;
-
     private int poolSize = 1;
-
-//    private static final String DRIVER_PHANTOMJS = "phantomjs";
 
     /**
      * 新建
@@ -40,28 +36,6 @@ public class SeleniumDownloader implements Downloader, Closeable {
     public SeleniumDownloader(String chromeDriverPath) {
         System.getProperties().setProperty("webdriver.chrome.driver",
                 chromeDriverPath);
-        logger.info("seleniumDownloader setproperty ,chromeDriverPath:"+chromeDriverPath);
-    }
-
-    /**
-     * Constructor without any filed. Construct PhantomJS browser
-     *
-     * @author bob.li.0718@gmail.com
-     */
-    public SeleniumDownloader() {
-        // System.setProperty("phantomjs.binary.path",
-        // "/Users/Bingo/Downloads/phantomjs-1.9.7-macosx/bin/phantomjs");
-    }
-
-    /**
-     * set sleep time to wait until load success
-     *
-     * @param sleepTime sleepTime
-     * @return this
-     */
-    public SeleniumDownloader setSleepTime(int sleepTime) {
-        this.sleepTime = sleepTime;
-        return this;
     }
 
     @Override
@@ -76,11 +50,6 @@ public class SeleniumDownloader implements Downloader, Closeable {
         }
         logger.info("downloading page " + request.getUrl());
         webDriver.get(request.getUrl());
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         WebDriver.Options manage = webDriver.manage();
         Site site = task.getSite();
         if (site.getCookies() != null) {
