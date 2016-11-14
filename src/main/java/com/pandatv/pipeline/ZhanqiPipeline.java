@@ -42,7 +42,7 @@ public class ZhanqiPipeline implements Pipeline {
             String popularityStr = JsonPath.read(room,"$.online");
             int popularityNum = Integer.parseInt(popularityStr);
             Anchor anchor = new Anchor();
-            anchor.setRid(rid.replace("/",""));
+            anchor.setRid(rid);
             anchor.setName(name);
             anchor.setTitle(title);
             anchor.setCategory(category);

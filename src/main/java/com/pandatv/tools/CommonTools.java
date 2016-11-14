@@ -50,7 +50,7 @@ public class CommonTools {
         return results;
     }
 
-    private static int createNum(String popularitiyStr) {
+    public static int createNum(String popularitiyStr) {
         if (!popularitiyStr.contains("万")) {
             return Integer.parseInt(popularitiyStr);
         }

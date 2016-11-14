@@ -48,8 +48,13 @@ public class Work {
                 break;
             case Const.ZHANQIANCHOR://zhanqianchor 20161111 15
                 judgeParam(args, 3);
-                logger.info("QuanminAnchorProcessor.crawler start");
+                logger.info("ZhanqiAnchorProcessor.crawler start");
                 ZhanqiAnchorProcessor.crawler(args);
+                break;
+            case Const.CHUSHOUANCHOR://chushouanchor 20161111 15
+                judgeParam(args, 3);
+                logger.info("ChushouAnchorProcessor.crawler start");
+                ChushouAnchorProcessor.crawler(args);
                 break;
         }
     }
