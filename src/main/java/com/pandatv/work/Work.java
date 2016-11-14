@@ -3,6 +3,7 @@ package com.pandatv.work;
 import com.pandatv.common.Const;
 import com.pandatv.processor.DouyuAnchorProccessor;
 import com.pandatv.processor.HuyaAnchorProcessor;
+import com.pandatv.processor.LongzhuAnchorProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,6 @@ public class Work {
         if (null == args || args.length == 0) {
             return;
         }
-        String flag = args[0];
         switch (args[0]) {
 //            case Const.JINGPIN://jingpin douyu lol 20161110 4  :在四点的时候竞品抓取斗鱼的lol游戏
 //                judgeParam(args,5);
@@ -38,7 +38,11 @@ public class Work {
                 logger.info("HuyaAnchorProcessor.crawler start");
                 HuyaAnchorProcessor.crawler(args);
                 break;
-
+            case Const.LONGZHUANCHOR://longzhuanchor 20161111 15
+                judgeParam(args, 3);
+                logger.info("LongzhuAnchorProcessor.crawler start");
+                LongzhuAnchorProcessor.crawler(args);
+                break;
         }
     }
 

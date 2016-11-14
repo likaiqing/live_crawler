@@ -1,6 +1,7 @@
 package com.pandatv.pipeline;
 
 import com.jayway.jsonpath.JsonPath;
+import com.pandatv.common.Const;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.IOTools;
@@ -60,8 +61,8 @@ public class HuyaAnchorPipeline implements Pipeline {
             anchor.setPopularityStr(popularityStr);
             anchor.setPopularityNum(popularityNum);
             anchor.setJob(job);
-            anchor.setPlat("huya");
-            anchor.setGame("all");
+            anchor.setPlat(Const.HUYA);
+            anchor.setGame(Const.GAMEALL);
             anchor.setUrl(url);
             results.add(anchor.toString());
         }
