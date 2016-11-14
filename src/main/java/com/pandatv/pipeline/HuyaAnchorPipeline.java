@@ -32,7 +32,7 @@ public class HuyaAnchorPipeline implements Pipeline {
 
     @Override
     public void process(ResultItems resultItems, Task task) {
-        String json = resultItems.get("json").toString();
+        String json = resultItems.get("json");
         JSONArray list = JsonPath.read(json, "$.data.list");
         List<String> results = new ArrayList<>();
         String url = resultItems.getRequest().getUrl();

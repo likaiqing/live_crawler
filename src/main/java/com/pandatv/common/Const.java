@@ -16,4 +16,6 @@ public class Const {
     public static final String LONGZHUANCHOR = "longzhuanchor";
     public static final String LONGZHU = "longzhu";
     public static final String HUYA = "huya";
+    public static final String QUANMINANCHOR = "quanminanchor";
+    public static final String QUANMIN = "quanmin";
 }

@@ -4,6 +4,7 @@ import com.pandatv.common.Const;
 import com.pandatv.processor.DouyuAnchorProccessor;
 import com.pandatv.processor.HuyaAnchorProcessor;
 import com.pandatv.processor.LongzhuAnchorProcessor;
+import com.pandatv.processor.QuanminAnchorProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,11 @@ public class Work {
                 judgeParam(args, 3);
                 logger.info("LongzhuAnchorProcessor.crawler start");
                 LongzhuAnchorProcessor.crawler(args);
+                break;
+            case Const.QUANMINANCHOR://quanminanchor 20161111 15
+                judgeParam(args, 3);
+                logger.info("QuanminAnchorProcessor.crawler start");
+                QuanminAnchorProcessor.crawler(args);
                 break;
         }
     }
