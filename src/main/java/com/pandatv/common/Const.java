@@ -18,4 +18,6 @@ public class Const {
     public static final String HUYA = "huya";
     public static final String QUANMINANCHOR = "quanminanchor";
     public static final String QUANMIN = "quanmin";
+    public static final String ZHANQIANCHOR = "zhanqianchor";
+    public static final String ZHANQI = "zhanqi";
 }
