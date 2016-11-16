@@ -42,5 +42,6 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
         String hour = args[2];//10
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         Spider.create(new LongzhuAnchorProcessor()).addUrl(firUrl).addPipeline(new LongzhuPipeLine(job,bw)).run();
+        IOTools.closeBw(bw);
     }
 }

@@ -58,8 +58,13 @@ public class Work {
                 break;
             case Const.DOUYUANCHORDETAIL://douyuanchordetail 20161111 15
                 judgeParam(args, 3);
-                logger.info("ChushouAnchorProcessor.crawler start");
+                logger.info("DouyuDetailAnchorProcessor.crawler start");
                 DouyuDetailAnchorProcessor.crawler(args);
+                break;
+            case Const.HUYAANCHORDETAIL://huyaanchordetail 20161111 15
+                judgeParam(args, 3);
+                logger.info("HuyaDetailAnchorProcessor.crawler start");
+                HuyaDetailAnchorProcessor.crawler(args);
                 break;
             case "seleniumprocess"://seleniumprocess
                 judgeParam(args, 3);

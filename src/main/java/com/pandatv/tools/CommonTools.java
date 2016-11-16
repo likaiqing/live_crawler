@@ -2,6 +2,7 @@ package com.pandatv.tools;
 
 import com.pandatv.pipeline.HuyaAnchorPipeline;
 import com.pandatv.pojo.Anchor;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.ResultItems;
@@ -66,5 +67,19 @@ public class CommonTools {
             }
         }
         return true;
+    }
+
+    public static long getDouyuWeight(String weightNum) {
+        if (StringUtils.isEmpty(weightNum)){
+            return 0;
+        }else if (weightNum.endsWith("g")){
+            return (long) Double.parseDouble(weightNum.replace("g",""));
+        }else if (weightNum.endsWith("kg")){
+            return (long) (Double.parseDouble(weightNum.replace("kg",""))*1000);
+        }else if (weightNum.endsWith("t")){
+            return (long) (Double.parseDouble(weightNum.replace("kg",""))*1000000);
+        }else {
+            return 0;
+        }
     }
 }

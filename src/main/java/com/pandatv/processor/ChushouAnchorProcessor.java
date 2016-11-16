@@ -64,5 +64,6 @@ public class ChushouAnchorProcessor extends PandaProcessor {
         String hour = args[2];//10
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         Spider.create(new ChushouAnchorProcessor()).addUrl(firUrl).addPipeline(new ChushouPipeline(job, bw)).run();
+        IOTools.closeBw(bw);
     }
 }

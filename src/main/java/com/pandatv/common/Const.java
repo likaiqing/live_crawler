@@ -23,4 +23,5 @@ public class Const {
     public static final String CHUSHOUANCHOR = "chushouanchor";
     public static final String CHUSHOU = "chushou";
     public static final String DOUYUANCHORDETAIL = "douyuanchordetail";
+    public static final String HUYAANCHORDETAIL = "huyaanchordetail";
 }

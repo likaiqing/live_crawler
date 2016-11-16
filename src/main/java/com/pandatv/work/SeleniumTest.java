@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class SeleniumTest {
     public static void main(String[] args) {
-        System.getProperties().setProperty("webdriver.chrome.driver", "/Users/yihua/Downloads/chromedriver");
+        System.getProperties().setProperty("webdriver.chrome.driver", "src/doc/mac/chromedriver");
         Map<String, Object> contentSettings = new HashMap<String, Object>();
         contentSettings.put("images", 2);
 

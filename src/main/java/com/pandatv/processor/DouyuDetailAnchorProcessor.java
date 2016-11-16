@@ -80,5 +80,6 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         String firstUrl = "https://www.douyu.com/directory/all";
         Spider.create(new DouyuDetailAnchorProcessor()).thread(2).addUrl(firstUrl).addPipeline(new DouyuAnchorDetailPipeline(job, bw)).run();
+        IOTools.closeBw(bw);
     }
 }

@@ -57,5 +57,6 @@ public class QuanminAnchorProcessor extends PandaProcessor {
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         String dateStr = format.format(new Date());
         Spider.create(new QuanminAnchorProcessor()).addUrl(firUrl+dateStr).addPipeline(new QuanminPipeline(job,bw)).run();
+        IOTools.closeBw(bw);
     }
 }

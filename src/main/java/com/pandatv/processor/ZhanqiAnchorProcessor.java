@@ -43,5 +43,6 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
         String hour = args[2];//10
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         Spider.create(new ZhanqiAnchorProcessor()).addUrl(firUrl).addPipeline(new ZhanqiPipeline(job, bw)).run();
+        IOTools.closeBw(bw);
     }
 }
