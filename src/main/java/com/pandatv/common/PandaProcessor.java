@@ -8,10 +8,10 @@ import us.codecraft.webmagic.processor.PageProcessor;
  */
 public abstract class PandaProcessor implements PageProcessor {
     protected Site site = Site.me()
-            .setSleepTime(2000)
+            .setSleepTime(500)
             .setUseGzip(true)
             .setRetryTimes(5)
-            .setTimeOut(5000)
+            .setTimeOut(3000)
             .setCycleRetryTimes(7)
             .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:45.0) Gecko/20100101 Firefox/45.0");
 }

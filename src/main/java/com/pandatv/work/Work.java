@@ -56,6 +56,16 @@ public class Work {
                 logger.info("ChushouAnchorProcessor.crawler start");
                 ChushouAnchorProcessor.crawler(args);
                 break;
+            case Const.DOUYUANCHORDETAIL://douyuanchordetail 20161111 15
+                judgeParam(args, 3);
+                logger.info("ChushouAnchorProcessor.crawler start");
+                DouyuDetailAnchorProcessor.crawler(args);
+                break;
+            case "seleniumprocess"://seleniumprocess
+                judgeParam(args, 3);
+                logger.info("ChushouAnchorProcessor.crawler start");
+                SeleniumProcessor.crawler(args);
+                break;
         }
     }
 

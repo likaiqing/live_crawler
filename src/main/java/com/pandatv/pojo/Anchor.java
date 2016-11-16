@@ -2,10 +2,8 @@ package com.pandatv.pojo;
 
 import com.pandatv.common.Const;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by likaiqing on 2016/11/7.
@@ -89,6 +87,7 @@ public class Anchor {
     public void setGame(String game) {
         this.game = game;
     }
+
     public int getPopularityNum() {
         return popularityNum;
     }
@@ -97,21 +96,28 @@ public class Anchor {
         this.popularityNum = popularityNum;
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (null==obj){
+        if (null == obj) {
             return false;
         }
-        if (obj instanceof Anchor){
-            return ((Anchor) obj).getRid()==this.getRid();
-        }else {
+        if (obj instanceof Anchor) {
+            return ((Anchor) obj).getRid() == this.getRid();
+        } else {
             return false;
         }
     }
 
-    public String toString(){
+    @Override
+    public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
         return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.category).append(Const.SEP).append(this.popularityStr).append(Const.SEP).append(this.popularityNum).append(Const.SEP).append(this.job).append(Const.SEP).append(this.plat).append(Const.SEP).append(this.game).append(Const.SEP).append(createTime).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 + this.rid.hashCode();
     }
 
     public String getUrl() {
