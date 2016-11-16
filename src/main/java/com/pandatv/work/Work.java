@@ -12,6 +12,9 @@ public class Work {
     private static final Logger logger = LoggerFactory.getLogger(Work.class);
 
     public static void main(String[] args) {
+//        logger.info("start");
+//        SeleniumTest.crawler(args);
+//        logger.info("end");
         if (null == args || args.length == 0) {
             return;
         }

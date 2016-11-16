@@ -79,6 +79,7 @@ public class ChushouPipeline implements Pipeline {
             String popularyStr = JsonPath.read(room,"$.meta.onlineCount").toString();
             anchor.setPopularityStr(popularyStr);
             anchor.setPopularityNum(CommonTools.createNum(popularyStr));
+            anchor.setJob(job);
             anchor.setPlat(Const.CHUSHOU);
             anchor.setGame(Const.GAMEALL);
             anchor.setUrl(curUrl);
