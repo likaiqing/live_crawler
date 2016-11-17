@@ -24,4 +24,5 @@ public class Const {
     public static final String CHUSHOU = "chushou";
     public static final String DOUYUANCHORDETAIL = "douyuanchordetail";
     public static final String HUYAANCHORDETAIL = "huyaanchordetail";
+    public static final String CHROMEDRIVER = "/data/tmp/crawler_driver/chromedriver";
 }

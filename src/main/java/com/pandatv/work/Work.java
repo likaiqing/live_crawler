@@ -1,6 +1,7 @@
 package com.pandatv.work;
 
 import com.pandatv.common.Const;
+import com.pandatv.downloader.selenium.seleniumtest.WebDriverPoolTest;
 import com.pandatv.processor.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ public class Work {
 
     public static void main(String[] args) {
 //        logger.info("start");
-//        SeleniumTest.crawler(args);
+//        WebDriverPoolTest.crawler(args);
 //        logger.info("end");
         if (null == args || args.length == 0) {
             return;

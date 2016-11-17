@@ -2,6 +2,7 @@ package com.pandatv.processor;
 
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
+import com.pandatv.downloader.selenium.SeleniumDownloader;
 import com.pandatv.pipeline.DouyuAnchorDetailPipeline;
 import com.pandatv.tools.IOTools;
 import org.apache.commons.lang.StringUtils;
@@ -79,7 +80,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String hour = args[2];
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         String firstUrl = "https://www.douyu.com/directory/all";
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(2).addUrl(firstUrl).addPipeline(new DouyuAnchorDetailPipeline(job, bw)).run();
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(2).addUrl(firstUrl).setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER)).addPipeline(new DouyuAnchorDetailPipeline(job, bw)).run();
         IOTools.closeBw(bw);
     }
 }
