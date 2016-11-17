@@ -68,38 +68,6 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             if (detailAnchors.size()!=Const.WRITEBATCH){
                 page.setSkip(true);
             }
-//            Html html = page.getHtml();
-//            String name = html.xpath("//div[@class='acinfo-fs-con  clearfix']/ul/li[1]/div/a/text()").get();//比较多的
-//            String title = null;
-//            String categoryFir = null;
-//            String categorySec = null;
-//            String viewerStr = null;
-//            String followerStr = null;
-//            String rankStr = null;
-//            String weightStr = null;
-//            String tag = null;
-//            String notice = null;
-//            if (!StringUtils.isEmpty(name)) {
-//                title = html.xpath("//div[@class='headline clearfix']/h1/text()").get();
-//                categoryFir = html.xpath("//div[@class='tag-fs-con clearfix']/dl/dd/a[1]/text()").get();
-//                categorySec = html.xpath("//div[@class='tag-fs-con clearfix']/dl/dd/a[2]/text()").get();
-//                viewerStr = html.xpath("//div[@class='num-box']/div[@class='num-v-con']/a/text()").get();
-//                followerStr = html.xpath("//div[@class='focus-box-con clearfix']/p/span/text()").get();
-//                rankStr = html.xpath("//div[@class='catagory-order-num fl']/span[1]/span/text()").get();
-//                weightStr = html.xpath("//div[@class='weight-v-con']/a/text()").get();
-//                tag = html.xpath("//div[@class='tag-fs-con clearfix']/dl/dd/a/text()").get();
-//                notice = html.xpath("//p[@class='column-cotent']/text()").get();
-//
-//            } else {//有可能是转播的qq直播
-//                name = html.xpath("//ul[@class='r-else clearfix']/li[1]/i[@class='zb-name']/text()").get();
-//                title = html.xpath("//ul[@class='headline clearfix']/h1/text()").get();
-//                viewerStr = html.xpath("//ul[@class='r-else clearfix']/li[2]/span/span/text()").get();
-//                tag = html.xpath("//ul[@class='r-else clearfix']/li[3]/a/text()").get();
-//                weightStr = html.xpath("//ul[@class='r-else clearfix']/li[4]/span/span/text()").get();
-//                followerStr = html.xpath("//div[@class='focus-box']/p/span/text()").get();
-//                notice = html.xpath("//div[@class='column o-notice']/div[@class='column-cont']/p/text()").get();
-//            }
-//            page.putField("name", name);
         }
     }
 
