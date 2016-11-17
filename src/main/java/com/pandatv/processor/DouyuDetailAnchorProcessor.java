@@ -13,12 +13,15 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.selector.Html;
 
 import java.io.BufferedWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by likaiqing on 2016/11/15.
  */
 public class DouyuDetailAnchorProcessor extends PandaProcessor {
+    private static List<String> detailAnchors = new ArrayList<>();
+    private static String job = "";
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().toString();
@@ -39,31 +42,37 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 page.setSkip(true);
             }
         } else {
-            String name = html.xpath("//div[@class='relate-text fl']/div[@class='acinfo-fs-con  clearfix']/ul[@class='r-else clearfix']/li[0]/div[@class='zb-name-con']/a/text()").get();//比较多的
+            String name = html.xpath("//div[@class='acinfo-fs-con  clearfix']/ul/li[1]/div/a/text()").get();//比较多的
             String title = null;
+            String categoryFir = null;
+            String categorySec = null;
             String viewerStr = null;
-            String roomTag = null;
-            String weight = null;
             String followerStr = null;
+            String rankStr = null;
+            String weightStr = null;
+            String tag = null;
             String notice = null;
-            String notice1 = null;
             if (!StringUtils.isEmpty(name)) {
                 title = html.xpath("//div[@class='headline clearfix']/h1/text()").get();
-                viewerStr = html.xpath("//div[@class='relate-text fl']/div[@class='acinfo-fs-con  clearfix']/ul[@class='r-else clearfix']/li[1]/div[@class='num-box']/div[@class='num-v-con']/a/text()").get();
-                roomTag = html.xpath("//div[@class='tag-fs-con clearfix']/dl/dd/a/text()").get();
-
+                categoryFir = html.xpath("//div[@class='tag-fs-con clearfix']/dl/dd/a[1]/text()").get();
+                categorySec = html.xpath("//div[@class='tag-fs-con clearfix']/dl/dd/a[2]/text()").get();
+                viewerStr = html.xpath("//div[@class='num-box']/div[@class='num-v-con']/a/text()").get();
+                followerStr = html.xpath("//div[@class='focus-box-con clearfix']/p/span/text()").get();
+                rankStr = html.xpath("//div[@class='catagory-order-num fl']/span[1]/span/text()").get();
+                weightStr = html.xpath("//div[@class='weight-v-con']/a/text()").get();
+                tag = html.xpath("//div[@class='tag-fs-con clearfix']/dl/dd/a/text()").get();
+                notice = html.xpath("//p[@class='column-cotent']/text()").get();
 
             } else {//有可能是转播的qq直播
-                html.xpath("//div[@class='relate-text']/ul[@class='r-else clearfix']/li[0]/i[@class='zb-name']/text()").get();
-                title = html.xpath("//div[@class='relate-text']/ul[@class='headline clearfix']/h1/text()").get();
-                viewerStr = html.xpath("//div[@class='relate-text']/ul[@class='r-else clearfix']/li[1]/span[@class='num-box']/span[@class='num-v']/text()").get();
-                roomTag = html.xpath("//div[@class='relate-text']/ul[@class='r-else clearfix']/li[2]/a/text()").get();
-                weight = html.xpath("//div[@class='relate-text']/ul[@class='r-else clearfix']/li[3]/span[@class='weight-box']/span[@class='weight-v']/text()").get();
-                followerStr = html.xpath("//div[@class='btn-group fr']/div[@class='focus-box']/p/span/text()").get();
-                notice = html.xpath("//div[@class='column o-notice']/div[@class='column-cont']/p/span/text()").get();
-                notice1 = html.xpath("//div[@id='js-notice']/p/span/text()").get();
+                name = html.xpath("//ul[@class='r-else clearfix']/li[1]/i[@class='zb-name']/text()").get();
+                title = html.xpath("//ul[@class='headline clearfix']/h1/text()").get();
+                viewerStr = html.xpath("//ul[@class='r-else clearfix']/li[2]/span/span/text()").get();
+                tag = html.xpath("//ul[@class='r-else clearfix']/li[3]/a/text()").get();
+                weightStr = html.xpath("//ul[@class='r-else clearfix']/li[4]/span/span/text()").get();
+                followerStr = html.xpath("//div[@class='focus-box']/p/span/text()").get();
+                notice = html.xpath("//div[@class='column o-notice']/div[@class='column-cont']/p/text()").get();
+//                notice = html.xpath("//div[@id='js-notice']/p/text()").get()
             }
-
             page.putField("name", name);
         }
         page.putField("curUrl", curUrl);
@@ -75,12 +84,13 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        String job = args[0];//douyuanchordetail
+        job = args[0];//douyuanchordetail
         String date = args[1];
         String hour = args[2];
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         String firstUrl = "https://www.douyu.com/directory/all";
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(2).addUrl(firstUrl).setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER)).addPipeline(new DouyuAnchorDetailPipeline(job, bw)).run();
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER)).addPipeline(new DouyuAnchorDetailPipeline(job, bw)).run();
+        IOTools.writeList(detailAnchors, bw);
         IOTools.closeBw(bw);
     }
 }
