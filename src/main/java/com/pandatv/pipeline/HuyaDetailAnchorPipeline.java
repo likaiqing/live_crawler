@@ -17,15 +17,14 @@ public class HuyaDetailAnchorPipeline implements Pipeline {
     private static final Logger logger = LoggerFactory.getLogger(HuyaDetailAnchorPipeline.class);
     private static List<String > detailAnchors;
     private static BufferedWriter bw;
-    public HuyaDetailAnchorPipeline(List<String > detailAnchors, BufferedWriter bw) {
+    public HuyaDetailAnchorPipeline(List<String> detailAnchors, BufferedWriter bw) {
         this.detailAnchors = detailAnchors;
         this.bw = bw;
     }
 
     @Override
     public void process(ResultItems resultItems, Task task) {
-        List<String> detailAnchors = resultItems.get("detailAnchors");
         IOTools.writeList(detailAnchors,bw);
-        detailAnchors.clear();
+        this.detailAnchors.clear();
     }
 }

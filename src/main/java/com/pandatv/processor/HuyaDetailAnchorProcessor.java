@@ -75,10 +75,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             detailAnchor.setJob(job);
             detailAnchor.setUrl(curUrl);
             detailAnchors.add(detailAnchor.toString());
-            if (detailAnchors.size()==50){
-                page.putField("detailAnchors",detailAnchors);
-//                detailAnchors.clear();
-            }else {
+            if (detailAnchors.size()!=Const.WRITEBATCH){
                 page.setSkip(true);
             }
         }
