@@ -56,6 +56,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             int viewerStr  = JsonPath.read(json,"$.data.online");
             String followerStr  = JsonPath.read(json,"$.data.fans_num");
             String weightStr = JsonPath.read(json,"$.data.owner_weight");
+            String lastStartTime = JsonPath.read(json,"$.data.start_time");
             detailAnchor.setRid(rid);
             detailAnchor.setName(name);
             detailAnchor.setTitle(title);
@@ -64,6 +65,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             detailAnchor.setFollowerNum(Integer.parseInt(followerStr));
             detailAnchor.setWeightNum(CommonTools.getDouyuWeight(weightStr));
             detailAnchor.setUrl(curUrl);
+            detailAnchor.setLastStartTime(lastStartTime);
             detailAnchors.add(detailAnchor.toString());
             if (detailAnchors.size()!=Const.WRITEBATCH){
                 page.setSkip(true);

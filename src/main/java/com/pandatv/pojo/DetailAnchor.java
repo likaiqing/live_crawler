@@ -24,6 +24,7 @@ public class DetailAnchor {
     private String tag;//以逗号分隔
     private String url;//主播公告
     private String notice;//主播公告
+    private String lastStartTime;//主播公告
 
     public DetailAnchor(){
         super();
@@ -124,7 +125,7 @@ public class DetailAnchor {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.categoryFir).append(Const.SEP).append(this.categorySec).append(Const.SEP).append(this.viewerNum).append(Const.SEP).append(this.followerNum).append(Const.SEP).append(this.job).append(Const.SEP).append(rank).append(Const.SEP).append(this.weightStr).append(Const.SEP).append(this.weightNum).append(Const.SEP).append(this.tag).append(Const.SEP).append(this.url).append(Const.SEP).append(createTime).append(Const.SEP).append(this.notice).toString();
+        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.categoryFir).append(Const.SEP).append(this.categorySec).append(Const.SEP).append(this.viewerNum).append(Const.SEP).append(this.followerNum).append(Const.SEP).append(this.job).append(Const.SEP).append(rank).append(Const.SEP).append(this.weightStr).append(Const.SEP).append(this.weightNum).append(Const.SEP).append(this.tag).append(Const.SEP).append(this.url).append(Const.SEP).append(createTime).append(Const.SEP).append(this.notice).append(Const.SEP).append(this.lastStartTime).toString();
     }
 
     @Override
@@ -162,5 +163,13 @@ public class DetailAnchor {
 
     public String getJob() {
         return job;
+    }
+
+    public String getLastStartTime() {
+        return lastStartTime;
+    }
+
+    public void setLastStartTime(String lastStartTime) {
+        this.lastStartTime = lastStartTime;
     }
 }
