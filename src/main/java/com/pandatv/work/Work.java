@@ -60,12 +60,12 @@ public class Work {
                 logger.info("ChushouAnchorProcessor.crawler start");
                 ChushouAnchorProcessor.crawler(args);
                 break;
-            case Const.DOUYUANCHORDETAIL://douyuanchordetail 20161111 15
+            case Const.DOUYUDETAILANCHOR://douyudetailanchor 20161111 15
                 judgeParam(args, 3);
                 logger.info("DouyuDetailAnchorProcessor.crawler start");
                 DouyuDetailAnchorProcessor.crawler(args);
                 break;
-            case Const.HUYAANCHORDETAIL://huyaanchordetail 20161111 15
+            case Const.HUYADETAILANCHOR://huyadetailanchor 20161111 15
                 judgeParam(args, 3);
                 logger.info("HuyaDetailAnchorProcessor.crawler start");
                 HuyaDetailAnchorProcessor.crawler(args);

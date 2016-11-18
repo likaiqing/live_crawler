@@ -3,6 +3,7 @@ package com.pandatv.processor;
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
+import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.downloader.selenium.SeleniumDownloader;
 import com.pandatv.pipeline.DouyuDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
@@ -32,14 +33,13 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
         if (curUrl.equals("https://www.douyu.com/directory/all")) {
             Html html = page.getHtml();
-            System.out.println(html);
-//            String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
-//            int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));
-//            for (int i = 1; i < endPage; i++) {
-//                Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
-//                page.addTargetRequest(request);
-//                page.setSkip(true);
-//            }
+            String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
+            int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));
+            for (int i = 1; i < endPage; i++) {
+                Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
+                page.addTargetRequest(request);
+                page.setSkip(true);
+            }
         } else if (curUrl.startsWith("https://www.douyu.com/directory/all?isAjax=1&page=")) {
             Html html = page.getHtml();
             List<String> detailUrls = page.getHtml().xpath("//body/li/a/@href").all();
@@ -78,9 +78,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-//        return CommonTools.getAbuyunSite(site);
-        return CommonTools.getMayiSite(site);
-//        return this.site;//.addHeader("Proxy-Switch-Ip","yes").setHttpProxy(new HttpHost("proxy.abuyun.com",9010,"http"));
+        return CommonTools.getAbuyunSite(site);//采用两种downloader均已成功,测试仓促,最好再测试一遍
+//        return CommonTools.getMayiSite(site);//采用seleniumdownloader成功,pandadownload失败
     }
 
     public static void crawler(String[] args) {
@@ -91,7 +90,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 //        String firstUrl = "http://1212.ip138.com/ic.asp";
 //        String firstUrl = "http://www.abuyun.com/#pricing";
         String firstUrl = "https://www.douyu.com/directory/all";
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, bw)).setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER)).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, bw)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         IOTools.writeList(detailAnchors, bw);
         IOTools.closeBw(bw);
     }
