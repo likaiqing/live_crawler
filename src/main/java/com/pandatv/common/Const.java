@@ -36,6 +36,6 @@ public class Const {
     public static final int MAYIPORT = 8123;
     public static final String ABUYUNPHOST = "proxy.abuyun.com";
     public static final int ABUYUNPORT = 9010;
-    public static final String ABUYUNAPPKEY = "H953ANZ8J6HW026D";//与ABUYUNPASS是否为空来决定PandaDownloader是否添加代理用户验证
-    public static final String ABUYUNPASS = "4FF963A93342BB18";
+    public static final String ABUYUNAPPKEY = "125505049";//"H953ANZ8J6HW026D";//与ABUYUNPASS是否为空来决定PandaDownloader是否添加代理用户验证
+    public static final String ABUYUNPASS = "c6d9df4bad11759d321e090ab2655c5e";//"4FF963A93342BB18";
 }

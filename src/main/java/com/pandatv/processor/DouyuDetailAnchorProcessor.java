@@ -32,13 +32,14 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
         if (curUrl.equals("https://www.douyu.com/directory/all")) {
             Html html = page.getHtml();
-            String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
-            int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));
-            for (int i = 1; i < endPage; i++) {
-                Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
-                page.addTargetRequest(request);
-                page.setSkip(true);
-            }
+            System.out.println(html);
+//            String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
+//            int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));
+//            for (int i = 1; i < endPage; i++) {
+//                Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
+//                page.addTargetRequest(request);
+//                page.setSkip(true);
+//            }
         } else if (curUrl.startsWith("https://www.douyu.com/directory/all?isAjax=1&page=")) {
             Html html = page.getHtml();
             List<String> detailUrls = page.getHtml().xpath("//body/li/a/@href").all();
@@ -77,8 +78,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return CommonTools.getAbuyunSite(site);
-//        return CommonTools.getMayiSite(site);
+//        return CommonTools.getAbuyunSite(site);
+        return CommonTools.getMayiSite(site);
 //        return this.site;//.addHeader("Proxy-Switch-Ip","yes").setHttpProxy(new HttpHost("proxy.abuyun.com",9010,"http"));
     }
 
