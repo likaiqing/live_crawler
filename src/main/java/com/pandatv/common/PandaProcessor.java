@@ -1,5 +1,6 @@
 package com.pandatv.common;
 
+import org.apache.http.HttpHost;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 

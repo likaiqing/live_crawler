@@ -26,4 +26,6 @@ public class Const {
     public static final String HUYAANCHORDETAIL = "huyaanchordetail";
     public static final String CHROMEDRIVER = "/data/tmp/crawler_driver/chromedriver";
     public static final int WRITEBATCH = 10;
+    public static final String PandaDLProxyUser = "H01234567890123P";//与PandaDLProxyPass是否为空来决定PandaDownloader是否添加代理用户验证
+    public static final String PandaDLProxyPass="0123456789012345";
 }

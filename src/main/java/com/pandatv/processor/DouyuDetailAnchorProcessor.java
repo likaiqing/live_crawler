@@ -3,10 +3,12 @@ package com.pandatv.processor;
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
+import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.DouyuDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.IOTools;
+import org.apache.http.HttpHost;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -75,7 +77,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+        return this.site.addHeader("Proxy-Switch-Ip","yes").setHttpProxy(new HttpHost("proxy.abuyun.com",9010,"http"));
     }
 
     public static void crawler(String[] args) {
@@ -84,7 +86,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String hour = args[2];
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         String firstUrl = "https://www.douyu.com/directory/all";
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, bw)).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, bw)).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         IOTools.writeList(detailAnchors, bw);
         IOTools.closeBw(bw);
     }
