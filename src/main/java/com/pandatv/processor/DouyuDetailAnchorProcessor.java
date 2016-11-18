@@ -3,12 +3,11 @@ package com.pandatv.processor;
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
-import com.pandatv.downloader.credentials.PandaDownloader;
+import com.pandatv.downloader.selenium.SeleniumDownloader;
 import com.pandatv.pipeline.DouyuDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.IOTools;
-import org.apache.http.HttpHost;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -26,6 +25,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
     private static List<String> detailAnchors = new ArrayList<>();
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room";
     private static String job = "";
+
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().toString();
@@ -43,7 +43,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             Html html = page.getHtml();
             List<String> detailUrls = page.getHtml().xpath("//body/li/a/@href").all();
             for (String url : detailUrls) {
-                Request request = new Request(thirdApi+url.substring(url.lastIndexOf("/"))).setPriority(3);
+                Request request = new Request(thirdApi + url.substring(url.lastIndexOf("/"))).setPriority(3);
                 page.addTargetRequest(request);
                 page.setSkip(true);
             }
@@ -51,14 +51,14 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             String json = page.getJson().get();
             int error = JsonPath.read(json, "$.error");
             DetailAnchor detailAnchor = new DetailAnchor();
-            String rid = JsonPath.read(json,"$.data.room_id");
-            String name = JsonPath.read(json,"$.data.owner_name");
-            String title = JsonPath.read(json,"$.data.room_name");
-            String categorySec = JsonPath.read(json,"$.data.cate_name");
-            int viewerStr  = JsonPath.read(json,"$.data.online");
-            String followerStr  = JsonPath.read(json,"$.data.fans_num");
-            String weightStr = JsonPath.read(json,"$.data.owner_weight");
-            String lastStartTime = JsonPath.read(json,"$.data.start_time");
+            String rid = JsonPath.read(json, "$.data.room_id");
+            String name = JsonPath.read(json, "$.data.owner_name");
+            String title = JsonPath.read(json, "$.data.room_name");
+            String categorySec = JsonPath.read(json, "$.data.cate_name");
+            int viewerStr = JsonPath.read(json, "$.data.online");
+            String followerStr = JsonPath.read(json, "$.data.fans_num");
+            String weightStr = JsonPath.read(json, "$.data.owner_weight");
+            String lastStartTime = JsonPath.read(json, "$.data.start_time");
             detailAnchor.setRid(rid);
             detailAnchor.setName(name);
             detailAnchor.setTitle(title);
@@ -69,7 +69,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             detailAnchor.setUrl(curUrl);
             detailAnchor.setLastStartTime(lastStartTime);
             detailAnchors.add(detailAnchor.toString());
-            if (detailAnchors.size()!=Const.WRITEBATCH){
+            if (detailAnchors.size() != Const.WRITEBATCH) {
                 page.setSkip(true);
             }
         }
@@ -77,7 +77,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return CommonTools.getMayiSite(site);
+        return CommonTools.getAbuyunSite(site);
+//        return CommonTools.getMayiSite(site);
 //        return this.site;//.addHeader("Proxy-Switch-Ip","yes").setHttpProxy(new HttpHost("proxy.abuyun.com",9010,"http"));
     }
 
@@ -89,7 +90,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 //        String firstUrl = "http://1212.ip138.com/ic.asp";
 //        String firstUrl = "http://www.abuyun.com/#pricing";
         String firstUrl = "https://www.douyu.com/directory/all";
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, bw)).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, bw)).setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER)).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         IOTools.writeList(detailAnchors, bw);
         IOTools.closeBw(bw);
     }
