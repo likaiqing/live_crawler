@@ -77,7 +77,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.addHeader("Proxy-Switch-Ip","yes").setHttpProxy(new HttpHost("proxy.abuyun.com",9010,"http"));
+        return this.site;//.addHeader("Proxy-Switch-Ip","yes").setHttpProxy(new HttpHost("proxy.abuyun.com",9010,"http"));
     }
 
     public static void crawler(String[] args) {
