@@ -1,5 +1,7 @@
 package com.pandatv.common;
 
+import org.apache.http.HttpHost;
+
 /**
  * Created by likaiqing on 2016/11/7.
  */
@@ -28,4 +30,8 @@ public class Const {
     public static final int WRITEBATCH = 10;
     public static final String PandaDLProxyUser = "";//与PandaDLProxyPass是否为空来决定PandaDownloader是否添加代理用户验证
     public static final String PandaDLProxyPass="";
+    public static final String appkey="125505049";
+    public static final String secret="c6d9df4bad11759d321e090ab2655c5e";
+    public static final String MAYIHOST = "123.56.249.247";
+    public static final int MAYIPORT = 8123;
 }
