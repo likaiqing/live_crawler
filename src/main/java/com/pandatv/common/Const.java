@@ -41,4 +41,6 @@ public class Const {
     public static final String GENERATORKEY = "H953ANZ8J6HW026D";//PandaHttpClientGenerator设置代理验证的常量
     public static final String GENERATORPASS = "4FF963A93342BB18";
 
+    public static final String HIVEDIR = "/bigdata/hive/panda_realtime/";
+//    public static final String HIVEDIR = "/tmp/hive/likaiqing/panda_realtime/";
 }

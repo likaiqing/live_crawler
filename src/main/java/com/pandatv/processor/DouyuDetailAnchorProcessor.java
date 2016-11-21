@@ -4,10 +4,10 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.downloader.selenium.SeleniumDownloader;
 import com.pandatv.pipeline.DouyuDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HiveJDBCConnect;
 import com.pandatv.tools.IOTools;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
@@ -85,6 +85,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     /**
      * 待测试,使用seleniumdownloader应该为使用代理
+     *
      * @param args
      */
     public static void crawler(String[] args) {
@@ -94,7 +95,9 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
 //        String firstUrl = "http://1212.ip138.com/ic.asp";
         String firstUrl = "https://www.douyu.com/directory/all";
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, bw)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
+        HiveJDBCConnect hive = new HiveJDBCConnect();
+        String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive,hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         IOTools.writeList(detailAnchors, bw);
         IOTools.closeBw(bw);
     }

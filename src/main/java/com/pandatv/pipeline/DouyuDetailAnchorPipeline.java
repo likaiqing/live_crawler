@@ -1,5 +1,6 @@
 package com.pandatv.pipeline;
 
+import com.pandatv.tools.HiveJDBCConnect;
 import com.pandatv.tools.IOTools;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
@@ -13,15 +14,18 @@ import java.util.List;
  */
 public class DouyuDetailAnchorPipeline implements Pipeline {
     private static List<String > detailAnchors;
-    private static BufferedWriter bw;
-    public DouyuDetailAnchorPipeline(List<String> detailAnchors, BufferedWriter bw) {
+    private static HiveJDBCConnect hive;
+    private static String hivePaht;
+    public DouyuDetailAnchorPipeline(List<String> detailAnchors, HiveJDBCConnect hive,String hivePaht) {
         this.detailAnchors = detailAnchors;
-        this.bw = bw;
+        this.hive = hive;
+        this.hivePaht=hivePaht;
     }
 
     @Override
     public void process(ResultItems resultItems, Task task) {
-        IOTools.writeList(detailAnchors,bw);
+//        IOTools.writeList(detailAnchors,bw);
+        hive.write2(hivePaht,detailAnchors);
         this.detailAnchors.clear();
     }
 }
