@@ -130,7 +130,7 @@ public class CommonTools {
     public static Site getAbuyunSite(Site site) {
         site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST,Const.ABUYUNPORT));
 //        Authenticator.setDefault(new ProxyAuthenticator("H953ANZ8J6HW026D", "4FF963A93342BB18"));
-        site.addHeader("Proxy-Authorization","Basic "+ (new BASE64Encoder()).encode((Const.ABUYUNAPPKEY+":"+Const.ABUYUNPASS).getBytes()));//PandaHttpClientGenerator设置了代理,此处可有可无
+        site.addHeader("Proxy-Authorization","Basic "+ (new BASE64Encoder()).encode((Const.ABUYUNAPPKEY+":"+Const.ABUYUNPASS).getBytes()));//PandaHttpClientGenerator
         return site;
     }
 }
