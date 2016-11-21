@@ -91,9 +91,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String date = args[1];
         String hour = args[2];
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
-        String firstUrl = "http://1212.ip138.com/ic.asp";
-//        String firstUrl = "http://www.abuyun.com/#pricing";
-//        String firstUrl = "https://www.douyu.com/directory/all";
+//        String firstUrl = "http://1212.ip138.com/ic.asp";
+        String firstUrl = "https://www.douyu.com/directory/all";
         Spider.create(new DouyuDetailAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, bw)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         IOTools.writeList(detailAnchors, bw);
         IOTools.closeBw(bw);
