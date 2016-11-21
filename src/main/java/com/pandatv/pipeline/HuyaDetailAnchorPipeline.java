@@ -1,5 +1,6 @@
 package com.pandatv.pipeline;
 
+import com.pandatv.tools.HiveJDBCConnect;
 import com.pandatv.tools.IOTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +17,18 @@ import java.util.List;
 public class HuyaDetailAnchorPipeline implements Pipeline {
     private static final Logger logger = LoggerFactory.getLogger(HuyaDetailAnchorPipeline.class);
     private static List<String > detailAnchors;
-    private static BufferedWriter bw;
-    public HuyaDetailAnchorPipeline(List<String> detailAnchors, BufferedWriter bw) {
+    private static HiveJDBCConnect hive;
+    private static String hivePaht;
+    public HuyaDetailAnchorPipeline(List<String> detailAnchors, HiveJDBCConnect hive, String hivePaht) {
         this.detailAnchors = detailAnchors;
-        this.bw = bw;
+        this.hive = hive;
+        this.hivePaht=hivePaht;
     }
 
     @Override
     public void process(ResultItems resultItems, Task task) {
-        IOTools.writeList(detailAnchors,bw);
+//        IOTools.writeList(detailAnchors,bw);
+        hive.write2(hivePaht,detailAnchors);
         this.detailAnchors.clear();
     }
 }

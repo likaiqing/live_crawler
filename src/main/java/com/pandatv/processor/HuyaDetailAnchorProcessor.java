@@ -5,6 +5,8 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.pipeline.HuyaDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
+import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HiveJDBCConnect;
 import com.pandatv.tools.IOTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +86,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+        return CommonTools.getAbuyunSite(site);
     }
 
     public static void crawler(String[] args) {
@@ -93,7 +95,9 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         String hour = args[2];
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
-        Spider.create(new HuyaDetailAnchorProcessor()).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, bw)).run();
+        HiveJDBCConnect hive = new HiveJDBCConnect();
+        String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
+        Spider.create(new HuyaDetailAnchorProcessor()).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive,hivePaht)).run();
         IOTools.writeList(detailAnchors,bw);
         IOTools.closeBw(bw);
 
