@@ -28,7 +28,7 @@ public class HuyaDetailAnchorPipeline implements Pipeline {
     @Override
     public void process(ResultItems resultItems, Task task) {
 //        IOTools.writeList(detailAnchors,bw);
-        hive.write2(hivePaht,detailAnchors);
-        this.detailAnchors.clear();
+//        hive.write2(hivePaht,detailAnchors);
+//        this.detailAnchors.clear();
     }
 }

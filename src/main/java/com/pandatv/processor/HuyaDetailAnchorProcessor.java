@@ -31,6 +31,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static String tmpHostUrl = "http://www.huya.com/";
     private static List<String> detailAnchors = new ArrayList<>();
     private static String job = "";
+    private static int index = 0;
 
     @Override
     public void process(Page page) {
@@ -77,19 +78,22 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             detailAnchor.setJob(job);
             detailAnchor.setUrl(curUrl);
             detailAnchors.add(detailAnchor.toString());
-            if (detailAnchors.size()!=Const.WRITEBATCH){
-                page.setSkip(true);
-            }
+//            if (detailAnchors.size()!=Const.WRITEBATCH){
+//                page.setSkip(true);
+//            }
+            page.setSkip(true);
         }
 
     }
 
     @Override
     public Site getSite() {
+//        return this.site;
         return CommonTools.getAbuyunSite(site);
     }
 
     public static void crawler(String[] args) {
+        long start = System.currentTimeMillis();
         job = args[0];//
         String date = args[1];
         String hour = args[2];
@@ -98,8 +102,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new HuyaDetailAnchorProcessor()).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive,hivePaht)).run();
-        IOTools.writeList(detailAnchors,bw);
-        IOTools.closeBw(bw);
-
+//        IOTools.writeList(detailAnchors,bw);
+//        IOTools.closeBw(bw);
+        hive.write2(hivePaht,detailAnchors);
+        long end = System.currentTimeMillis();
+        System.out.println("start:"+start+",end:"+end+",start-end:"+(end-start));
     }
 }
