@@ -52,7 +52,7 @@ public class PandaHttpClientGenerator {
 
     private CloseableHttpClient generateClient(Site site) {
         HttpClientBuilder httpClientBuilder = HttpClients.custom().setConnectionManager(connectionManager);
-        if (site.getHttpProxy()!=null && !StringUtils.isEmpty(Const.ABUYUNAPPKEY) && !StringUtils.isEmpty(Const.ABUYUNPASS)){
+        if (site.getHttpProxy()!=null && !StringUtils.isEmpty(Const.GENERATORKEY) && !StringUtils.isEmpty(Const.GENERATORPASS)){
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
             HttpHost proxy = site.getHttpProxy();
             credsProvider.setCredentials(new AuthScope(proxy.getHostName(),proxy.getPort()),new UsernamePasswordCredentials(Const.ABUYUNAPPKEY,Const.ABUYUNPASS));
