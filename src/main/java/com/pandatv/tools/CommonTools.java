@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.misc.BASE64Encoder;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Site;
 
@@ -129,8 +130,7 @@ public class CommonTools {
     public static Site getAbuyunSite(Site site) {
         site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST,Const.ABUYUNPORT));
 //        Authenticator.setDefault(new ProxyAuthenticator("H953ANZ8J6HW026D", "4FF963A93342BB18"));
-//        site.addHeader("Proxy-Authorization","Basic "+ (new BASE64Encoder()).encode((Const.ABUYUNAPPKEY+":"+Const.ABUYUNPASS).getBytes()));
-//        site.addHeader("Proxy-Authorization","Basic H953ANZ8J6HW026D:4FF963A93342BB18");
+        site.addHeader("Proxy-Authorization","Basic "+ (new BASE64Encoder()).encode((Const.ABUYUNAPPKEY+":"+Const.ABUYUNPASS).getBytes()));
         return site;
     }
 }
