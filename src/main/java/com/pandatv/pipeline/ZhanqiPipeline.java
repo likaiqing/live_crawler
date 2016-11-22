@@ -3,6 +3,7 @@ package com.pandatv.pipeline;
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.pojo.Anchor;
+import com.pandatv.processor.ZhanqiAnchorProcessor;
 import com.pandatv.tools.IOTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class ZhanqiPipeline implements Pipeline {
             String popularityStr = JsonPath.read(room,"$.online");
             int popularityNum = Integer.parseInt(popularityStr);
             Anchor anchor = new Anchor();
-            anchor.setRid(rid);
+            anchor.setRid(rid.replace("/",""));
             anchor.setName(name);
             anchor.setTitle(title);
             anchor.setCategory(category);
