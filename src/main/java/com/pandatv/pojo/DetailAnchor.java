@@ -27,9 +27,14 @@ public class DetailAnchor {
     private String notice;//主播公告
     private String lastStartTime;//主播公告
 
-    public DetailAnchor(){
+    public DetailAnchor() {
         super();
     }
+
+    public DetailAnchor(String rid) {
+        this.rid = rid;
+    }
+
     public String getRid() {
         return rid;
     }
@@ -115,8 +120,8 @@ public class DetailAnchor {
         if (null == obj) {
             return false;
         }
-        if (obj instanceof Anchor) {
-            return ((Anchor) obj).getRid() == this.getRid();
+        if (obj instanceof DetailAnchor) {
+            return ((DetailAnchor) obj).getRid().equals(this.getRid());
         } else {
             return false;
         }

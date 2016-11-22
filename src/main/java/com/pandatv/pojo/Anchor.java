@@ -25,6 +25,10 @@ public class Anchor {
         super();
     }
 
+    public Anchor(String rid) {
+        this.rid = rid;
+    }
+
     public String getCategory() {
         return category;
     }
@@ -103,7 +107,7 @@ public class Anchor {
             return false;
         }
         if (obj instanceof Anchor) {
-            return ((Anchor) obj).getRid() == this.getRid();
+            return ((Anchor) obj).getRid().equals(this.getRid());
         } else {
             return false;
         }

@@ -31,18 +31,18 @@ public class DouyuNewlivePipeline implements Pipeline {
         String json = resultItems.get("json");
         try {
             JSONArray rooms = JsonPath.read(json, "$.room");
-            List<String> urls = new ArrayList<>();
-            for (int i=0;i<rooms.size();i++){
-                Anchor anchor = new Anchor();
-                String room = rooms.get(i).toString();
-                String roomId = JsonPath.read(room, "$.roomid");
-                String name = JsonPath.read(room, "$.nickname");
-                String title = JsonPath.read(room, "$.roomname");
-                String category = JsonPath.read(room, "$.gamename");
-                anchor.setRid(roomId);
-
-            }
-            IOTools.writeList(urls, Const.FILEDIR + job + ".csv");
+//            List<String> urls = new ArrayList<>();
+//            for (int i=0;i<rooms.size();i++){
+//                Anchor anchor = new Anchor();
+//                String room = rooms.get(i).toString();
+//                String roomId = JsonPath.read(room, "$.roomid");
+//                String name = JsonPath.read(room, "$.nickname");
+//                String title = JsonPath.read(room, "$.roomname");
+//                String category = JsonPath.read(room, "$.gamename");
+//                anchor.setRid(roomId);
+//
+//            }
+//            IOTools.writeList(urls, Const.FILEDIR + job + ".csv");
         }catch (Exception e){
             e.printStackTrace();
         }
