@@ -39,6 +39,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         logger.info("process url:{}", curUrl);
         if (curUrl.startsWith(tmpUrl)) {
         List<String> all = page.getJson().jsonPath("$.data.list").all();
+            if (index++>10){
+                page.setSkip(true);
+                return;
+            }
             if (all.size() > 0) {
                 page.putField("json", page.getJson().toString());
                 String newUrl = this.tmpUrl + (Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1);
@@ -93,7 +97,6 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        long start = System.currentTimeMillis();
         job = args[0];//
         String date = args[1];
         String hour = args[2];
@@ -101,11 +104,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
-        Spider.create(new HuyaDetailAnchorProcessor()).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive,hivePaht)).run();
-//        IOTools.writeList(detailAnchors,bw);
-//        IOTools.closeBw(bw);
+        Spider.create(new HuyaDetailAnchorProcessor()).thread(8).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive,hivePaht)).run();
         hive.write2(hivePaht,detailAnchors);
-        long end = System.currentTimeMillis();
-        System.out.println("start:"+start+",end:"+end+",start-end:"+(end-start));
     }
 }
