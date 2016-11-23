@@ -50,6 +50,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
             for (int i = 1; i < endPage; i++) {
                 page.addTargetRequest("https://www.douyu.com/directory/all?isAjax=1&page=" + i);
             }
+            page.setSkip(true);
         } else {
             rids = page.getHtml().xpath("//body/li/@data-rid").all();
             names = page.getHtml().xpath("//body/li/a/div[@class='mes']/p/span[@class='dy-name ellipsis fl']/text()").all();

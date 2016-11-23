@@ -18,9 +18,7 @@ import us.codecraft.webmagic.Spider;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by likaiqing on 2016/11/15.
@@ -45,15 +43,15 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                     Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
                     page.addTargetRequest(request);
                 }
-            } else if (curUrl.equals("https://www.douyu.com/")) {
-                List<String> tuijian = page.getHtml().xpath("//div[@class='c-items']/ul/li/@data-id").all();
-                for (String rid : tuijian) {
-                    Request request = new Request(thirdApi + "/" + rid);
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("job", "douyushouyetuijian");
-                    request.setExtras(map);
-                    page.addTargetRequest(request.setPriority(3));
-                }
+//            } else if (curUrl.equals("https://www.douyu.com/")) {
+//                List<String> tuijian = page.getHtml().xpath("//div[@class='c-items']/ul/li/@data-id").all();
+//                for (String rid : tuijian) {
+//                    Request request = new Request(thirdApi + "/" + rid);
+//                    Map<String, Object> map = new HashMap<>();
+//                    map.put("job", "douyushouyetuijian");
+//                    request.setExtras(map);
+//                    page.addTargetRequest(request.setPriority(3));
+//                }
             } else if (curUrl.startsWith("https://www.douyu.com/directory/all?isAjax=1&page=")) {
                 List<String> detailUrls = page.getHtml().xpath("//body/li/a/@href").all();
                 for (String url : detailUrls) {
@@ -80,11 +78,11 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setWeightNum(CommonTools.getDouyuWeight(weightStr));
                 detailAnchor.setUrl(curUrl);
                 detailAnchor.setLastStartTime(lastStartTime);
-                if (null != page.getRequest().getExtra("job")) {
-                    detailAnchor.setJob(page.getRequest().getExtra("job").toString());
-                } else {
-                    detailAnchor.setJob(job);
-                }
+//                if (null != page.getRequest().getExtra("job")) {
+//                    detailAnchor.setJob(page.getRequest().getExtra("job").toString());
+//                } else {
+                detailAnchor.setJob(job);
+//                }
                 detailAnchors.add(detailAnchor.toString());
 //            if (detailAnchors.size() != Const.WRITEBATCH) {
 //                page.setSkip(true);
@@ -121,11 +119,11 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
 //        String firstUrl = "http://1212.ip138.com/ic.asp";
         String firstUrl = "https://www.douyu.com/directory/all";
-        String secUrl = "https://www.douyu.com/";
+//        String secUrl = "https://www.douyu.com/";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
 //        long start = System.currentTimeMillis();
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(8).addUrl(firstUrl, secUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(8).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         hive.write2(hivePaht, detailAnchors);
     }
 }
