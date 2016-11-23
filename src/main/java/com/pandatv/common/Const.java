@@ -46,4 +46,5 @@ public class Const {
     public static final String DOUYUEXIT = "斗鱼抓取退出";
     public static final String HUYAEXIT = "虎牙抓取退出";
     public static final int EXTOTAL = 200;
+    public static final int PROXYRETRY = 10000;
 }

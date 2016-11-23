@@ -1,6 +1,8 @@
 package com.pandatv.downloader.credentials;
 
 import com.google.common.collect.Sets;
+import com.pandatv.common.Const;
+import com.pandatv.mail.SendMail;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
@@ -39,6 +41,7 @@ import java.util.Set;
  */
 public class PandaDownloader extends AbstractDownloader {
     private Logger logger = LoggerFactory.getLogger(getClass());
+    private static int proxyRetry = 0;
 
     private final Map<String, CloseableHttpClient> httpClients = new HashMap<String, CloseableHttpClient>();
 
@@ -93,6 +96,9 @@ public class PandaDownloader extends AbstractDownloader {
             } else {
                 logger.warn("code error " + statusCode + "\t" + request.getUrl());
 //                System.out.println("code error " + statusCode + "\t" + request.getUrl());
+                if (proxyRetry++> Const.PROXYRETRY){
+                    new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常","代理429次数超出10000");
+                }
                 return addToCycleRetry(request.putExtra(Request.CYCLE_TRIED_TIMES, 7), site);
             }
         } catch (IOException e) {
