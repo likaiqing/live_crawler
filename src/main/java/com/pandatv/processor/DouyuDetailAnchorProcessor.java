@@ -17,7 +17,10 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 
 import java.io.BufferedWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by likaiqing on 2016/11/15.
@@ -41,14 +44,13 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 for (int i = 1; i < endPage; i++) {
                     Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
                     page.addTargetRequest(request);
-                    page.setSkip(true);
                 }
             } else if (curUrl.equals("https://www.douyu.com/")) {
-                List<String> tuijian = page.getHtml().xpath("//div[@class='c-items']/ul/li/@data-id/text").all();
+                List<String> tuijian = page.getHtml().xpath("//div[@class='c-items']/ul/li/@data-id").all();
                 for (String rid : tuijian) {
-                    Request request = new Request(thirdApi + rid);
-                    Map<String,Object> map = new HashMap<>();
-                    map.put("job","douyushouyetuijian");
+                    Request request = new Request(thirdApi + "/" + rid);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("job", "douyushouyetuijian");
                     request.setExtras(map);
                     page.addTargetRequest(request.setPriority(3));
                 }
@@ -57,11 +59,9 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 for (String url : detailUrls) {
                     Request request = new Request(thirdApi + url.substring(url.lastIndexOf("/"))).setPriority(3);
                     page.addTargetRequest(request);
-                    page.setSkip(true);
                 }
             } else {
                 String json = page.getJson().get();
-                int error = JsonPath.read(json, "$.error");
                 DetailAnchor detailAnchor = new DetailAnchor();
                 String rid = JsonPath.read(json, "$.data.room_id");
                 String name = JsonPath.read(json, "$.data.owner_name");
@@ -89,8 +89,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 //            if (detailAnchors.size() != Const.WRITEBATCH) {
 //                page.setSkip(true);
 //            }
-                page.setSkip(true);
             }
+            page.setSkip(true);
         } catch (Exception e) {
             mail.sendAlarmmail(Const.DOUYUEXFLAG, "url: " + curUrl);
             if (exCnt++ > Const.EXTOTAL) {
