@@ -19,15 +19,15 @@ public class CrawlerTest extends PandaProcessor {
 
     @Override
     public void process(Page page) {
-        if (page.getUrl().get().equals("http://1212.ip138.com/ic.asp")){
-            for (int i=0;i<300;i++){
-                page.addTargetRequest("http://1212.ip138.com/ic.asp?"+(Math.random()*100000));
+        if (page.getUrl().get().equals("https://www.douyu.com/")){
+            for (int i=0;i<100;i++){
+                page.addTargetRequest("https://www.douyu.com/?"+(Math.random()*100000));
             }
         }
-        Html html = page.getHtml();
-        String center = html.xpath("//center/text()").get();
-        String ip = center.substring(center.indexOf("[") + 1, center.indexOf("]"));
-        System.out.println(ip);
+//        Html html = page.getHtml();
+//        String center = html.xpath("//center/text()").get();
+//        String ip = center.substring(center.indexOf("[") + 1, center.indexOf("]"));
+        System.out.println("curUrl"+page.getUrl());
     }
 
     @Override
@@ -37,10 +37,10 @@ public class CrawlerTest extends PandaProcessor {
     }
 
     public static void main(String[] args) {
-        firstUrl = "http://1212.ip138.com/ic.asp";
+        firstUrl = "https://www.douyu.com/";
         firstUrl2 = "http://1212.ip138.com/ic.asp?";
         long s = System.currentTimeMillis();
-        Spider.create(new CrawlerTest()).thread(8).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new CrawlerTest()).thread(2).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long e = System.currentTimeMillis();//.setDownloader(new PandaDownloader())
         System.out.println("e-s:"+(e-s));
     }

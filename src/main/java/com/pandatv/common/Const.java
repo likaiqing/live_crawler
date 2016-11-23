@@ -36,8 +36,8 @@ public class Const {
     public static final int ABUYUNPORT = 9010;
 //    public static final String ABUYUNAPPKEY = "H953ANZ8J6HW026D";//PandaHttpClientGenerator如果设置,此常量可有可无
 //    public static final String ABUYUNPASS = "4FF963A93342BB18";
-    public static final String GENERATORKEY = "H9Y51E4U6197703P";//PandaHttpClientGenerator设置代理验证的常量
-    public static final String GENERATORPASS = "06CBC0AEE0F2D066";
+    public static final String GENERATORKEY = "H0389J3428O2X35P";//"H9Y51E4U6197703P";//PandaHttpClientGenerator设置代理验证的常量
+    public static final String GENERATORPASS = "C6661DDFB3EC82A1";//"06CBC0AEE0F2D066";
 
     public static final String HIVEDIR = "/bigdata/hive/panda_realtime/";
     //    public static final String HIVEDIR = "/tmp/hive/likaiqing/panda_realtime/";

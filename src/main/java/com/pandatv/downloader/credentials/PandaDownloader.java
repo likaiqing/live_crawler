@@ -24,8 +24,6 @@ import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.downloader.AbstractDownloader;
-import us.codecraft.webmagic.downloader.HttpClientDownloader;
-import us.codecraft.webmagic.downloader.HttpClientGenerator;
 import us.codecraft.webmagic.selector.PlainText;
 import us.codecraft.webmagic.utils.HttpConstant;
 import us.codecraft.webmagic.utils.UrlUtils;
@@ -94,7 +92,8 @@ public class PandaDownloader extends AbstractDownloader {
                 return page;
             } else {
                 logger.warn("code error " + statusCode + "\t" + request.getUrl());
-                return null;
+//                System.out.println("code error " + statusCode + "\t" + request.getUrl());
+                return addToCycleRetry(request.putExtra(Request.CYCLE_TRIED_TIMES, 7), site);
             }
         } catch (IOException e) {
             logger.warn("download page " + request.getUrl() + " error", e);
