@@ -92,6 +92,7 @@ public class PandaDownloader extends AbstractDownloader {
             if (statusAccept(acceptStatCode, statusCode)) {
                 Page page = handleResponse(request, charset, httpResponse, task);
                 onSuccess(request);
+                logger.info("downloaded page {}", request.getUrl());
                 return page;
             } else {
                 logger.warn("code error " + statusCode + "\t" + request.getUrl());
@@ -102,7 +103,7 @@ public class PandaDownloader extends AbstractDownloader {
                 return addToCycleRetry(request.putExtra(Request.CYCLE_TRIED_TIMES, 7), site);
             }
         } catch (IOException e) {
-            logger.warn("download page " + request.getUrl() + " error", e);
+            logger.warn("download exception " + request.getUrl() + " error", e);
             if (site.getCycleRetryTimes() > 0) {
                 return addToCycleRetry(request, site);
             }
