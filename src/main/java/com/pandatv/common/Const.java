@@ -35,8 +35,8 @@ public class Const {
     public static final String GENERATORKEY = "H04Y776P798V9KWP";//PandaHttpClientGenerator设置代理验证的常量
     public static final String GENERATORPASS = "680DB7FCBC8D123C";
 
-//    public static final String HIVEDIR = "/bigdata/hive/panda_realtime/";
-        public static final String HIVEDIR = "/tmp/hive/likaiqing/panda_realtime/";
+    public static final String HIVEDIR = "/bigdata/hive/panda_realtime/";
+//        public static final String HIVEDIR = "/tmp/hive/likaiqing/panda_realtime/";
     public static final String DOUYUEXFLAG = "斗鱼抓取异常";
     public static final String HUYAEXFLAG = "虎牙抓取异常";
     public static final String DOUYUEXIT = "斗鱼process异常过多退出";
