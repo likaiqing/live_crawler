@@ -119,7 +119,6 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String date = args[1];
         String hour = args[2];
         long s = System.currentTimeMillis();
-        BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
 //        String firstUrl = "http://1212.ip138.com/ic.asp";
         String firstUrl = "https://www.douyu.com/directory/all";
 //        String secUrl = "https://www.douyu.com/";
