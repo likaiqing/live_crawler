@@ -128,7 +128,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
-        Spider.create(new HuyaDetailAnchorProcessor()).thread(10).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).run();
+        Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).run();
         hive.write2(hivePaht, detailAnchors);
         long e = System.currentTimeMillis();
         mail.sendAlarmmail("虎牙爬取结束" + date + hour, failedUrl.toString());
