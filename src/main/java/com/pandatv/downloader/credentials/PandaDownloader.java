@@ -81,7 +81,7 @@ public class PandaDownloader extends AbstractDownloader {
         } else {
             acceptStatCode = Sets.newHashSet(200);
         }
-        logger.info("downloading page {}", request.getUrl());
+//        logger.info("downloading page {}", request.getUrl());
         CloseableHttpResponse httpResponse = null;
         int statusCode=0;
         try {
