@@ -31,6 +31,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static String tmpUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=";
     private static String tmpHostUrl = "http://www.huya.com/";
     private static List<String> detailAnchors = new ArrayList<>();
+    private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
     private static String job = "";
     private static int index = 0;
     private static int exCnt;
@@ -68,8 +69,17 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 String rid = page.getRequest().getExtra("rid").toString();
                 String name = html.xpath("//span[@class='host-name']/text()").get();
                 String title = html.xpath("//h1[@class='host-title']/text()").get();
-                String categoryFir = html.xpath("//span[@class='host-channel']/a[1]/text()").get();
-                String categorySec = html.xpath("//span[@class='host-channel']/a[2]/text()").get();
+                String categoryFir = "";
+                String categorySec = "";
+                List<String> category = html.xpath("//span[@class='host-channel']/a/text()").all();
+                if (category.size() == 2) {
+                    categoryFir = category.get(0);
+                    categorySec = category.get(1);
+                } else if (category.size() == 1) {
+                    categoryFir = category.get(0);
+                    categorySec = category.get(0);
+                }
+//                String categorySec = html.xpath("//span[@class='host-channel']/a[2]/text()").get();
                 String viewerStr = html.xpath("//span[@class='host-spectator']/em/text()").get().replace(",", "");
                 String followerStr = html.xpath("//div[@id='activityCount']/text()").get();
                 String tag = html.xpath("//span[@class='host-channel']/a/text()").all().toString();//逗号分隔
@@ -93,12 +103,13 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 page.setSkip(true);
             }
         } catch (Exception e) {
-            mail.sendAlarmmail(Const.HUYAEXFLAG, "url: " + curUrl);
+            failedUrl.append(curUrl + ";");
+//            mail.sendAlarmmail(Const.HUYAEXFLAG, "url: " + curUrl);
+            e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
                 mail.sendAlarmmail(Const.HUYAEXIT, "url: " + curUrl);
                 System.exit(1);
             }
-
         }
     }
 
@@ -115,12 +126,14 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         String hour = args[2];
         long s = System.currentTimeMillis();
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
-        String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
+//        String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
+        String firstUrl = "http://www.huya.com/1584989003";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
-        Spider.create(new HuyaDetailAnchorProcessor()).thread(15).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).run();
+        Spider.create(new HuyaDetailAnchorProcessor()).thread(10).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).run();
         hive.write2(hivePaht, detailAnchors);
         long e = System.currentTimeMillis();
-        System.out.println("e-s:"+(e-s));
+        mail.sendAlarmmail("虎牙爬取结束" + date + hour, failedUrl.toString());
+        System.out.println("e-s:" + (e - s));
     }
 }

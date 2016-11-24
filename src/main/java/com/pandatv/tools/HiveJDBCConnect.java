@@ -211,6 +211,7 @@ public class HiveJDBCConnect {
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("core-site.xml"));
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("mapred-site.xml"));
+        conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
 //        conf.set("fs.hdfs.impl",
 //                org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
 //        conf.set("fs.file.impl",

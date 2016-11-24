@@ -28,6 +28,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
     private static List<String> detailAnchors = new ArrayList<>();
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room";
     private static String job = "";
+    private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
     private static int exCnt;
     private static SendMail mail;
 
@@ -90,7 +91,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             }
             page.setSkip(true);
         } catch (Exception e) {
-            mail.sendAlarmmail(Const.DOUYUEXFLAG, "url: " + curUrl);
+            failedUrl.append(curUrl + ";  ");
+//            mail.sendAlarmmail(Const.DOUYUEXFLAG, "url: " + curUrl);
             if (exCnt++ > Const.EXTOTAL) {
                 mail.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
                 System.exit(1);
@@ -116,6 +118,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         job = args[0];//douyuanchordetail
         String date = args[1];
         String hour = args[2];
+        long s = System.currentTimeMillis();
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
 //        String firstUrl = "http://1212.ip138.com/ic.asp";
         String firstUrl = "https://www.douyu.com/directory/all";
@@ -123,7 +126,10 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
 //        long start = System.currentTimeMillis();
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(8).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(10).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         hive.write2(hivePaht, detailAnchors);
+        long e = System.currentTimeMillis();
+        mail.sendAlarmmail("斗鱼爬取结束" + date + hour, failedUrl.toString());
+        System.out.println("e-s:" + (e - s));
     }
 }
