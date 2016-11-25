@@ -19,7 +19,7 @@ public class HiveTest {
         list.add("hello");
         list.add("java");
         list.add("hive");
-        hive.write2(hivePaht, list,"hivetest");
+        hive.write2(hivePaht, list,"hivetest","2018");
         Set<DetailAnchor> anchors = new HashSet<>();
         DetailAnchor detailAnchor = new DetailAnchor("1234");
         DetailAnchor detailAnchor1 = new DetailAnchor("5678");
