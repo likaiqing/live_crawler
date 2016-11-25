@@ -128,7 +128,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
 //        long start = System.currentTimeMillis();
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(10).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(4).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         try {
             hive.write2(hivePaht, detailAnchors,job);
         } catch (Exception e) {

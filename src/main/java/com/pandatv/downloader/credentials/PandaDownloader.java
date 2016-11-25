@@ -104,7 +104,7 @@ public class PandaDownloader extends AbstractDownloader {
             }
         } catch (IOException e) {
             try {
-                Thread.sleep(800);
+                Thread.sleep(1000);
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }

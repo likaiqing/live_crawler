@@ -132,6 +132,6 @@ public class CommonTools {
 //        Authenticator.setDefault(new ProxyAuthenticator("H953ANZ8J6HW026D", "4FF963A93342BB18"));
         site.addHeader("Proxy-Authorization","Basic "+ (new BASE64Encoder()).encode((Const.GENERATORKEY+":"+Const.GENERATORPASS).getBytes()));//PandaHttpClientGenerator
         site.addHeader("Proxy-Switch-Ip","yes");
-        return site.setSleepTime(0);
+        return site.setSleepTime(1000);
     }
 }
