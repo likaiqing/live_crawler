@@ -19,6 +19,6 @@ public abstract class PandaProcessor implements PageProcessor {
             .setRetryTimes(5)
             .setCharset("UTF-8")
             .setTimeOut(1000)
-            .setCycleRetryTimes(7)
+            .setCycleRetryTimes(15)
             .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:45.0) Gecko/20100101 Firefox/45.0");
 }
