@@ -133,11 +133,11 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).run();
         String ex = "";
         try {
-            hive.write2(hivePaht, detailAnchors);
+            hive.write2(hivePaht, detailAnchors, job);
         } catch (Exception e) {
             e.printStackTrace();
             ex = e.getMessage();
-            BufferedWriter bw = IOTools.getBW("/tmp/huyadetailanchorcrawler" + date + hour);
+            BufferedWriter bw = IOTools.getBW("/tmp/huyadetailanchorcrawler" + date + hour + DateTools.getCurMinute());
             IOTools.writeList(detailAnchors, bw);
         }
         long e = System.currentTimeMillis();

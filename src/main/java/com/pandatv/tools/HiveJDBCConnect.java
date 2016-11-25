@@ -163,7 +163,7 @@ public class HiveJDBCConnect {
             return null;
         }
     }
-    public void write2(String path, List<String> list) {
+    public void write2(String path, List<String> list,String job) {
         path = (path.endsWith("/")) ? path : (path + "/");
         Configuration conf = new Configuration();
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));
@@ -177,13 +177,14 @@ public class HiveJDBCConnect {
 //        );
         org.apache.hadoop.fs.FileSystem fs;
         try {
+            String curMinute = DateTools.getCurMinute();
             fs = org.apache.hadoop.fs.FileSystem.get(conf);
             CompressionCodecFactory factory = new CompressionCodecFactory(conf);
             FSDataOutputStream hdfsOutStream = null;
             CompressionCodec codec = factory.getCodecByName("DEFLATE");
             Compressor compressor = CodecPool.getCompressor(codec, conf);
             CompressionOutputStream cmpOut = null;
-            String filepath = path + System.currentTimeMillis() + "_" + Math.random() + ".deflate";
+            String filepath = path + System.currentTimeMillis() + "_" + job+  curMinute + ".deflate";
             if (fs.exists(new Path(filepath))) {
                 hdfsOutStream = fs.append(new Path(filepath));
             } else {

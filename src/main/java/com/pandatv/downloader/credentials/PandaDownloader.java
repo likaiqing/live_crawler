@@ -103,6 +103,11 @@ public class PandaDownloader extends AbstractDownloader {
                 return addToCycleRetry(request.putExtra(Request.CYCLE_TRIED_TIMES, 7), site);
             }
         } catch (IOException e) {
+            try {
+                Thread.sleep(800);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
             logger.warn("download exception " + request.getUrl() + " error", e);
             if (site.getCycleRetryTimes() > 0) {
                 return addToCycleRetry(request, site);

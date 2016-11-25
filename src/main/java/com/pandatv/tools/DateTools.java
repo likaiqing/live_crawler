@@ -12,8 +12,13 @@ public class DateTools {
         return sf.format(new Date());
     }
 
+    public static String getCurMinute(){
+        SimpleDateFormat sf = new SimpleDateFormat("mmss");
+        return sf.format(new Date());
+    }
+
     public static void main(String[] args) {
-        String curDate = getCurDate();
+        String curDate = getCurMinute();
         System.out.println(curDate);
     }
 }

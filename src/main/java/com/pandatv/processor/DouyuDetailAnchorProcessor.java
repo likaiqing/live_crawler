@@ -130,11 +130,11 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 //        long start = System.currentTimeMillis();
         Spider.create(new DouyuDetailAnchorProcessor()).thread(10).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         try {
-            hive.write2(hivePaht, detailAnchors);
+            hive.write2(hivePaht, detailAnchors,job);
         } catch (Exception e) {
             e.printStackTrace();
             ex = e.getMessage();
-            BufferedWriter bw = IOTools.getBW("/tmp/douyudetailanchorcrawler" + date + hour);
+            BufferedWriter bw = IOTools.getBW("/tmp/douyudetailanchorcrawler" + date + hour + DateTools.getCurMinute());
             IOTools.writeList(detailAnchors, bw);
         }
         long e = System.currentTimeMillis();

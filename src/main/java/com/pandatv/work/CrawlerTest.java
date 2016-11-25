@@ -68,7 +68,7 @@ public class CrawlerTest extends PandaProcessor {
         long s = System.currentTimeMillis();
         Spider.create(new CrawlerTest()).thread(1).addUrl(firstUrl3).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long e = System.currentTimeMillis();//.setDownloader(new PandaDownloader())
-        hive.write2(hivePaht, detailAnchors);
+        hive.write2(hivePaht, detailAnchors,"crawlertest");
         System.out.println("e-s:"+(e-s));
     }
 }
