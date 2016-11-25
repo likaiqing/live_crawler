@@ -143,6 +143,6 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         long e = System.currentTimeMillis();
         long time = e - s;
         String to = DateTools.getCurDate();
-        mail.sendAlarmmail("虎牙爬取结束" + date + hour, "爬取时间:" + from + "<-->" + to + ";用时:" + time + "毫秒;" + "共计抓取条数:" + failedUrl.toString() + ex);
+        mail.sendAlarmmail("虎牙爬取结束" + date + hour, "爬取时间:" + from + "<-->" + to + ";用时:" + time + "毫秒;" + "共计抓取条数:" + detailAnchors.size() + failedUrl.toString() + ex);
     }
 }
