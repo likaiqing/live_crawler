@@ -24,6 +24,7 @@ public class CrawlerTest extends PandaProcessor {
     private static String firstUrl;
     private static final Logger logger = LoggerFactory.getLogger(CrawlerTest.class);
     private static String firstUrl2;
+    private static String firstUrl3;
     private static List<String> detailAnchors = new ArrayList<>();
 
 
@@ -47,21 +48,25 @@ public class CrawlerTest extends PandaProcessor {
             detailAnchors.add(ip);
             System.out.println("curUrl"+page.getUrl());
         }
+        if (page.getUrl().get().startsWith("")){
+            page.addTargetRequest(firstUrl3+"?"+Math.random()*1000);
+        }
     }
 
     @Override
     public Site getSite() {
-//        return CommonTools.getAbuyunSite(site);
-        return this.site;
+        return CommonTools.getAbuyunSite(site);
+//        return this.site;
     }
 
     public static void main(String[] args) {
         firstUrl = "https://www.douyu.com/";
         firstUrl2 = "http://1212.ip138.com/ic.asp?";
+        firstUrl3 = "http://www.panda.tv/610956";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/2016112413" ;
         long s = System.currentTimeMillis();
-        Spider.create(new CrawlerTest()).thread(2).addUrl(firstUrl2).addPipeline(new ConsolePipeline()).run();
+        Spider.create(new CrawlerTest()).thread(1).addUrl(firstUrl3).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long e = System.currentTimeMillis();//.setDownloader(new PandaDownloader())
         hive.write2(hivePaht, detailAnchors);
         System.out.println("e-s:"+(e-s));

@@ -7,8 +7,8 @@ import com.pandatv.mail.SendMail;
 import com.pandatv.pipeline.HuyaDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
-import com.pandatv.tools.IOTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -17,7 +17,6 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.selector.Html;
 
-import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,6 +119,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
+        String from = DateTools.getCurDate();
         mail = new SendMail("likaiqing@panda.tv", "");
         job = args[0];//
         String date = args[1];
@@ -131,7 +131,8 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).run();
         hive.write2(hivePaht, detailAnchors);
         long e = System.currentTimeMillis();
-        mail.sendAlarmmail("虎牙爬取结束" + date + hour, failedUrl.toString());
-        System.out.println("e-s:" + (e - s));
+        long time = e - s;
+        String to = DateTools.getCurDate();
+        mail.sendAlarmmail("虎牙爬取结束" + date + hour, "爬取时间:" + from + "<-->" + to + ";用时:" + time + "毫秒;" + failedUrl.toString());
     }
 }

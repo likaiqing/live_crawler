@@ -8,15 +8,14 @@ import com.pandatv.mail.SendMail;
 import com.pandatv.pipeline.DouyuDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
-import com.pandatv.tools.IOTools;
 import org.slf4j.Logger;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 
-import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,6 +113,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
      * @param args
      */
     public static void crawler(String[] args) {
+        String from = DateTools.getCurDate();
         mail = new SendMail("likaiqing@panda.tv", "");
         job = args[0];//douyuanchordetail
         String date = args[1];
@@ -128,7 +128,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         Spider.create(new DouyuDetailAnchorProcessor()).thread(10).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         hive.write2(hivePaht, detailAnchors);
         long e = System.currentTimeMillis();
-        mail.sendAlarmmail("斗鱼爬取结束" + date + hour, failedUrl.toString());
-        System.out.println("e-s:" + (e - s));
+        long time = e - s;
+        String to = DateTools.getCurDate();
+        mail.sendAlarmmail("斗鱼爬取结束" + date + hour, "爬取时间:" + from + "<-->" + to + ";用时:" + time + "毫秒;" + failedUrl.toString());
     }
 }
