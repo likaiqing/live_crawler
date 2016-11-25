@@ -104,10 +104,10 @@ public class PandaDownloader extends AbstractDownloader {
                 }
                 return addToCycleRetry(request, site);//默认只会再重复1次
             }
-        } catch (SocketTimeoutException se) {
-            logger.error("time out url:" + request.getUrl());
-            se.printStackTrace();
-            return timeOutRetry(request, site);
+//        } catch (SocketTimeoutException se) {
+//            logger.error("time out url:" + request.getUrl());
+//            se.printStackTrace();
+//            return timeOutRetry(request, site);
         } catch (IOException e) {
             try {
                 Thread.sleep(100);

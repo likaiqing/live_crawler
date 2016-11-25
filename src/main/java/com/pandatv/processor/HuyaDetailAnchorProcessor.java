@@ -115,7 +115,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     @Override
     public Site getSite() {
 //        return this.site;
-        return CommonTools.getAbuyunSite(site);
+        return CommonTools.getAbuyunSite(site).setSleepTime(1);
     }
 
     public static void crawler(String[] args) {
@@ -123,16 +123,17 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         job = args[0];//
         String date = args[1];
         String hour = args[2];
+        String curMinute = DateTools.getCurMinute();
         long s = System.currentTimeMillis();
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).run();
         try {
-            hive.write2(hivePaht, detailAnchors, job);
+            hive.write2(hivePaht, detailAnchors, job,curMinute);
         } catch (Exception e) {
             e.printStackTrace();
-            BufferedWriter bw = IOTools.getBW("/tmp/huyadetailanchorcrawler" + date + hour + DateTools.getCurMinute());
+            BufferedWriter bw = IOTools.getBW("/tmp/huyadetailanchorcrawler" + date + hour + curMinute);
             IOTools.writeList(detailAnchors, bw);
             MailTools.sendAlarmmail("虎牙hive.write异常", e.getMessage().toString());
         }

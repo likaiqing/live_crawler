@@ -103,7 +103,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
     @Override
     public Site getSite() {
 //        return this.site;//seleniumdownloader时使用,不能使用代理
-        return CommonTools.getAbuyunSite(site).setSleepTime(1000);//采用两种downloader均已成功,测试仓促,最好再测试一遍
+        return CommonTools.getAbuyunSite(site).setSleepTime(800);//采用两种downloader均已成功,测试仓促,最好再测试一遍
 //        return CommonTools.getMayiSite(site);//未测试通过
     }
 
@@ -117,17 +117,18 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         job = args[0];//douyuanchordetail
         String date = args[1];
         String hour = args[2];
+        String curMinute = DateTools.getCurMinute();
         long s = System.currentTimeMillis();
 //        String firstUrl = "http://1212.ip138.com/ic.asp";
         String firstUrl = "https://www.douyu.com/directory/all";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
-        Spider.create(new DouyuDetailAnchorProcessor()).thread(4).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
+        Spider.create(new DouyuDetailAnchorProcessor()).thread(6).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         try {
-            hive.write2(hivePaht, detailAnchors, job);
+            hive.write2(hivePaht, detailAnchors, job,curMinute);
         } catch (Exception e) {
             e.printStackTrace();
-            BufferedWriter bw = IOTools.getBW("/tmp/douyudetailanchorcrawler" + date + hour + DateTools.getCurMinute());
+            BufferedWriter bw = IOTools.getBW("/tmp/douyudetailanchorcrawler" + date + hour + curMinute);
             IOTools.writeList(detailAnchors, bw);
             MailTools.sendAlarmmail("斗鱼hive.write异常",e.getMessage().toString());
         }

@@ -163,7 +163,7 @@ public class HiveJDBCConnect {
             return null;
         }
     }
-    public void write2(String path, List<String> list,String job) {
+    public void write2(String path, List<String> list,String job,String curMinute) {
         path = (path.endsWith("/")) ? path : (path + "/");
         Configuration conf = new Configuration();
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));
@@ -177,7 +177,6 @@ public class HiveJDBCConnect {
 //        );
         org.apache.hadoop.fs.FileSystem fs;
         try {
-            String curMinute = DateTools.getCurMinute();
             fs = org.apache.hadoop.fs.FileSystem.get(conf);
             CompressionCodecFactory factory = new CompressionCodecFactory(conf);
             FSDataOutputStream hdfsOutStream = null;
