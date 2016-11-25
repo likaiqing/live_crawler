@@ -26,6 +26,6 @@ public class DouyuDetailAnchorPipeline implements Pipeline {
     public void process(ResultItems resultItems, Task task) {
 //        IOTools.writeList(detailAnchors,bw);
 //        hive.write2(hivePaht,detailAnchors);
-        this.detailAnchors.clear();
+//        this.detailAnchors.clear();
     }
 }

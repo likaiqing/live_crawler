@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.bouncycastle.cert.ocsp.Req;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -31,6 +32,7 @@ import us.codecraft.webmagic.utils.HttpConstant;
 import us.codecraft.webmagic.utils.UrlUtils;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +85,7 @@ public class PandaDownloader extends AbstractDownloader {
         }
 //        logger.info("downloading page {}", request.getUrl());
         CloseableHttpResponse httpResponse = null;
-        int statusCode=0;
+        int statusCode = 0;
         try {
             HttpUriRequest httpUriRequest = getHttpUriRequest(request, site, headers);
             httpResponse = getHttpClient(site).execute(httpUriRequest);
@@ -97,14 +99,18 @@ public class PandaDownloader extends AbstractDownloader {
             } else {
                 logger.warn("code error " + statusCode + "\t" + request.getUrl());
 //                System.out.println("code error " + statusCode + "\t" + request.getUrl());
-                if (proxyRetry++> Const.PROXYRETRY){
-                    new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常","代理非200次数超出"+Const.PROXYRETRY);
+                if (proxyRetry++ > Const.PROXYRETRY) {
+                    new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", "代理非200次数超出" + Const.PROXYRETRY);
                 }
                 return addToCycleRetry(request, site);//默认只会再重复1次
             }
+        } catch (SocketTimeoutException se) {
+            logger.error("time out url:" + request.getUrl());
+            se.printStackTrace();
+            return timeOutRetry(request, site);
         } catch (IOException e) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
@@ -125,6 +131,26 @@ public class PandaDownloader extends AbstractDownloader {
                 logger.warn("close response fail", e);
             }
         }
+    }
+
+    protected Page timeOutRetry(Request request, Site site) {
+        Page page = new Page();
+        Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
+        if (cycleTriedTimesObject == null) {
+            page.addTargetRequest(request.setPriority(0).putExtra(Request.CYCLE_TRIED_TIMES, 1));
+        } else {
+            int cycleTriedTimes = (Integer) cycleTriedTimesObject;
+            cycleTriedTimes++;
+            if (cycleTriedTimes >= site.getCycleRetryTimes()) {
+                return null;
+            }
+            page.addTargetRequest(request.setPriority(0).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
+            Request switchRequest = new Request(Const.SWITCHURL);
+            switchRequest.setPriority(5).putExtra(Request.CYCLE_TRIED_TIMES,site.getCycleRetryTimes());
+            page.addTargetRequest(switchRequest);
+        }
+        page.setNeedCycleRetry(true);
+        return page;
     }
 
     @Override
@@ -152,7 +178,7 @@ public class PandaDownloader extends AbstractDownloader {
             HttpHost host = site.getHttpProxyFromPool();
             requestConfigBuilder.setProxy(host);
             request.putExtra(Request.PROXY, host);
-        }else if(site.getHttpProxy()!= null){
+        } else if (site.getHttpProxy() != null) {
             HttpHost host = site.getHttpProxy();
             requestConfigBuilder.setProxy(host);
             request.putExtra(Request.PROXY, host);

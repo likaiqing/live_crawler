@@ -66,7 +66,6 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 if (null !=cycleTriedTimes && (int)cycleTriedTimes >= Const.CYCLERETRYTIMES - 1) {
                     timeOutUrl.append(curUrl).append(";");
                 }
-                page.addTargetRequest("http://open.douyucdn.cn/api/RoomApi/room/747269?"+Math.random());
                 String json = page.getJson().get();
                 DetailAnchor detailAnchor = new DetailAnchor();
                 String rid = JsonPath.read(json, "$.data.room_id");
@@ -104,7 +103,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
     @Override
     public Site getSite() {
 //        return this.site;//seleniumdownloader时使用,不能使用代理
-        return CommonTools.getAbuyunSite(site);//采用两种downloader均已成功,测试仓促,最好再测试一遍
+        return CommonTools.getAbuyunSite(site).setSleepTime(1000);//采用两种downloader均已成功,测试仓促,最好再测试一遍
 //        return CommonTools.getMayiSite(site);//未测试通过
     }
 

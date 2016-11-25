@@ -70,7 +70,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                     timeOutUrl.append(curUrl).append(";");
                 }
                 Html html = page.getHtml();
-                String rid = page.getRequest().getExtra("rid").toString();
+                String rid = null==page.getRequest().getExtra("rid")?"":page.getRequest().getExtra("rid").toString();
                 String name = html.xpath("//span[@class='host-name']/text()").get();
                 String title = html.xpath("//h1[@class='host-title']/text()").get();
                 String categoryFir = "";
@@ -104,7 +104,6 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";");
-//            mail.sendAlarmmail(Const.HUYAEXFLAG, "url: " + curUrl);
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
                 MailTools.sendAlarmmail(Const.HUYAEXIT, "url: " + curUrl);

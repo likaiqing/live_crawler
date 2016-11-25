@@ -46,4 +46,5 @@ public class Const {
     public static final int CYCLERETRYTIMES = 15;
     public static final String DOUYUFINISH = "斗鱼爬取退出";
     public static final String HUYAFINISH = "虎牙爬取退出";
+    public static final String SWITCHURL = "http://proxy.abuyun.com/switch-ip";
 }

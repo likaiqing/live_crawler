@@ -30,7 +30,12 @@ public class CrawlerTest extends PandaProcessor {
 
     @Override
     public void process(Page page) {
-        System.out.println("url"+page.getUrl());
+//        System.out.println("url"+page.getUrl());
+        if (page.getUrl().equals("http://proxy.abuyun.com/switch-ip")){
+            String s = page.getHtml().get();
+            System.out.println(s.substring(s.indexOf("rawText"),s.indexOf("url=")));
+//            page.addTargetRequest("http://1212.ip138.com/ic.asp?1"+(Math.random()*100000));
+        }
         if (page.getUrl().get().equals("https://www.douyu.com/")){
             for (int i=0;i<10;i++){
                 page.addTargetRequest("https://www.douyu.com/?"+(Math.random()*100000));
@@ -42,14 +47,14 @@ public class CrawlerTest extends PandaProcessor {
             }
         }
         if (page.getUrl().get().startsWith("http://1212.ip138.com/ic.asp?1")){
-            Html html = page.getHtml();
-            String center = html.xpath("//center/text()").get();
-            String ip = center.substring(center.indexOf("[") + 1, center.indexOf("]"));
-            detailAnchors.add(ip);
-            System.out.println("curUrl"+page.getUrl());
+//            Html html = page.getHtml();
+//            String center = html.xpath("//center/text()").get();
+//            String ip = center.substring(center.indexOf("[") + 1, center.indexOf("]"));
+////            detailAnchors.add(ip);
+//            System.out.println("curIp:"+ip+"curUrl"+page.getUrl());
         }
         if (page.getUrl().get().startsWith("")){
-            page.addTargetRequest(firstUrl3+"?"+Math.random()*1000);
+//            page.addTargetRequest(firstUrl3+"?"+Math.random()*1000);
         }
     }
 
@@ -60,15 +65,15 @@ public class CrawlerTest extends PandaProcessor {
     }
 
     public static void main(String[] args) {
-        firstUrl = "https://www.douyu.com/";
+        firstUrl = "http://proxy.abuyun.com/switch-ip";
         firstUrl2 = "http://1212.ip138.com/ic.asp?";
         firstUrl3 = "http://www.panda.tv/610956";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/2016112413" ;
         long s = System.currentTimeMillis();
-        Spider.create(new CrawlerTest()).thread(1).addUrl(firstUrl3).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new CrawlerTest()).thread(8).addUrl(firstUrl2).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long e = System.currentTimeMillis();//.setDownloader(new PandaDownloader())
-        hive.write2(hivePaht, detailAnchors,"crawlertest");
+//        hive.write2(hivePaht, detailAnchors,"c");
         System.out.println("e-s:"+(e-s));
     }
 }
