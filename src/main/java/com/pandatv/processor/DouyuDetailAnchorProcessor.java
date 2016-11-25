@@ -10,12 +10,14 @@ import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
+import com.pandatv.tools.IOTools;
 import org.slf4j.Logger;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,6 +121,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String date = args[1];
         String hour = args[2];
         long s = System.currentTimeMillis();
+        String ex = "";
 //        String firstUrl = "http://1212.ip138.com/ic.asp";
         String firstUrl = "https://www.douyu.com/directory/all";
 //        String secUrl = "https://www.douyu.com/";
@@ -126,10 +129,17 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
 //        long start = System.currentTimeMillis();
         Spider.create(new DouyuDetailAnchorProcessor()).thread(10).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
-        hive.write2(hivePaht, detailAnchors);
+        try {
+            hive.write2(hivePaht, detailAnchors);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ex = e.getMessage();
+            BufferedWriter bw = IOTools.getBW("/tmp/douyudetailanchorcrawler" + date + hour);
+            IOTools.writeList(detailAnchors, bw);
+        }
         long e = System.currentTimeMillis();
         long time = e - s;
         String to = DateTools.getCurDate();
-        mail.sendAlarmmail("斗鱼爬取结束" + date + hour, "爬取时间:" + from + "<-->" + to + ";用时:" + time + "毫秒;" + failedUrl.toString());
+        mail.sendAlarmmail("斗鱼爬取结束" + date + hour, "爬取时间:" + from + "<-->" + to + ";用时:" + time + "毫秒;" + failedUrl.toString() + ex);
     }
 }

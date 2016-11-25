@@ -75,6 +75,11 @@ public class Work {
                 logger.info("ChushouAnchorProcessor.crawler start");
                 SeleniumProcessor.crawler(args);
                 break;
+            case "hivetest"://seleniumprocess
+                judgeParam(args, 1);
+                logger.info("ChushouAnchorProcessor.crawler start");
+                HiveTest.write(args);
+                break;
         }
     }
 
