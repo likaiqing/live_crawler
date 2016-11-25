@@ -11,6 +11,7 @@ import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
 import com.pandatv.tools.IOTools;
+import com.pandatv.work.MailTools;
 import org.slf4j.Logger;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
@@ -30,8 +31,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room";
     private static String job = "";
     private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
+    private static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
     private static int exCnt;
-    private static SendMail mail;
 
     @Override
     public void process(Page page) {
@@ -61,6 +62,11 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                     page.addTargetRequest(request);
                 }
             } else {
+                Object cycleTriedTimes = page.getRequest().getExtra("_cycle_tried_times");
+                if (null !=cycleTriedTimes && (int)cycleTriedTimes >= Const.CYCLERETRYTIMES - 1) {
+                    timeOutUrl.append(curUrl).append(";");
+                }
+                page.addTargetRequest("http://open.douyucdn.cn/api/RoomApi/room/747269?"+Math.random());
                 String json = page.getJson().get();
                 DetailAnchor detailAnchor = new DetailAnchor();
                 String rid = JsonPath.read(json, "$.data.room_id");
@@ -80,22 +86,15 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setWeightNum(CommonTools.getDouyuWeight(weightStr));
                 detailAnchor.setUrl(curUrl);
                 detailAnchor.setLastStartTime(lastStartTime);
-//                if (null != page.getRequest().getExtra("job")) {
-//                    detailAnchor.setJob(page.getRequest().getExtra("job").toString());
-//                } else {
                 detailAnchor.setJob(job);
-//                }
                 detailAnchors.add(detailAnchor.toString());
-//            if (detailAnchors.size() != Const.WRITEBATCH) {
-//                page.setSkip(true);
-//            }
             }
             page.setSkip(true);
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
-//            mail.sendAlarmmail(Const.DOUYUEXFLAG, "url: " + curUrl);
+            e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
-                mail.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
+                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
                 System.exit(1);
             }
 
@@ -116,30 +115,26 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
      */
     public static void crawler(String[] args) {
         String from = DateTools.getCurDate();
-        mail = new SendMail("likaiqing@panda.tv", "");
         job = args[0];//douyuanchordetail
         String date = args[1];
         String hour = args[2];
         long s = System.currentTimeMillis();
-        String ex = "";
 //        String firstUrl = "http://1212.ip138.com/ic.asp";
         String firstUrl = "https://www.douyu.com/directory/all";
-//        String secUrl = "https://www.douyu.com/";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
-//        long start = System.currentTimeMillis();
         Spider.create(new DouyuDetailAnchorProcessor()).thread(4).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))//.setDownloader(new PandaDownloader())
         try {
-            hive.write2(hivePaht, detailAnchors,job);
+            hive.write2(hivePaht, detailAnchors, job);
         } catch (Exception e) {
             e.printStackTrace();
-            ex = e.getMessage();
             BufferedWriter bw = IOTools.getBW("/tmp/douyudetailanchorcrawler" + date + hour + DateTools.getCurMinute());
             IOTools.writeList(detailAnchors, bw);
+            MailTools.sendAlarmmail("斗鱼hive.write异常",e.getMessage().toString());
         }
         long e = System.currentTimeMillis();
         long time = e - s;
         String to = DateTools.getCurDate();
-        mail.sendAlarmmail("斗鱼爬取结束" + date + hour, "爬取时间:" + from + "<-->" + to + ";用时:" + time + "毫秒;" + "共计抓取条数:" + detailAnchors.size() + ";" + failedUrl.toString() + ex);
+        MailTools.sendTaskMail(Const.DOUYUFINISH+ date + hour,from + "<-->" + to,time + "毫秒;",detailAnchors.size(),timeOutUrl,failedUrl);
     }
 }

@@ -3,13 +3,13 @@ package com.pandatv.processor;
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
-import com.pandatv.mail.SendMail;
 import com.pandatv.pipeline.HuyaDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
 import com.pandatv.tools.IOTools;
+import com.pandatv.work.MailTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -33,10 +33,9 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static String tmpHostUrl = "http://www.huya.com/";
     private static List<String> detailAnchors = new ArrayList<>();
     private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
+    private static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
     private static String job = "";
-    private static int index = 0;
     private static int exCnt;
-    private static SendMail mail;
 
     @Override
     public void process(Page page) {
@@ -66,6 +65,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 }
                 page.setSkip(true);
             } else {
+                Object cycleTriedTimes = page.getRequest().getExtra("_cycle_tried_times");
+                if (null != cycleTriedTimes && (int) cycleTriedTimes >= Const.CYCLERETRYTIMES - 1) {
+                    timeOutUrl.append(curUrl).append(";");
+                }
                 Html html = page.getHtml();
                 String rid = page.getRequest().getExtra("rid").toString();
                 String name = html.xpath("//span[@class='host-name']/text()").get();
@@ -80,7 +83,6 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                     categoryFir = category.get(0);
                     categorySec = category.get(0);
                 }
-//                String categorySec = html.xpath("//span[@class='host-channel']/a[2]/text()").get();
                 String viewerStr = html.xpath("//span[@class='host-spectator']/em/text()").get().replace(",", "");
                 String followerStr = html.xpath("//div[@id='activityCount']/text()").get();
                 String tag = html.xpath("//span[@class='host-channel']/a/text()").all().toString();//逗号分隔
@@ -98,9 +100,6 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setJob(job);
                 detailAnchor.setUrl(curUrl);
                 detailAnchors.add(detailAnchor.toString());
-//            if (detailAnchors.size()!=Const.WRITEBATCH){
-//                page.setSkip(true);
-//            }
                 page.setSkip(true);
             }
         } catch (Exception e) {
@@ -108,7 +107,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 //            mail.sendAlarmmail(Const.HUYAEXFLAG, "url: " + curUrl);
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
-                mail.sendAlarmmail(Const.HUYAEXIT, "url: " + curUrl);
+                MailTools.sendAlarmmail(Const.HUYAEXIT, "url: " + curUrl);
                 System.exit(1);
             }
         }
@@ -122,7 +121,6 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 
     public static void crawler(String[] args) {
         String from = DateTools.getCurDate();
-        mail = new SendMail("likaiqing@panda.tv", "");
         job = args[0];//
         String date = args[1];
         String hour = args[2];
@@ -131,18 +129,17 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).run();
-        String ex = "";
         try {
             hive.write2(hivePaht, detailAnchors, job);
         } catch (Exception e) {
             e.printStackTrace();
-            ex = e.getMessage();
             BufferedWriter bw = IOTools.getBW("/tmp/huyadetailanchorcrawler" + date + hour + DateTools.getCurMinute());
             IOTools.writeList(detailAnchors, bw);
+            MailTools.sendAlarmmail("虎牙hive.write异常", e.getMessage().toString());
         }
         long e = System.currentTimeMillis();
         long time = e - s;
         String to = DateTools.getCurDate();
-        mail.sendAlarmmail("虎牙爬取结束" + date + hour, "爬取时间:" + from + "<-->" + to + ";用时:" + time + "毫秒;" + "共计抓取条数:" + detailAnchors.size() + failedUrl.toString() + ex);
+        MailTools.sendTaskMail(Const.HUYAFINISH + date + hour, from + "<-->" + to, time + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
     }
 }

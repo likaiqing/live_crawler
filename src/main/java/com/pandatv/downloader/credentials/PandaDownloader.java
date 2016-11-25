@@ -100,7 +100,7 @@ public class PandaDownloader extends AbstractDownloader {
                 if (proxyRetry++> Const.PROXYRETRY){
                     new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常","代理非200次数超出"+Const.PROXYRETRY);
                 }
-                return addToCycleRetry(request.putExtra(Request.CYCLE_TRIED_TIMES, 7), site);
+                return addToCycleRetry(request, site);//默认只会再重复1次
             }
         } catch (IOException e) {
             try {
