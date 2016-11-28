@@ -11,6 +11,7 @@ import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
 import com.pandatv.tools.IOTools;
 import com.pandatv.work.MailTools;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -71,7 +72,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                     timeOutUrl.append(curUrl).append(";");
                 }
                 Html html = page.getHtml();
-                String rid = null==page.getRequest().getExtra("rid")?"":page.getRequest().getExtra("rid").toString();
+                String rid = null == page.getRequest().getExtra("rid") ? "" : page.getRequest().getExtra("rid").toString();
                 String name = html.xpath("//span[@class='host-name']/text()").get();
                 String title = html.xpath("//h1[@class='host-title']/text()").get();
                 String categoryFir = "";
@@ -84,7 +85,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                     categoryFir = category.get(0);
                     categorySec = category.get(0);
                 }
-                String viewerStr = html.xpath("//span[@class='host-spectator']/em/text()").get().replace(",", "");
+                String viewerStr = html.xpath("//span[@class='host-spectator']/em/text()").get();
+                if (!StringUtils.isEmpty(viewerStr) && viewerStr.contains(",")){
+                    viewerStr = viewerStr.replace(",", "");
+                }
                 String followerStr = html.xpath("//div[@id='activityCount']/text()").get();
                 String tag = html.xpath("//span[@class='host-channel']/a/text()").all().toString();//逗号分隔
                 String notice = html.xpath("//div[@class='notice-cont']/text()").get();
@@ -94,8 +98,8 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setTitle(title);
                 detailAnchor.setCategoryFir(categoryFir);
                 detailAnchor.setCategorySec(categorySec);
-                detailAnchor.setViewerNum(Integer.parseInt(viewerStr));
-                detailAnchor.setFollowerNum(Integer.parseInt(followerStr));
+                detailAnchor.setViewerNum(StringUtils.isEmpty(viewerStr) ? 0 : Integer.parseInt(viewerStr));
+                detailAnchor.setFollowerNum(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr));
                 detailAnchor.setTag(tag);
                 detailAnchor.setNotice(notice);
                 detailAnchor.setJob(job);
@@ -131,8 +135,8 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();
         try {
-            if (detailAnchors.size()>0){
-                hive.write2(hivePaht, detailAnchors, job,curMinute);
+            if (detailAnchors.size() > 0) {
+                hive.write2(hivePaht, detailAnchors, job, curMinute);
             }
         } catch (Exception e) {
             e.printStackTrace();
