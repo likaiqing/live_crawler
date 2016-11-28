@@ -83,7 +83,7 @@ public class PandaDownloader extends AbstractDownloader {
         } else {
             acceptStatCode = Sets.newHashSet(200);
         }
-//        logger.info("downloading page {}", request.getUrl());
+        logger.info("PandaDownloader downloading page {}", request.getUrl());
         CloseableHttpResponse httpResponse = null;
         int statusCode = 0;
         try {
@@ -94,10 +94,10 @@ public class PandaDownloader extends AbstractDownloader {
             if (statusAccept(acceptStatCode, statusCode)) {
                 Page page = handleResponse(request, charset, httpResponse, task);
                 onSuccess(request);
-                logger.info("downloaded page {}", request.getUrl());
+                logger.info("PandaDownloader downloaded page {}", request.getUrl());
                 return page;
             } else {
-                logger.warn("code error " + statusCode + "\t" + request.getUrl());
+                logger.warn(" PandaDownloader code error " + statusCode + "\t" + request.getUrl());
 //                System.out.println("code error " + statusCode + "\t" + request.getUrl());
                 if (proxyRetry++ > Const.PROXYRETRY) {
                     new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", "代理非200次数超出" + Const.PROXYRETRY);
