@@ -1,16 +1,15 @@
 package com.pandatv.downloader.selenium;
 
+import com.pandatv.common.Const;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -106,18 +105,21 @@ public class WebDriverPool {
         cliArgsCap.add("--web-security=false");
         cliArgsCap.add("--ssl-protocol=any");
         cliArgsCap.add("--ignore-ssl-errors=true");
+        //设置代理
+        cliArgsCap.add("--proxy=http://proxy.abuyun.com:9010");
+        cliArgsCap.add("--proxy-auth=" + Const.GENERATORKEY + ":" + Const.GENERATORPASS);
+
         sCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,
                 cliArgsCap);
 
         // Control LogLevel for GhostDriver, via CLI arguments
         sCaps.setCapability(
                 PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS,
-                new String[] { "--logLevel="
+                new String[]{"--logLevel="
                         + (sConfig.getProperty("phantomjs_driver_loglevel") != null ? sConfig
                         .getProperty("phantomjs_driver_loglevel")
-                        : "INFO") });
+                        : "INFO")});
 
-        // String driver = sConfig.getProperty("driver", DRIVER_PHANTOMJS);
 
         // Start appropriate Driver
         if (isUrl(driver)) {
@@ -130,7 +132,6 @@ public class WebDriverPool {
         } else if (driver.equals(DRIVER_PHANTOMJS)) {
             mDriver = new PhantomJSDriver(sCaps);
         }
-//        mDriver = new ChromeDriver();
     }
 
     /**
