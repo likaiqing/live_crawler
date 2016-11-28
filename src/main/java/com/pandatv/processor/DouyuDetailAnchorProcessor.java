@@ -103,7 +103,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
     @Override
     public Site getSite() {
 //        return this.site;//seleniumdownloader时使用,不能使用代理
-        return CommonTools.getAbuyunSite(site).setSleepTime(600);//采用两种downloader均已成功,测试仓促,最好再测试一遍
+        return CommonTools.getAbuyunSite(site).setSleepTime(1000);//采用两种downloader均已成功,测试仓促,最好再测试一遍
 //        return CommonTools.getMayiSite(site);//未测试通过
     }
 
