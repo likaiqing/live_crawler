@@ -131,7 +131,9 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();
         try {
-            hive.write2(hivePaht, detailAnchors, job,curMinute);
+            if (detailAnchors.size()>0){
+                hive.write2(hivePaht, detailAnchors, job,curMinute);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             BufferedWriter bw = IOTools.getBW("/tmp/huyadetailanchorcrawler" + date + hour + curMinute);
