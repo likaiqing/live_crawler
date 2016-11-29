@@ -21,10 +21,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.selector.Html;
 
 import java.io.BufferedWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by likaiqing on 2016/11/16.
@@ -34,6 +31,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static String tmpUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=";
     private static String tmpHostUrl = "http://www.huya.com/";
     private static List<String> detailAnchors = new ArrayList<>();
+    private static Set<String> competitionLive = new HashSet<>();
     private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
     private static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
     private static String job = "";
@@ -108,6 +106,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 page.setSkip(true);
             }
         } catch (Exception e) {
+            //TODO 大型游戏比赛直播
+//            if (competitionLive.contains(curUrl)){
+//
+//            }
             failedUrl.append(curUrl + ";");
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
@@ -124,6 +126,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
+        competitionLive.add("http://www.huya.com/1584989003");
+        competitionLive.add("http://www.huya.com/1735596609");
+        competitionLive.add("http://www.huya.com/1735597169");
+        competitionLive.add("http://www.huya.com/1773588838");
         String from = DateTools.getCurDate();
         job = args[0];//
         String date = args[1];
