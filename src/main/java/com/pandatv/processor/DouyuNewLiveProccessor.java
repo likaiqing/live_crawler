@@ -8,12 +8,16 @@ import com.pandatv.mail.SendMail;
 import com.pandatv.pipeline.DouyuNewlivePipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
+import com.pandatv.tools.IOTools;
+import com.pandatv.work.MailTools;
 import net.minidev.json.JSONArray;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +27,7 @@ import java.util.Set;
  */
 public class DouyuNewLiveProccessor extends PandaProcessor {
     private static int minPage = 30;
-    private static int maxPage = 200;
+    private static int maxPage = 100;
     private static String url = "https://www.douyu.com/member/recommlist/getfreshlistajax?bzdata=0&clickNum=";
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room/";
     private static Set<DetailAnchor> detailAnchorSet = new HashSet<>();
@@ -101,12 +105,23 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
         job = args[0];
         String date = args[1];
         String hour = args[2];
+        String curMinute = DateTools.getCurMinute();
         long s = System.currentTimeMillis();
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
 //        String hivePaht = "";
         Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new DouyuNewlivePipeline(job)).setDownloader(new PandaDownloader()).run();//.setDownloader(new PandaDownloader())
         hive.write2(hivePaht, detailAnchorSet);
+        try {
+            if (detailAnchorSet.size()>0){
+                hive.write2(hivePaht, detailAnchorSet);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            BufferedWriter bw = IOTools.getBW("/tmp/douyudetailanchorcrawler" + date + hour + curMinute);
+            IOTools.writeList(detailAnchorSet, bw);
+            MailTools.sendAlarmmail("斗鱼hive.write异常",e.getMessage().toString());
+        }
         long e = System.currentTimeMillis();
         mail.sendAlarmmail("斗鱼新秀抓取失败信息", failedUrl.toString());
         System.out.println("e-s:" + (e - s));

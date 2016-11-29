@@ -1,7 +1,10 @@
 package com.pandatv.tools;
 
+import com.pandatv.pojo.DetailAnchor;
+
 import java.io.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by likaiqing on 16/11/07.
@@ -82,6 +85,18 @@ public class IOTools {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static void writeList(Set<DetailAnchor> detailAnchorSet, BufferedWriter bw) {
+        try {
+            for (DetailAnchor detailAnchor : detailAnchorSet) {
+                bw.write(detailAnchor.toString());
+                bw.newLine();
+            }
+            bw.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

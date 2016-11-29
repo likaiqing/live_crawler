@@ -31,10 +31,11 @@ public class Work {
                 logger.info("DouyuAnchorProccessor.crawler start");
                 DouyuAnchorProccessor.crawler(args);
                 break;
-//            case Const.DOUYUNEWLIVE://douyunewlive
-//                logger.info("DouyuNewLiveProccessor.crawler start");
-//                DouyuNewLiveProccessor.crawler(args);
-//                break;
+            case Const.DOUYUNEWLIVE://douyunewlive
+                judgeParam(args, 3);
+                logger.info("DouyuNewLiveProccessor.crawler start");
+                DouyuNewLiveProccessor.crawler(args);
+                break;
             case Const.HUYAANCHOR://huyaanchor 20161111 15
                 judgeParam(args, 3);
                 logger.info("HuyaAnchorProcessor.crawler start");
