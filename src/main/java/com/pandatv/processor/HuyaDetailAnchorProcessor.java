@@ -6,10 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.HuyaDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.DateTools;
-import com.pandatv.tools.HiveJDBCConnect;
-import com.pandatv.tools.IOTools;
+import com.pandatv.tools.*;
 import com.pandatv.work.MailTools;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,7 +16,6 @@ import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.selector.Html;
-import us.codecraft.webmagic.selector.Json;
 
 import java.io.BufferedWriter;
 import java.util.*;
@@ -67,13 +63,15 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 }
                 page.setSkip(true);
             } else if (curUrl.startsWith(competitionUrl)) {
-                Json json = page.getJson();
+                String json = UnicodeTools.unicodeToString(page.getJson().get());
                 DetailAnchor detailAnchor = new DetailAnchor();
-                detailAnchor.setRid(page.getRequest().getExtra("rid").toString());
-                detailAnchor.setTitle(JsonPath.read(json,"$.data.introduction").toString());
-                detailAnchor.setViewerNum(Integer.parseInt(JsonPath.read(json,"$.data.totalCount").toString()));
-                detailAnchor.setFollowerNum(Integer.parseInt(JsonPath.read(json,"$.data.activityCount").toString()));
-                detailAnchor.setCategorySec(JsonPath.read(json,"$.data.gameFullName").toString());
+                String rid = null == page.getRequest().getExtra("rid") ? "" : page.getRequest().getExtra("rid").toString();
+                detailAnchor.setRid(rid);
+                detailAnchor.setName(JsonPath.read(json, "$.data." + rid + ".nick").toString());
+                detailAnchor.setTitle(JsonPath.read(json, "$.data." + rid + ".introduction").toString());
+                detailAnchor.setViewerNum(Integer.parseInt(JsonPath.read(json, "$.data." + rid + ".totalCount").toString()));
+                detailAnchor.setFollowerNum(Integer.parseInt(JsonPath.read(json, "$.data." + rid + ".activityCount").toString()));
+                detailAnchor.setCategorySec(JsonPath.read(json, "$.data." + rid + ".gameFullName").toString());
                 detailAnchors.add(detailAnchor.toString());
                 page.setSkip(true);
             } else {
@@ -121,7 +119,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             if (competitionLive.contains(curUrl)) {
                 String rid = curUrl.substring(curUrl.lastIndexOf("/") + 1);
                 Request request = new Request(competitionUrl + rid).setPriority(5);
-                request.putExtra("rid",rid);
+                request.putExtra("rid", rid);
                 page.addTargetRequest(request);
             }
             failedUrl.append(curUrl + ";");
