@@ -19,6 +19,7 @@ import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.selector.Html;
+import us.codecraft.webmagic.selector.Json;
 
 import java.io.BufferedWriter;
 import java.util.*;
@@ -32,6 +33,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static String tmpHostUrl = "http://www.huya.com/";
     private static List<String> detailAnchors = new ArrayList<>();
     private static Set<String> competitionLive = new HashSet<>();
+    private static String competitionUrl = "http://www.huya.com/cache.php?m=HotRecApi&do=getLiveInfo&yyid=";
     private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
     private static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
     private static String job = "";
@@ -64,6 +66,16 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                     }
                 }
                 page.setSkip(true);
+            } else if (curUrl.startsWith(competitionUrl)) {
+                Json json = page.getJson();
+                DetailAnchor detailAnchor = new DetailAnchor();
+                detailAnchor.setRid(page.getRequest().getExtra("rid").toString());
+                detailAnchor.setTitle(JsonPath.read(json,"$.data.introduction").toString());
+                detailAnchor.setViewerNum(Integer.parseInt(JsonPath.read(json,"$.data.totalCount").toString()));
+                detailAnchor.setFollowerNum(Integer.parseInt(JsonPath.read(json,"$.data.activityCount").toString()));
+                detailAnchor.setCategorySec(JsonPath.read(json,"$.data.gameFullName").toString());
+                detailAnchors.add(detailAnchor.toString());
+                page.setSkip(true);
             } else {
                 Object cycleTriedTimes = page.getRequest().getExtra("_cycle_tried_times");
                 if (null != cycleTriedTimes && (int) cycleTriedTimes >= Const.CYCLERETRYTIMES - 1) {
@@ -84,7 +96,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                     categorySec = category.get(0);
                 }
                 String viewerStr = html.xpath("//span[@class='host-spectator']/em/text()").get();
-                if (!StringUtils.isEmpty(viewerStr) && viewerStr.contains(",")){
+                if (!StringUtils.isEmpty(viewerStr) && viewerStr.contains(",")) {
                     viewerStr = viewerStr.replace(",", "");
                 }
                 String followerStr = html.xpath("//div[@id='activityCount']/text()").get();
@@ -106,10 +118,12 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 page.setSkip(true);
             }
         } catch (Exception e) {
-            //TODO 大型游戏比赛直播
-//            if (competitionLive.contains(curUrl)){
-//
-//            }
+            if (competitionLive.contains(curUrl)) {
+                String rid = curUrl.substring(curUrl.lastIndexOf("/") + 1);
+                Request request = new Request(competitionUrl + rid).setPriority(5);
+                request.putExtra("rid",rid);
+                page.addTargetRequest(request);
+            }
             failedUrl.append(curUrl + ";");
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
