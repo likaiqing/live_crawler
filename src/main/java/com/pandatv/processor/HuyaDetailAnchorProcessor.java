@@ -121,8 +121,9 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 Request request = new Request(competitionUrl + rid).setPriority(5);
                 request.putExtra("rid", rid);
                 page.addTargetRequest(request);
+            }else {
+                failedUrl.append(curUrl + ";");
             }
-            failedUrl.append(curUrl + ";");
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
                 MailTools.sendAlarmmail(Const.HUYAEXIT, "url: " + curUrl);
