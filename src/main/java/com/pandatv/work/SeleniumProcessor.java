@@ -45,8 +45,9 @@ public class SeleniumProcessor extends PandaProcessor {
 //        String chromeDriverPath = "/home/likaiqing/hive-tool/chromedriver";
         String firUrl = "https://www.douyu.com/directory/all";
         String secUrl = "http://1212.ip138.com/ic.asp";
+        String thiUrl = "view-source:http://www.huya.com/zt/bxtv/index.html";
         String chromeDriverPath = "/data/tmp/crawler_driver/chromedriver";
-        Spider.create(new SeleniumProcessor()).thread(1).addPipeline(new ConsolePipeline()).addUrl(firUrl,secUrl).setDownloader(new SeleniumDownloader(chromeDriverPath)).run();
+        Spider.create(new SeleniumProcessor()).thread(1).addPipeline(new ConsolePipeline()).addUrl(thiUrl).setDownloader(new SeleniumDownloader(chromeDriverPath)).run();
     }
 
     public static void main(String[] args) {
