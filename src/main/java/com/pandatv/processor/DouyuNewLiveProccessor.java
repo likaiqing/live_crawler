@@ -20,6 +20,7 @@ import us.codecraft.webmagic.Spider;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -111,10 +112,13 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
 //        String hivePaht = "";
         Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new DouyuNewlivePipeline(job)).setDownloader(new PandaDownloader()).run();//.setDownloader(new PandaDownloader())
-        hive.write2(hivePaht, detailAnchorSet);
         try {
             if (detailAnchorSet.size()>0){
-                hive.write2(hivePaht, detailAnchorSet);
+                List<String> anchorList = new ArrayList<>();
+                for (DetailAnchor detailAnchor : detailAnchorSet){
+                    anchorList.add(detailAnchor.toString());
+                }
+                hive.write2(hivePaht, anchorList, job, curMinute);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,7 +127,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
             MailTools.sendAlarmmail("斗鱼hive.write异常",e.getMessage().toString());
         }
         long e = System.currentTimeMillis();
-        mail.sendAlarmmail("斗鱼新秀抓取失败信息", failedUrl.toString());
+        mail.sendAlarmmail("斗鱼新秀抓取退出" + date + hour, failedUrl.toString());
         System.out.println("e-s:" + (e - s));
 
     }

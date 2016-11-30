@@ -170,11 +170,6 @@ public class HiveJDBCConnect {
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("core-site.xml"));
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("mapred-site.xml"));
         conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
-//        conf.set("fs.hdfs.impl",
-//                org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-//        conf.set("fs.file.impl",
-//                org.apache.hadoop.fs.LocalFileSystem.class.getName()
-//        );
         org.apache.hadoop.fs.FileSystem fs;
         try {
             fs = org.apache.hadoop.fs.FileSystem.get(conf);
@@ -213,11 +208,6 @@ public class HiveJDBCConnect {
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("core-site.xml"));
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("mapred-site.xml"));
         conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
-//        conf.set("fs.hdfs.impl",
-//                org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-//        conf.set("fs.file.impl",
-//                org.apache.hadoop.fs.LocalFileSystem.class.getName()
-//        );
         org.apache.hadoop.fs.FileSystem fs;
         try {
             fs = org.apache.hadoop.fs.FileSystem.get(conf);
