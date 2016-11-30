@@ -81,6 +81,11 @@ public class Work {
                 logger.info("ChushouAnchorProcessor.crawler start");
                 HiveTest.write(args);
                 break;
+            case Const.INDEXREC://斗鱼和虎牙首页推荐的douyuindexrec  huyaindexrec
+                judgeParam(args, 3);
+                logger.info("ChushouAnchorProcessor.crawler start");
+                IndexRecProcessor.crawler(args);
+                break;
         }
     }
 

@@ -47,4 +47,8 @@ public class Const {
     public static final String DOUYUFINISH = "斗鱼爬取退出";
     public static final String HUYAFINISH = "虎牙爬取退出";
     public static final String SWITCHURL = "http://proxy.abuyun.com/switch-ip";
+    public static final String INDEXREC = "indexrec";
+    public static final String DOUYUINDEXREC = "douyuindexrec";
+    public static final String HUYAINDEXREC = "huyaindexrec";
+    public static final String INDEXRECEXIT = "首页推荐抓取退出";
 }
