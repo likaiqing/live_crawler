@@ -33,6 +33,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room/";
     private static Set<DetailAnchor> detailAnchorSet = new HashSet<>();
     private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
+    private static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
     private static String job = "";
     private static int exCnt;
     private static SendMail mail;
@@ -62,6 +63,10 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
                     System.out.println("out");
                 }
             } else if (curUrl.startsWith(thirdApi)) {
+                Object cycleTriedTimes = page.getRequest().getExtra("_cycle_tried_times");
+                if (null != cycleTriedTimes && (int) cycleTriedTimes >= Const.CYCLERETRYTIMES - 1) {
+                    timeOutUrl.append(curUrl).append(";");
+                }
                 String json = page.getJson().get();
                 DetailAnchor detailAnchor = new DetailAnchor();
                 String rid = JsonPath.read(json, "$.data.room_id");
@@ -104,6 +109,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
     public static void crawler(String[] args) {
         mail = new SendMail("likaiqing@panda.tv", "");
         job = args[0];
+        String from = DateTools.getCurDate();
         String date = args[1];
         String hour = args[2];
         String curMinute = DateTools.getCurMinute();
@@ -127,7 +133,9 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
             MailTools.sendAlarmmail("斗鱼hive.write异常",e.getMessage().toString());
         }
         long e = System.currentTimeMillis();
-        mail.sendAlarmmail("斗鱼新秀抓取退出" + date + hour, failedUrl.toString());
+        long time = e - s;
+        String to = DateTools.getCurDate();
+        MailTools.sendTaskMail(Const.DOUYUNEWLIVEFINISH + date + hour, from + "<-->" + to, time + "毫秒;", detailAnchorSet.size(), timeOutUrl, failedUrl);
         System.out.println("e-s:" + (e - s));
 
     }
