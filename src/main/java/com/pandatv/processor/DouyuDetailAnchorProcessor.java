@@ -66,6 +66,18 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                     timeOutUrl.append(curUrl).append(";");
                 }
                 String json = page.getJson().get();
+                Integer error = JsonPath.read(json, "$.error");
+                if (error != 0) {
+                    Integer exRetry = (Integer) page.getRequest().getExtra("exRetry");
+                    if (exRetry < 4) {
+                        Request request = new Request(curUrl);
+                        request.putExtra("exRetry", null == exRetry ? 1 : ++exRetry);
+                    } else {
+                        failedUrl.append(curUrl + ";  ");
+                    }
+                    page.setSkip(true);
+                    return;
+                }
                 DetailAnchor detailAnchor = new DetailAnchor();
                 String rid = JsonPath.read(json, "$.data.room_id");
                 String name = JsonPath.read(json, "$.data.owner_name");
