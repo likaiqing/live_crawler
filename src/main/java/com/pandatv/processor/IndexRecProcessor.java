@@ -137,7 +137,8 @@ public class IndexRecProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return CommonTools.getAbuyunSite(site).setSleepTime(500);
+//        return CommonTools.getAbuyunSite(site).setSleepTime(500);
+        return this.site;
     }
 
     public static void crawler(String[] args) {
@@ -150,7 +151,7 @@ public class IndexRecProcessor extends PandaProcessor {
         huyaIndex = "http://www.huya.com/";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
-        Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex,huyaIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex,huyaIndex).addPipeline(new ConsolePipeline()).run();
         try {
             if (douyuRecAnchors.size() > 0) {
                 hive.write2(hivePaht, douyuRecAnchors, Const.DOUYUINDEXREC, curMinute);

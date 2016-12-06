@@ -102,8 +102,8 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return CommonTools.getAbuyunSite(site);
-//        return this.site;
+//        return CommonTools.getAbuyunSite(site);
+        return this.site;
     }
 
     public static void crawler(String[] args) {
@@ -117,7 +117,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
 //        String hivePaht = "";
-        Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new DouyuNewlivePipeline(job)).setDownloader(new PandaDownloader()).run();//.setDownloader(new PandaDownloader())
+        Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new DouyuNewlivePipeline(job)).run();//.setDownloader(new PandaDownloader())
         try {
             if (detailAnchorSet.size()>0){
                 List<String> anchorList = new ArrayList<>();
