@@ -1,7 +1,7 @@
 #!/bin/bash
 
 origin_dir=~/space/panda/live_crawler/shell
-remote_dir=~/shell
+remote_dir=/home/likaiqing/shell
 
 for sub_dir in crawler crawler_ana crawler_detail_ana
 do
