@@ -30,10 +30,10 @@ FROM
   (
     SELECT
       rid,
-      regexp_replace(name,'\t| ','') name,
-      regexp_replace(title,'\t| ','') title,
-      regexp_replace(category_fir,'\t| ','') category_fir,
-      regexp_replace(category_sec,'\t| ','') category_sec,
+      regexp_replace(name,'\t| |,|\"','') name,
+      regexp_replace(title,'\t| |,|\"','') title,
+      regexp_replace(category_fir,'\t| |,|\"','') category_fir,
+      regexp_replace(category_sec,'\t| |,|\"','') category_sec,
       online_Num,
       follower_num,
       task,
@@ -43,7 +43,7 @@ FROM
       tag,
       url,
       create_time,
-      regexp_replace(notice,'\t| ','') notice,
+      regexp_replace(notice,'\t| |,|\"','') notice,
       last_start_time,
       task_random,
       par_date,

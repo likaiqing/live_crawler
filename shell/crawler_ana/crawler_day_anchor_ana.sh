@@ -55,6 +55,5 @@ FROM
         WHERE par_date ='$date' AND category != '' AND category IS NOT NULL
       ) anc_crawler
     GROUP BY par_date, rid, name, plat, category
-    HAVING max(populary_num) > 500
   ) group_tmp;
 "

@@ -25,9 +25,9 @@ FROM
   (
     SELECT
       rid,
-      regexp_replace(name,'\t| ','') name,
-      regexp_replace(title,'\t| ','') title,
-      regexp_replace(category,'\t| ','') category,
+      regexp_replace(name,'\t| |,|\"','') name,
+      regexp_replace(title,'\t| |,|\"','') title,
+      regexp_replace(category,'\t| |,|\"','') category,
       populary_str,
       populary_num,
       task,

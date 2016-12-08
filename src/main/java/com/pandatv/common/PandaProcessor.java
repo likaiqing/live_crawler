@@ -6,6 +6,8 @@ import org.apache.http.HttpHost;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -13,6 +15,7 @@ import java.util.Random;
  */
 public abstract class PandaProcessor implements PageProcessor {
     public static String randomStr = RandomStringUtils.random(10,new char[]{'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9'});
+    public static String randomTime = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
     protected Site site = Site.me()
             .setSleepTime(500)
             .setUseGzip(true)
