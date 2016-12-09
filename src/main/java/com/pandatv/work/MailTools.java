@@ -1,9 +1,6 @@
 package com.pandatv.work;
 
 import com.pandatv.mail.SendMail;
-import org.apache.hadoop.hive.ql.optimizer.stats.annotation.StatsRulesProcFactory;
-
-import java.util.List;
 
 /**
  * Created by likaiqing on 2016/11/25.
@@ -24,15 +21,15 @@ public class MailTools {
         theMessage.append("<tr>").append("<th>").append("process失败urls").append("</th>");
         theMessage.append("<th>").append(failedUrl.toString()).append("</th>").append("</tr>");
         theMessage.append("</table>");
-        mail.sendAlarmmail(s,theMessage.toString());
+        mail.sendAlarmmail(s, theMessage.toString());
     }
 
     public static void sendAlarmmail(String douyuexit, String s) {
         SendMail mail = new SendMail("likaiqing@panda.tv", "");
-        mail.sendAlarmmail(douyuexit,s);
+        mail.sendAlarmmail(douyuexit, s);
     }
 
     public static void main(String[] args) {
-        sendTaskMail("test","1:00<-->2:00","1000秒",100,new StringBuffer("timeouturl"),new StringBuffer("failedUrl"));
+        sendTaskMail("test", "1:00<-->2:00", "1000秒", 100, new StringBuffer("timeouturl"), new StringBuffer("failedUrl"));
     }
 }
