@@ -86,6 +86,11 @@ public class Work {
                 logger.info("ChushouAnchorProcessor.crawler start");
                 IndexRecProcessor.crawler(args);
                 break;
+            case Const.EXPORT2EXCEL://斗鱼和虎牙首页推荐的douyuindexrec  huyaindexrec
+                logger.info("ChushouAnchorProcessor.crawler start");
+                judgeParam(args, 6);
+                ExportData.export2Excel(args);
+                break;
         }
     }
 

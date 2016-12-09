@@ -13,6 +13,7 @@
         <poi-version>3.9</poi-version>
     </properties>
     <dependencies>
+        <!--apache poi-->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -38,7 +39,7 @@
             <artifactId>dom4j-core</artifactId>
             <version>1.4-dev-8</version>
         </dependency>
-
+        <!--webmagic-->
         <dependency>
             <groupId>us.codecraft</groupId>
             <artifactId>webmagic-core</artifactId>

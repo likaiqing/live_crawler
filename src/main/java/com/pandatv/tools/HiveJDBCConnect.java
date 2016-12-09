@@ -7,13 +7,12 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.compress.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -24,6 +23,7 @@ public class HiveJDBCConnect {
 
     // private static final org.slf4j.Logger log =
     // LoggerFactory.getLogger(hiveConnect.class);
+    private final static Logger logger = LoggerFactory.getLogger(HiveJDBCConnect.class);
     private static String driverName = "org.apache.hive.jdbc.HiveDriver";
 
     private static String url = "jdbc:hive2://10.110.19.9:10000/panda_realtime";
@@ -31,6 +31,10 @@ public class HiveJDBCConnect {
     private static String password = "cHjhAFeSDpBMrkxyOPzp";
     private static String sql = "";
     private static ResultSet res;
+    private static int tryTimes=0;
+    private static Connection conn =null;
+    private static Statement stmt=null;
+    private ResultSet result=null;
 
     private static String path = "/bigdata/hive/panda_realtime/";
 
@@ -238,5 +242,36 @@ public class HiveJDBCConnect {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    public  ResultSet excutesql(String sql) {
+        try {
+            if (conn == null) {
+                conn = getConn();
+            }
+            stmt = conn.createStatement();
+//			new GetLogThread().start();
+            result = stmt.executeQuery(sql);
+
+
+        } catch (ClassNotFoundException | SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            logger.warn(e.toString());
+            if (e.toString().contains("return code 1") && tryTimes < 5) {
+                tryTimes++;
+                int waitingTime = tryTimes * 120000;
+                logger.warn("maybe timesout; 30 second later retry " + tryTimes + "times;");
+                try {
+                    Thread.sleep(waitingTime);
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                return excutesql(sql);
+            }
+            logger.error("try 3 times, exit");
+        }
+        return result;
     }
 }

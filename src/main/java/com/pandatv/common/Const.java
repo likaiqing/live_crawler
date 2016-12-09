@@ -52,4 +52,7 @@ public class Const {
     public static final String HUYAINDEXREC = "huyaindexrec";
     public static final String INDEXRECEXIT = "首页推荐抓取退出";
     public static final String DOUYUNEWLIVEFINISH = "斗鱼新秀抓取退出";
+    public static final String EXPORT2EXCEL = "export2excel";
+//    public static final String EXPORTEXCELDIR = "/home/likaiqing/shell/crawler_ana/crawler_report/";
+    public static final String EXPORTEXCELDIR = "/Users/likaiqing/Downloads/analyse/";
 }
