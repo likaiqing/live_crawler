@@ -27,7 +27,7 @@ FROM
       name,
       plat,
       category,
-      round((live_times/2) / live_days, 2) live_time_avg,
+      round((live_times/4) / live_days, 2) live_time_avg,
       max_pcu                               week_pcu,
       round(week_sum_pcu / live_days, 2)    week_avg_pcu,
       rank()

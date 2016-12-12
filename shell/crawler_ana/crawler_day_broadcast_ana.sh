@@ -9,7 +9,7 @@ insert overwrite table panda_result.crawler_day_broadcast_ana partition(par_date
 SELECT
   plat,
   count(DISTINCT rid)                        lives,
-  round((sum(live_times) /2) / count(DISTINCT rid),2) live_time_avg,
+  round((sum(live_times) /4) / count(DISTINCT rid),2) live_time_avg,
   sum(max_pcu) / count(DISTINCT rid)         pcu_avf,
   2,
   par_date
@@ -45,7 +45,7 @@ UNION ALL
 SELECT
   plat,
   count(DISTINCT rid)                        lives,
-  round((sum(live_times) /2) / count(DISTINCT rid),2) live_time_avg,
+  round((sum(live_times) /4) / count(DISTINCT rid),2) live_time_avg,
   sum(max_pcu) / count(DISTINCT rid)         pcu_avf,
   is_new,
   par_date

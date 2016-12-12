@@ -14,7 +14,7 @@ SELECT
   max_pcu,
   max_pcu - min_pcu        day_pcu_raise,
   0                        day_fol_changed,
-  round(live_times/2,2)          live_time,
+  round(live_times/4,2)          live_time,
   0                        is_new,
   rank()
   OVER (PARTITION BY par_date, plat, category
