@@ -193,7 +193,7 @@ FROM
               category_sec,
               max_pcu,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date ASC) r
             FROM
               (
@@ -231,7 +231,7 @@ FROM
               category_sec,
               max_pcu,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -269,7 +269,7 @@ FROM
               category_sec,
               pre_weight,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date ASC) r
             FROM
               (
@@ -307,7 +307,7 @@ FROM
               category_sec,
               suf_weight,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -345,7 +345,7 @@ FROM
               category_sec,
               max_followers,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date ASC) r
             FROM
               (
@@ -383,7 +383,7 @@ FROM
               category_sec,
               max_followers,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -599,7 +599,7 @@ FROM
               category_sec,
               max_pcu,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date ASC) r
             FROM
               (
@@ -637,7 +637,7 @@ FROM
               category_sec,
               max_pcu,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -675,7 +675,7 @@ FROM
               category_sec,
               pre_weight,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date ASC) r
             FROM
               (
@@ -713,7 +713,7 @@ FROM
               category_sec,
               suf_weight,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -751,7 +751,7 @@ FROM
               category_sec,
               max_followers,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date ASC) r
             FROM
               (
@@ -789,7 +789,7 @@ FROM
               category_sec,
               max_followers,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (

@@ -64,7 +64,7 @@ FROM
       r.plat_pcu_r,
       CASE WHEN last_pcu.max_pcu IS NULL
         THEN 0
-      ELSE concat(last_pcu.par_date, '-', last_pcu.max_pcu) END last_max_pcu,
+      ELSE last_pcu.max_pcu END last_max_pcu,
       CASE WHEN last_pcu.max_pcu IS NULL
         THEN r.max_pcu
       ELSE r.max_pcu - last_pcu.max_pcu END                     pcu_raise,
@@ -85,7 +85,7 @@ FROM
       ELSE r.max_follower - last_followers.max_followers END    followers_raise,
       CASE WHEN last_weight.par_date IS NULL
         THEN ''
-      ELSE concat(last_weight.par_date, '-', last_weight.max_weight) END last_max_weight,
+      ELSE last_weight.max_weight END last_max_weight,
       CASE WHEN last_weight.par_date IS NULL
         THEN r.weight_num
       ELSE r.weight_num - last_weight.max_weight END                     weight_raise
@@ -154,7 +154,7 @@ FROM
               category_sec,
               max_pcu,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -192,7 +192,7 @@ FROM
               category_sec,
               max_weight,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -230,7 +230,7 @@ FROM
               category_sec,
               max_followers,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -314,7 +314,7 @@ FROM
       r.plat_pcu_r,
       CASE WHEN last_pcu.max_pcu IS NULL
         THEN 0
-      ELSE concat(last_pcu.par_date, '-', last_pcu.max_pcu) END last_max_pcu,
+      ELSE last_pcu.max_pcu END last_max_pcu,
       CASE WHEN last_pcu.max_pcu IS NULL
         THEN r.max_pcu
       ELSE r.max_pcu - last_pcu.max_pcu END                     pcu_raise,
@@ -335,7 +335,7 @@ FROM
       ELSE r.max_follower - last_followers.max_followers END    followers_raise,
       CASE WHEN last_weight.par_date IS NULL
         THEN ''
-      ELSE concat(last_weight.par_date, '-', last_weight.max_weight) END last_max_weight,
+      ELSE last_weight.max_weight END last_max_weight,
       CASE WHEN last_weight.par_date IS NULL
         THEN r.weight_num
       ELSE r.weight_num - last_weight.max_weight END                     weight_raise
@@ -404,7 +404,7 @@ FROM
               category_sec,
               max_pcu,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -442,7 +442,7 @@ FROM
               category_sec,
               max_weight,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
@@ -480,7 +480,7 @@ FROM
               category_sec,
               max_followers,
               rank()
-              OVER (PARTITION BY rid
+              OVER (PARTITION BY rid, name, category_sec
                 ORDER BY par_date DESC) r
             FROM
               (
