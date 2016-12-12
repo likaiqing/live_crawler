@@ -39,3 +39,5 @@ insert overwrite table panda_competitor.panda_douyuindexrec_detail_anchor partit
 
 hive -e "
 insert overwrite table panda_competitor.panda_huyaindexrec_detail_anchor partition(par_date) select rid,name,title,category_fir,category_sec,online_num,follower_num,task,rank,weight_str,weight_num,tag,url,create_time,notice,last_start_time,task_random,hour,par_date from panda_result.panda_detail_anchor_crawler where par_date='$date' and task='huyaindexrec'; "
+
+sh /home/likaiqing/shell/crawler/competitor_distinct.sh $date
