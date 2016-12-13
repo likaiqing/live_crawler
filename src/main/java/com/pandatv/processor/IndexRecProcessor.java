@@ -5,11 +5,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.DateTools;
-import com.pandatv.tools.HiveJDBCConnect;
-import com.pandatv.tools.IOTools;
-import com.pandatv.work.MailTools;
+import com.pandatv.tools.*;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
 import us.codecraft.webmagic.Page;
@@ -168,9 +164,9 @@ public class IndexRecProcessor extends PandaProcessor {
             IOTools.writeList(huyaRecAnchors, bw);
             MailTools.sendAlarmmail("斗鱼hive.write异常", e.getMessage().toString());
         }
-        long e = System.currentTimeMillis();
-        long time = e - s;
-        String to = DateTools.getCurDate();
-        MailTools.sendTaskMail(Const.INDEXRECEXIT + date + hour, from + "<-->" + to, time + "毫秒;", douyuRecAnchors.size() + huyaRecAnchors.size(), timeOutUrl, failedUrl);
+        if (Integer.parseInt(hour) % 5 == 0) {
+            MailTools.sendTaskMail(Const.INDEXRECEXIT + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", douyuRecAnchors.size() + huyaRecAnchors.size(), timeOutUrl, failedUrl);
+        }
+
     }
 }

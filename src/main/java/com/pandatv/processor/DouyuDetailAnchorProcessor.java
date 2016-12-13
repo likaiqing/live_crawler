@@ -9,7 +9,7 @@ import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.IOTools;
-import com.pandatv.work.MailTools;
+import com.pandatv.tools.MailTools;
 import org.slf4j.Logger;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
@@ -135,6 +135,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             IOTools.writeList(detailAnchors, bw);
             MailTools.sendAlarmmail("斗鱼hive.write异常", e.getMessage().toString());
         }
-        MailTools.sendTaskMail(Const.DOUYUFINISH + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
+        if (Integer.parseInt(hour) % 5 == 0) {
+            MailTools.sendTaskMail(Const.DOUYUFINISH + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
+        }
     }
 }

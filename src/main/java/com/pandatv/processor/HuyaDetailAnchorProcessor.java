@@ -8,8 +8,8 @@ import com.pandatv.pipeline.HuyaDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.IOTools;
+import com.pandatv.tools.MailTools;
 import com.pandatv.tools.UnicodeTools;
-import com.pandatv.work.MailTools;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,6 +159,8 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             IOTools.writeList(detailAnchors, bw);
             MailTools.sendAlarmmail("虎牙hive.write异常", e.getMessage().toString());
         }
-        MailTools.sendTaskMail(Const.HUYAFINISH + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
+        if (Integer.parseInt(hour) % 5 == 0) {
+            MailTools.sendTaskMail(Const.HUYAFINISH + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
+        }
     }
 }

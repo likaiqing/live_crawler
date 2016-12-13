@@ -1,4 +1,4 @@
-package com.pandatv.work;
+package com.pandatv.tools;
 
 import com.pandatv.mail.SendMail;
 

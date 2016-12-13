@@ -7,11 +7,7 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.mail.SendMail;
 import com.pandatv.pipeline.DouyuNewlivePipeline;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.DateTools;
-import com.pandatv.tools.HiveJDBCConnect;
-import com.pandatv.tools.IOTools;
-import com.pandatv.work.MailTools;
+import com.pandatv.tools.*;
 import net.minidev.json.JSONArray;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -116,9 +112,9 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
 //        String hivePaht = "";
         Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new DouyuNewlivePipeline(job)).setDownloader(new PandaDownloader()).run();//.setDownloader(new PandaDownloader())
         try {
-            if (detailAnchorSet.size()>0){
+            if (detailAnchorSet.size() > 0) {
                 List<String> anchorList = new ArrayList<>();
-                for (DetailAnchor detailAnchor : detailAnchorSet){
+                for (DetailAnchor detailAnchor : detailAnchorSet) {
                     anchorList.add(detailAnchor.toString());
                 }
                 hive.write2(hivePaht, anchorList, job, curMinute);
@@ -127,14 +123,11 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
             e.printStackTrace();
             BufferedWriter bw = IOTools.getBW("/tmp/douyudetailanchorcrawler" + date + hour + curMinute);
             IOTools.writeList(detailAnchorSet, bw);
-            MailTools.sendAlarmmail("斗鱼hive.write异常",e.getMessage().toString());
+            MailTools.sendAlarmmail("斗鱼hive.write异常", e.getMessage().toString());
         }
-        long e = System.currentTimeMillis();
-        long time = e - s;
-        String to = DateTools.getCurDate();
-        MailTools.sendTaskMail(Const.DOUYUNEWLIVEFINISH + date + hour, from + "<-->" + to, time + "毫秒;", detailAnchorSet.size(), timeOutUrl, failedUrl);
-        System.out.println("e-s:" + (e - s));
-
+        if (Integer.parseInt(hour) % 5 == 0) {
+            MailTools.sendTaskMail(Const.DOUYUNEWLIVEFINISH + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchorSet.size(), timeOutUrl, failedUrl);
+        }
     }
 
     public static void main(String[] args) {
