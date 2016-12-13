@@ -4,15 +4,15 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.pipeline.ChushouPipeline;
-import com.pandatv.tools.IOTools;
+import com.pandatv.pojo.Anchor;
+import com.pandatv.tools.CommonTools;
 import net.minidev.json.JSONArray;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
-import java.io.BufferedWriter;
 import java.util.List;
 
 /**
@@ -43,11 +43,21 @@ public class ChushouAnchorProcessor extends PandaProcessor {
             List<String> names = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='liveDetail']/span[@class='livePlayerName]/text()").all();
             List<String> categories = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='liveDetail']/a[@class='game_Name]/text()").all();
             List<String> popularitiyStrs = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='liveDetail']/span[@class='liveCount]/text()").all();
-            page.putField("rids", rids);
-            page.putField("names", names);
-            page.putField("titles", titles);
-            page.putField("categories", categories);
-            page.putField("popularitiyStrs", popularitiyStrs);
+            for (int i = 0; i < rids.size(); i++) {
+                Anchor anchor = new Anchor();
+                String rid = rids.get(i);
+                anchor.setRid(rid.substring(rid.lastIndexOf("/") + 1, rid.lastIndexOf(".")));
+                anchor.setName(names.get(i));
+                anchor.setTitle(titles.get(i));
+                anchor.setCategory(categories.get(i));
+                anchor.setPopularityStr(popularitiyStrs.get(i));
+                anchor.setPopularityNum(CommonTools.createNum(popularitiyStrs.get(i)));
+                anchor.setJob(job);
+                anchor.setPlat(Const.CHUSHOU);
+                anchor.setGame(Const.GAMEALL);
+                anchor.setUrl(curUrl);
+                anchors.add(anchor.toString());
+            }
         }
     }
 
@@ -58,11 +68,11 @@ public class ChushouAnchorProcessor extends PandaProcessor {
 
     public static void crawler(String[] args) {
         String firUrl = "http://chushou.tv/live/list.htm";
-        String job = args[0];//zhanqianchor
-        String date = args[1];//20161114
-        String hour = args[2];//10
-        BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
-        Spider.create(new ChushouAnchorProcessor()).addUrl(firUrl).addPipeline(new ChushouPipeline(job, bw)).setDownloader(new PandaDownloader()).run();
-        IOTools.closeBw(bw);
+        job = args[0];//zhanqianchor
+        date = args[1];//20161114
+        hour = args[2];//10
+        String hivePaht = Const.HIVEDIR + "panda_anchor_crawler/" + date + hour;
+        Spider.create(new ChushouAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISHDETAIL, anchors);
     }
 }

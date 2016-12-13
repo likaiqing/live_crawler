@@ -29,32 +29,32 @@ public class QuanminPipeline implements Pipeline {
 
     @Override
     public void process(ResultItems resultItems, Task task) {
-        String curUrl = resultItems.getRequest().getUrl();
-        String json = resultItems.get("json");
-        JSONArray data = JsonPath.read(json, "$.data");
-        List<String> results = new ArrayList<>();
-        for (int i=0;i<data.size();i++){
-            Anchor anchor = new Anchor();
-            String  room = data.get(i).toString();
-            String rid = JsonPath.read(room,"$.uid");
-            String name = JsonPath.read(room,"$.nick");
-            String title = JsonPath.read(room,"$.title");
-            String category = JsonPath.read(room,"$.category_name");
-            String popularityStr = JsonPath.read(room,"$.view");
-            int popularityNum = Integer.parseInt(popularityStr);
-            anchor.setRid(rid);
-            anchor.setName(name);
-            anchor.setTitle(title);
-            anchor.setCategory(category);
-            anchor.setPopularityStr(popularityStr);
-            anchor.setPopularityNum(popularityNum);
-            anchor.setJob(job);
-            anchor.setPlat(Const.QUANMIN);
-            anchor.setGame(Const.GAMEALL);
-            anchor.setUrl(curUrl);
-            String result = anchor.toString();
-            results.add(result);
-        }
-        IOTools.writeList(results, bw);
+//        String curUrl = resultItems.getRequest().getUrl();
+//        String json = resultItems.get("json");
+//        JSONArray data = JsonPath.read(json, "$.data");
+//        List<String> results = new ArrayList<>();
+//        for (int i=0;i<data.size();i++){
+//            Anchor anchor = new Anchor();
+//            String  room = data.get(i).toString();
+//            String rid = JsonPath.read(room,"$.uid");
+//            String name = JsonPath.read(room,"$.nick");
+//            String title = JsonPath.read(room,"$.title");
+//            String category = JsonPath.read(room,"$.category_name");
+//            String popularityStr = JsonPath.read(room,"$.view");
+//            int popularityNum = Integer.parseInt(popularityStr);
+//            anchor.setRid(rid);
+//            anchor.setName(name);
+//            anchor.setTitle(title);
+//            anchor.setCategory(category);
+//            anchor.setPopularityStr(popularityStr);
+//            anchor.setPopularityNum(popularityNum);
+//            anchor.setJob(job);
+//            anchor.setPlat(Const.QUANMIN);
+//            anchor.setGame(Const.GAMEALL);
+//            anchor.setUrl(curUrl);
+//            String result = anchor.toString();
+//            results.add(result);
+//        }
+//        IOTools.writeList(results, bw);
     }
 }

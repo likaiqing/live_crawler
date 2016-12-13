@@ -48,21 +48,21 @@ public class ChushouPipeline implements Pipeline {
         List<String> titles = resultItems.get("titles");
         List<String> categories = resultItems.get("categories");
         List<String> popularitiyStrs = resultItems.get("popularitiyStrs");
-        for (int i=0;i<rids.size();i++){
-            Anchor anchor = new Anchor();
-            String rid = rids.get(i);
-            anchor.setRid(rid.substring(rid.lastIndexOf("/")+1,rid.lastIndexOf(".")));
-            anchor.setName(names.get(i));
-            anchor.setTitle(titles.get(i));
-            anchor.setCategory(categories.get(i));
-            anchor.setPopularityStr(popularitiyStrs.get(i));
-            anchor.setPopularityNum(CommonTools.createNum(popularitiyStrs.get(i)));
-            anchor.setJob(job);
-            anchor.setPlat(Const.CHUSHOU);
-            anchor.setGame(Const.GAMEALL);
-            anchor.setUrl(curUrl);
-            results.add(anchor.toString());
-        }
+//        for (int i=0;i<rids.size();i++){
+//            Anchor anchor = new Anchor();
+//            String rid = rids.get(i);
+//            anchor.setRid(rid.substring(rid.lastIndexOf("/")+1,rid.lastIndexOf(".")));
+//            anchor.setName(names.get(i));
+//            anchor.setTitle(titles.get(i));
+//            anchor.setCategory(categories.get(i));
+//            anchor.setPopularityStr(popularitiyStrs.get(i));
+//            anchor.setPopularityNum(CommonTools.createNum(popularitiyStrs.get(i)));
+//            anchor.setJob(job);
+//            anchor.setPlat(Const.CHUSHOU);
+//            anchor.setGame(Const.GAMEALL);
+//            anchor.setUrl(curUrl);
+//            results.add(anchor.toString());
+//        }
     }
 
     private void parseJson(ResultItems resultItems, List<String> results) {

@@ -5,8 +5,6 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.DateTools;
-import com.pandatv.tools.MailTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;

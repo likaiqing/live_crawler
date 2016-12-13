@@ -31,28 +31,28 @@ public class LongzhuPipeLine implements Pipeline{
         String json = resultItems.get("json");
         JSONArray items = JsonPath.read(json, "$.data.items");
         List<String> results = new ArrayList<>();
-        for (int i=0;i<items.size();i++){
-            Anchor anchor = new Anchor();
-            String room = items.get(i).toString();
-            String rid = JsonPath.read(room, "$.channel.domain");
-            String name = JsonPath.read(room, "$.channel.name");
-            String title = JsonPath.read(room, "$.channel.status");
-            String category = JsonPath.read(room, "$.game[0].name");
-            String popularitiyStr = JsonPath.read(room,"$.viewers");
-            int popularitiyNum = Integer.parseInt(popularitiyStr);
-            anchor.setRid(rid);
-            anchor.setName(name);
-            anchor.setTitle(title);
-            anchor.setCategory(category);
-            anchor.setPopularityStr(popularitiyStr);
-            anchor.setPopularityNum(popularitiyNum);
-            anchor.setJob(job);
-            anchor.setPlat(Const.LONGZHU);
-            anchor.setGame(Const.GAMEALL);
-            anchor.setUrl(curUrl);
-            String result = anchor.toString();
-            results.add(result);
-        }
+//        for (int i=0;i<items.size();i++){
+//            Anchor anchor = new Anchor();
+//            String room = items.get(i).toString();
+//            String rid = JsonPath.read(room, "$.channel.domain");
+//            String name = JsonPath.read(room, "$.channel.name");
+//            String title = JsonPath.read(room, "$.channel.status");
+//            String category = JsonPath.read(room, "$.game[0].name");
+//            String popularitiyStr = JsonPath.read(room,"$.viewers");
+//            int popularitiyNum = Integer.parseInt(popularitiyStr);
+//            anchor.setRid(rid);
+//            anchor.setName(name);
+//            anchor.setTitle(title);
+//            anchor.setCategory(category);
+//            anchor.setPopularityStr(popularitiyStr);
+//            anchor.setPopularityNum(popularitiyNum);
+//            anchor.setJob(job);
+//            anchor.setPlat(Const.LONGZHU);
+//            anchor.setGame(Const.GAMEALL);
+//            anchor.setUrl(curUrl);
+//            String result = anchor.toString();
+//            results.add(result);
+//        }
         IOTools.writeList(results, bw);
     }
 }

@@ -4,13 +4,13 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.pipeline.LongzhuPipeLine;
-import com.pandatv.tools.IOTools;
+import com.pandatv.pojo.Anchor;
+import com.pandatv.tools.CommonTools;
+import net.minidev.json.JSONArray;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
-
-import java.io.BufferedWriter;
+import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
 /**
  * Created by likaiqing on 2016/11/14.
@@ -29,7 +29,29 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
         if (index < total) {
             page.addTargetRequest(urlTmp + (index + pageCount));
         }
-        page.putField("json", json);
+        JSONArray items = JsonPath.read(json, "$.data.items");
+        for (int i = 0; i < items.size(); i++) {
+            Anchor anchor = new Anchor();
+            String room = items.get(i).toString();
+            String rid = JsonPath.read(room, "$.channel.domain");
+            String name = JsonPath.read(room, "$.channel.name");
+            String title = JsonPath.read(room, "$.channel.status");
+            String category = JsonPath.read(room, "$.game[0].name");
+            String popularitiyStr = JsonPath.read(room, "$.viewers");
+            int popularitiyNum = Integer.parseInt(popularitiyStr);
+            anchor.setRid(rid);
+            anchor.setName(name);
+            anchor.setTitle(title);
+            anchor.setCategory(category);
+            anchor.setPopularityStr(popularitiyStr);
+            anchor.setPopularityNum(popularitiyNum);
+            anchor.setJob(job);
+            anchor.setPlat(Const.LONGZHU);
+            anchor.setGame(Const.GAMEALL);
+            anchor.setUrl(curUrl);
+            String result = anchor.toString();
+            anchors.add(result);
+        }
     }
 
     @Override
@@ -39,11 +61,11 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
 
     public static void crawler(String[] args) {
         String firUrl = "http://api.plu.cn/tga/streams?max-results=18&sort-by=views&filter=0&game=0&callback=_callbacks_._36bxu1&start-index=0";
-        String job = args[0];//longzhuanchor
-        String date = args[1];//20161114
-        String hour = args[2];//10
-        BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
-        Spider.create(new LongzhuAnchorProcessor()).addUrl(firUrl).addPipeline(new LongzhuPipeLine(job, bw)).setDownloader(new PandaDownloader()).run();
-        IOTools.closeBw(bw);
+        job = args[0];//longzhuanchor
+        date = args[1];//20161114
+        hour = args[2];//10
+        String hivePaht = Const.HIVEDIR + "panda_anchor_crawler/" + date + hour;
+        Spider.create(new LongzhuAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISHDETAIL, anchors);
     }
 }
