@@ -156,7 +156,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            BufferedWriter bw = IOTools.getBW("/tmp/huyadetailanchorcrawler" + date + hour + curMinute);
+            BufferedWriter bw = IOTools.getBW("/tmp/" +job + date + hour + curMinute);
             IOTools.writeList(detailAnchors, bw);
             MailTools.sendAlarmmail("虎牙hive.write异常", e.getMessage().toString());
         }
