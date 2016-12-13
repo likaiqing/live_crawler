@@ -131,7 +131,7 @@ public class DetailAnchor {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.categoryFir).append(Const.SEP).append(this.categorySec).append(Const.SEP).append(this.viewerNum).append(Const.SEP).append(this.followerNum).append(Const.SEP).append(this.job).append(Const.SEP).append(rank).append(Const.SEP).append(this.weightStr).append(Const.SEP).append(this.weightNum).append(Const.SEP).append(this.tag).append(Const.SEP).append(this.url).append(Const.SEP).append(createTime).append(Const.SEP).append(this.notice).append(Const.SEP).append(this.lastStartTime).append(Const.SEP).append(PandaProcessor.randomTime + "-" + PandaProcessor.randomStr).toString();
+        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.categoryFir).append(Const.SEP).append(this.categorySec).append(Const.SEP).append(this.viewerNum).append(Const.SEP).append(this.followerNum).append(Const.SEP).append(this.job).append(Const.SEP).append(rank).append(Const.SEP).append(this.weightStr).append(Const.SEP).append(this.weightNum).append(Const.SEP).append(this.tag).append(Const.SEP).append(this.url).append(Const.SEP).append(createTime).append(Const.SEP).append(this.notice).append(Const.SEP).append(this.lastStartTime).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
     }
 
     @Override

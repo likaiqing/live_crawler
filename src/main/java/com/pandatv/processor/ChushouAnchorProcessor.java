@@ -3,6 +3,7 @@ package com.pandatv.processor;
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
+import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.ChushouPipeline;
 import com.pandatv.tools.IOTools;
 import net.minidev.json.JSONArray;
@@ -10,8 +11,6 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.selector.Html;
-import us.codecraft.webmagic.selector.Json;
-import us.codecraft.webmagic.selector.Selectable;
 
 import java.io.BufferedWriter;
 import java.util.List;
@@ -44,11 +43,11 @@ public class ChushouAnchorProcessor extends PandaProcessor {
             List<String> names = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='liveDetail']/span[@class='livePlayerName]/text()").all();
             List<String> categories = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='liveDetail']/a[@class='game_Name]/text()").all();
             List<String> popularitiyStrs = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='liveDetail']/span[@class='liveCount]/text()").all();
-            page.putField("rids",rids);
-            page.putField("names",names);
-            page.putField("titles",titles);
-            page.putField("categories",categories);
-            page.putField("popularitiyStrs",popularitiyStrs);
+            page.putField("rids", rids);
+            page.putField("names", names);
+            page.putField("titles", titles);
+            page.putField("categories", categories);
+            page.putField("popularitiyStrs", popularitiyStrs);
         }
     }
 
@@ -63,7 +62,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
         String date = args[1];//20161114
         String hour = args[2];//10
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
-        Spider.create(new ChushouAnchorProcessor()).addUrl(firUrl).addPipeline(new ChushouPipeline(job, bw)).run();
+        Spider.create(new ChushouAnchorProcessor()).addUrl(firUrl).addPipeline(new ChushouPipeline(job, bw)).setDownloader(new PandaDownloader()).run();
         IOTools.closeBw(bw);
     }
 }

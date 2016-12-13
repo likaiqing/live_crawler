@@ -117,7 +117,7 @@ public class Anchor {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.category).append(Const.SEP).append(this.popularityStr).append(Const.SEP).append(this.popularityNum).append(Const.SEP).append(this.job).append(Const.SEP).append(this.plat).append(Const.SEP).append(this.game).append(Const.SEP).append(createTime).append(Const.SEP).append(this.url).append(Const.SEP).append(PandaProcessor.randomTime + "-" + PandaProcessor.randomStr).toString();
+        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.category).append(Const.SEP).append(this.popularityStr).append(Const.SEP).append(this.popularityNum).append(Const.SEP).append(this.job).append(Const.SEP).append(this.plat).append(Const.SEP).append(this.game).append(Const.SEP).append(createTime).append(Const.SEP).append(this.url).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
     }
 
     @Override

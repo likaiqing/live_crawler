@@ -2,7 +2,9 @@ package com.pandatv.processor;
 
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
+import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.DouyuAnchorPipeline;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.IOTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +31,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         String firstUrl = "https://www.douyu.com/directory/all";
 //        String url = "https://www.douyu.com/directory/all?isAjax=1&page=1";
 //        .setDownloader(new SeleniumDownloader("/Users/likaiqing/Downloads/chromedriver_mac"))
-        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(1).addPipeline(new DouyuAnchorPipeline(job, bw)).run();
+        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(1).setDownloader(new PandaDownloader()).addPipeline(new DouyuAnchorPipeline(job, bw)).run();
         IOTools.closeBw(bw);
     }
 
@@ -67,7 +69,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+        return CommonTools.getAbuyunSite(site).setSleepTime(10);
     }
 
     public static void main(String[] args) {

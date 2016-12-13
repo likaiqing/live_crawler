@@ -32,8 +32,6 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
     private static String url = "https://www.douyu.com/member/recommlist/getfreshlistajax?bzdata=0&clickNum=";
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room/";
     private static Set<DetailAnchor> detailAnchorSet = new HashSet<>();
-    private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
-    private static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
     private static String job = "";
     private static int exCnt;
     private static SendMail mail;
@@ -102,7 +100,6 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-//        return CommonTools.getAbuyunSite(site);
         return this.site;
     }
 
@@ -117,7 +114,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
 //        String hivePaht = "";
-        Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new DouyuNewlivePipeline(job)).run();//.setDownloader(new PandaDownloader())
+        Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new DouyuNewlivePipeline(job)).setDownloader(new PandaDownloader()).run();//.setDownloader(new PandaDownloader())
         try {
             if (detailAnchorSet.size()>0){
                 List<String> anchorList = new ArrayList<>();

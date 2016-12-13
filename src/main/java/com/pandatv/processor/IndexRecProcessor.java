@@ -12,7 +12,6 @@ import com.pandatv.tools.IOTools;
 import com.pandatv.work.MailTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.yarn.util.RackResolver;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -30,8 +29,6 @@ import java.util.List;
 public class IndexRecProcessor extends PandaProcessor {
     private static List<String> douyuRecAnchors = new ArrayList<>();
     private static List<String> huyaRecAnchors = new ArrayList<>();
-    private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
-    private static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
     private static String douyuDetailUrltmp = "http://open.douyucdn.cn/api/RoomApi/room/";
     private static String douyuIndex;
     private static String huyaIndex;
@@ -53,7 +50,7 @@ public class IndexRecProcessor extends PandaProcessor {
                 for (Object rec : jsonArray) {
                     String rid = JsonPath.read(rec, "$.privateHost").toString();
                     Request request = new Request(huyaIndex + rid);
-                    request.putExtra("rid",rid);
+                    request.putExtra("rid", rid);
                     page.addTargetRequest(request);
                 }
 
@@ -137,7 +134,6 @@ public class IndexRecProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-//        return CommonTools.getAbuyunSite(site).setSleepTime(500);
         return this.site;
     }
 
@@ -151,7 +147,7 @@ public class IndexRecProcessor extends PandaProcessor {
         huyaIndex = "http://www.huya.com/";
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
-        Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex,huyaIndex).addPipeline(new ConsolePipeline()).run();
+        Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         try {
             if (douyuRecAnchors.size() > 0) {
                 hive.write2(hivePaht, douyuRecAnchors, Const.DOUYUINDEXREC, curMinute);

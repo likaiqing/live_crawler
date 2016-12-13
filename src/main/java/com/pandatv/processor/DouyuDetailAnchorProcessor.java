@@ -26,11 +26,8 @@ import java.util.List;
  */
 public class DouyuDetailAnchorProcessor extends PandaProcessor {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(DouyuDetailAnchorProcessor.class);
-    private static List<String> detailAnchors = new ArrayList<>();
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room";
     private static String job = "";
-    private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
-    private static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
     private static int exCnt;
 
     @Override
@@ -114,9 +111,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-//        return this.site;//seleniumdownloader时使用,不能使用代理
-        return CommonTools.getAbuyunSite(site).setSleepTime(1000);//采用两种downloader均已成功,测试仓促,最好再测试一遍
-//        return CommonTools.getMayiSite(site);//未测试通过
+        return this.site;
     }
 
     /**

@@ -2,6 +2,7 @@ package com.pandatv.processor;
 
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
+import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.HuyaAnchorPipeline;
 import com.pandatv.tools.IOTools;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class HuyaAnchorProcessor extends PandaProcessor {
         String hour = args[2];
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
-        Spider.create(new HuyaAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new HuyaAnchorPipeline(job,bw)).run();
+        Spider.create(new HuyaAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new HuyaAnchorPipeline(job,bw)).setDownloader(new PandaDownloader()).run();
         IOTools.closeBw(bw);
     }
 

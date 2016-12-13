@@ -3,6 +3,7 @@ package com.pandatv.processor;
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
+import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.ZhanqiPipeline;
 import com.pandatv.tools.IOTools;
 import us.codecraft.webmagic.Page;
@@ -28,7 +29,7 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
         if (curPage * 30 < cnt) {
             page.addTargetRequest(urlTmp + (curPage + 1) + jsonStr);
         }
-        page.putField("json",json);
+        page.putField("json", json);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
         String date = args[1];//20161114
         String hour = args[2];//10
         BufferedWriter bw = IOTools.getBW(Const.FILEDIR + job + "_" + date + "_" + hour + ".csv");
-        Spider.create(new ZhanqiAnchorProcessor()).addUrl(firUrl).addPipeline(new ZhanqiPipeline(job, bw)).run();
+        Spider.create(new ZhanqiAnchorProcessor()).addUrl(firUrl).addPipeline(new ZhanqiPipeline(job, bw)).setDownloader(new PandaDownloader()).run();
         IOTools.closeBw(bw);
     }
 }

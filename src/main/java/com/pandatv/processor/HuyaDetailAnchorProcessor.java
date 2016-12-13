@@ -27,11 +27,8 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(HuyaDetailAnchorProcessor.class);
     private static String tmpUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=";
     private static String tmpHostUrl = "http://www.huya.com/";
-    private static List<String> detailAnchors = new ArrayList<>();
     private static Set<String> competitionLive = new HashSet<>();
     private static String competitionUrl = "http://www.huya.com/cache.php?m=HotRecApi&do=getLiveInfo&yyid=";
-    private static StringBuffer failedUrl = new StringBuffer("failedUrl:");
-    private static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
     private static String job = "";
     private static int exCnt;
 
@@ -135,8 +132,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-//        return this.site;
-        return CommonTools.getAbuyunSite(site).setSleepTime(1);
+        return this.site;
     }
 
     public static void crawler(String[] args) {
