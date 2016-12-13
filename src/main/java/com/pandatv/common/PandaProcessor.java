@@ -34,10 +34,10 @@ public abstract class PandaProcessor implements PageProcessor {
             .setCharset("UTF-8")
             .setRetrySleepTime(1)
             .setCycleRetryTimes(Const.CYCLERETRYTIMES)
-            .setHttpProxy(new HttpHost(Const.ABUYUNPHOST,Const.ABUYUNPORT))
-            .addHeader("Proxy-Switch-Ip","yes")
+            .setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT))
+            .addHeader("Proxy-Switch-Ip", "yes")
             .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:45.0) Gecko/20100101 Firefox/45.0")
-            .addHeader("Proxy-Authorization","Basic "+ (new BASE64Encoder()).encode((Const.GENERATORKEY+":"+Const.GENERATORPASS).getBytes()));
+            .addHeader("Proxy-Authorization", "Basic " + (new BASE64Encoder()).encode((Const.GENERATORKEY + ":" + Const.GENERATORPASS).getBytes()));
 
     public static String getRandomStr() {
         return randomStr + "-" + randomTime;

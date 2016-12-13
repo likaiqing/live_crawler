@@ -6,7 +6,9 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.HuyaDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.*;
+import com.pandatv.tools.DateTools;
+import com.pandatv.tools.IOTools;
+import com.pandatv.tools.UnicodeTools;
 import com.pandatv.work.MailTools;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -118,7 +120,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 Request request = new Request(competitionUrl + rid).setPriority(5);
                 request.putExtra("rid", rid);
                 page.addTargetRequest(request);
-            }else {
+            } else {
                 failedUrl.append(curUrl + ";");
             }
             logger.info("process exception,url:{},html:{}" + curUrl, page.getHtml());
@@ -144,10 +146,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         job = args[0];//
         String date = args[1];
         String hour = args[2];
-        String curMinute = DateTools.getCurMinute();
-        long s = System.currentTimeMillis();
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
-        HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();
         try {
@@ -156,13 +155,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            BufferedWriter bw = IOTools.getBW("/tmp/" +job + date + hour + curMinute);
+            BufferedWriter bw = IOTools.getBW("/tmp/" + job + date + hour + curMinute);
             IOTools.writeList(detailAnchors, bw);
             MailTools.sendAlarmmail("虎牙hive.write异常", e.getMessage().toString());
         }
-        long e = System.currentTimeMillis();
-        long time = e - s;
-        String to = DateTools.getCurDate();
-        MailTools.sendTaskMail(Const.HUYAFINISH + date + hour, from + "<-->" + to, time + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
+        MailTools.sendTaskMail(Const.HUYAFINISH + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
     }
 }
