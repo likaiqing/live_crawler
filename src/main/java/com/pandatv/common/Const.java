@@ -47,6 +47,7 @@ public class Const {
     public static final String DOUYUFINISH = "斗鱼爬取退出";
     public static final String DOUYUFINISHDETAIL = "斗鱼爬取退出(detail)";
     public static final String HUYAFINISH = "虎牙爬取退出";
+    public static final String HUYAFINISHDETAIL = "虎牙爬取退出(detail)";
     public static final String SWITCHURL = "http://proxy.abuyun.com/switch-ip";
     public static final String INDEXREC = "indexrec";
     public static final String DOUYUINDEXREC = "douyuindexrec";
@@ -56,4 +57,6 @@ public class Const {
     public static final String EXPORT2EXCEL = "export2excel";
 //    public static final String EXPORTEXCELDIR = "/home/likaiqing/shell/crawler_ana/crawler_report/";
     public static final String EXPORTEXCELDIR = "/Users/likaiqing/Downloads/analyse/";
+    public static final String DOUYUINDEXRECEXIT = "首页推荐抓取退出(douyu)";
+    public static final String HUYAINDEXRECEXIT = "首页推荐抓取退出(huya)";
 }

@@ -20,13 +20,15 @@ import java.util.List;
 public abstract class PandaProcessor implements PageProcessor {
     protected static List<String> detailAnchors = new ArrayList<>();
     protected static List<String> anchors = new ArrayList<>();
-    protected static String job;
-    protected static StringBuffer failedUrl = new StringBuffer("failedUrl:");
-    protected static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
-    protected static String from = DateTools.getCurDate();
-    protected static String curMinute = DateTools.getCurMinute();
-    protected static long s = System.currentTimeMillis();
-    protected static HiveJDBCConnect hive = new HiveJDBCConnect();
+    public static String job;
+    public static StringBuffer failedUrl = new StringBuffer("failedUrl:");
+    public static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
+    public static String from = DateTools.getCurDate();
+    public static String curMinute = DateTools.getCurMinute();
+    public static String date;
+    public static String hour;
+    public static long s = System.currentTimeMillis();
+    public static HiveJDBCConnect hive = new HiveJDBCConnect();
 
     private static String randomStr = RandomStringUtils.random(10, new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});
     private static String randomTime = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());

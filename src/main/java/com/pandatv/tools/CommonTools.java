@@ -2,6 +2,7 @@ package com.pandatv.tools;
 
 import com.google.common.base.Joiner;
 import com.pandatv.common.Const;
+import com.pandatv.common.PandaProcessor;
 import com.pandatv.pojo.Anchor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
@@ -133,5 +134,18 @@ public class CommonTools {
         site.addHeader("Proxy-Authorization","Basic "+ (new BASE64Encoder()).encode((Const.GENERATORKEY+":"+Const.GENERATORPASS).getBytes()));//PandaHttpClientGenerator
         site.addHeader("Proxy-Switch-Ip","yes");
         return site;
+    }
+
+    public static void writeAndMail(String hivePaht, String douyufinish, List<String> anchors) {
+        try {
+            if (anchors.size() > 0) {
+                PandaProcessor.hive.write2(hivePaht, anchors, PandaProcessor.job, PandaProcessor.curMinute);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (Integer.parseInt(PandaProcessor.hour) % 5 == 0) {
+            MailTools.sendTaskMail(douyufinish + PandaProcessor.date + PandaProcessor.hour, PandaProcessor.from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - PandaProcessor.s) + "毫秒;", anchors.size(), PandaProcessor.timeOutUrl, PandaProcessor.failedUrl);
+        }
     }
 }

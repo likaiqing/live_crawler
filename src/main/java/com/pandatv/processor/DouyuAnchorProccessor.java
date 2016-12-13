@@ -3,11 +3,9 @@ package com.pandatv.processor;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.pipeline.DouyuAnchorPipeline;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.DateTools;
-import com.pandatv.tools.IOTools;
 import com.pandatv.tools.MailTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +14,6 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
-import java.io.BufferedWriter;
 import java.util.List;
 
 /**
@@ -28,27 +25,18 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 
     public static void crawler(String[] args) {
         job = args[0];//douyuanchor
-        String date = args[1];
-        String hour = args[2];
+        date = args[1];
+        hour = args[2];
         String hivePaht = Const.HIVEDIR + "panda_anchor_crawler/" + date + hour;
         String firstUrl = "https://www.douyu.com/directory/all";
         Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(1).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
-        try {
-            if (anchors.size() > 0) {
-                hive.write2(hivePaht, anchors, job, curMinute);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (Integer.parseInt(hour) % 5 == 0) {
-            MailTools.sendTaskMail(Const.DOUYUFINISH + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
-        }
+        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISH, anchors);
     }
 
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().toString();
-        logger.info("process url:{}",curUrl);
+        logger.info("process url:{}", curUrl);
         if (curUrl.equals("https://www.douyu.com/directory/all")) {
             String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
             int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));

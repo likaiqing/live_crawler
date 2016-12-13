@@ -6,10 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.HuyaDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.DateTools;
-import com.pandatv.tools.IOTools;
-import com.pandatv.tools.MailTools;
-import com.pandatv.tools.UnicodeTools;
+import com.pandatv.tools.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +14,7 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
 import java.io.BufferedWriter;
@@ -142,23 +140,11 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         competitionLive.add("http://www.huya.com/1735597169");
         competitionLive.add("http://www.huya.com/1773588838");
         job = args[0];//
-        String date = args[1];
-        String hour = args[2];
+        date = args[1];
+        hour = args[2];
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
-        Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new HuyaDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();
-        try {
-            if (detailAnchors.size() > 0) {
-                hive.write2(hivePaht, detailAnchors, job, curMinute);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            BufferedWriter bw = IOTools.getBW("/tmp/" + job + date + hour + curMinute);
-            IOTools.writeList(detailAnchors, bw);
-            MailTools.sendAlarmmail("虎牙hive.write异常", e.getMessage().toString());
-        }
-        if (Integer.parseInt(hour) % 5 == 0) {
-            MailTools.sendTaskMail(Const.HUYAFINISH + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
-        }
+        Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);
     }
 }

@@ -134,35 +134,14 @@ public class IndexRecProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        String date = args[1];
-        String hour = args[2];
+        job = args[0];
+        date = args[1];
+        hour = args[2];
         douyuIndex = "https://www.douyu.com/";
         huyaIndex = "http://www.huya.com/";
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        try {
-            if (douyuRecAnchors.size() > 0) {
-                hive.write2(hivePaht, douyuRecAnchors, Const.DOUYUINDEXREC, curMinute);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            BufferedWriter bw = IOTools.getBW("/tmp/douyurecanchors" + date + hour + curMinute);
-            IOTools.writeList(douyuRecAnchors, bw);
-            MailTools.sendAlarmmail("斗鱼hive.write异常", e.getMessage().toString());
-        }
-        try {
-            if (huyaRecAnchors.size() > 0) {
-                hive.write2(hivePaht, huyaRecAnchors, Const.HUYAINDEXREC, curMinute);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            BufferedWriter bw = IOTools.getBW("/tmp/huyarecanchors" + date + hour + curMinute);
-            IOTools.writeList(huyaRecAnchors, bw);
-            MailTools.sendAlarmmail("斗鱼hive.write异常", e.getMessage().toString());
-        }
-        if (Integer.parseInt(hour) % 5 == 0) {
-            MailTools.sendTaskMail(Const.INDEXRECEXIT + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", douyuRecAnchors.size() + huyaRecAnchors.size(), timeOutUrl, failedUrl);
-        }
-
+        CommonTools.writeAndMail(hivePaht, Const.DOUYUINDEXRECEXIT, douyuRecAnchors);
+        CommonTools.writeAndMail(hivePaht, Const.HUYAINDEXRECEXIT, huyaRecAnchors);
     }
 }

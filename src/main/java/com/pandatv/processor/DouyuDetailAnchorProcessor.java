@@ -118,23 +118,11 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
      */
     public static void crawler(String[] args) {
         job = args[0];//douyuanchordetail
-        String date = args[1];
-        String hour = args[2];
+        date = args[1];
+        hour = args[2];
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new DouyuDetailAnchorProcessor()).thread(6).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
-        try {
-            if (detailAnchors.size() > 0) {
-                hive.write2(hivePaht, detailAnchors, job, curMinute);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            BufferedWriter bw = IOTools.getBW("/tmp/" + job + date + hour + curMinute);
-            IOTools.writeList(detailAnchors, bw);
-            MailTools.sendAlarmmail("斗鱼hive.write异常", e.getMessage().toString());
-        }
-        if (Integer.parseInt(hour) % 5 == 0) {
-            MailTools.sendTaskMail(Const.DOUYUFINISHDETAIL + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
-        }
+        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
     }
 }
