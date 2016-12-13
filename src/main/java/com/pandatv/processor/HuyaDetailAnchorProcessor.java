@@ -31,7 +31,6 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static String tmpHostUrl = "http://www.huya.com/";
     private static Set<String> competitionLive = new HashSet<>();
     private static String competitionUrl = "http://www.huya.com/cache.php?m=HotRecApi&do=getLiveInfo&yyid=";
-    private static String job = "";
     private static int exCnt;
 
     @Override
@@ -142,7 +141,6 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         competitionLive.add("http://www.huya.com/1735596609");
         competitionLive.add("http://www.huya.com/1735597169");
         competitionLive.add("http://www.huya.com/1773588838");
-        String from = DateTools.getCurDate();
         job = args[0];//
         String date = args[1];
         String hour = args[2];

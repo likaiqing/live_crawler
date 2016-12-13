@@ -30,30 +30,30 @@ public class CommonTools {
         List<String> rids = resultItems.get("rids");
         List<String> titles = resultItems.get("titles");
         List<String> categories = resultItems.get("categories");
-        for (int i = 0; i < names.size(); i++) {
-            Anchor anchor = new Anchor();
-            String popularitiyStr = popularities.get(i);
-            int popularitiyNum = createNum(popularitiyStr);
-            String rid = rids.get(i);
-            if (rid.contains("\u0001")) {
-                logger.info("rid contains SEP,url:{},rid:{}", url, rid);
-            }
-            if (!isValidUnicode(rid)) {
-                logger.info("rid is not valid unicode,url:{},rid:{}", url, rid);
-            }
-            anchor.setRid(rid);
-            anchor.setName(names.get(i));
-            anchor.setTitle(titles.get(i));
-            anchor.setCategory(categories.get(i));
-            anchor.setPopularityStr(popularitiyStr);
-            anchor.setPopularityNum(popularitiyNum);
-            anchor.setJob(job);
-            anchor.setPlat(plat);
-            anchor.setGame(gameCategory);
-            anchor.setUrl(url);
-            String result = anchor.toString();
-            results.add(result);
-        }
+//        for (int i = 0; i < names.size(); i++) {
+//            Anchor anchor = new Anchor();
+//            String popularitiyStr = popularities.get(i);
+//            int popularitiyNum = createNum(popularitiyStr);
+//            String rid = rids.get(i);
+//            if (rid.contains("\u0001")) {
+//                logger.info("rid contains SEP,url:{},rid:{}", url, rid);
+//            }
+//            if (!isValidUnicode(rid)) {
+//                logger.info("rid is not valid unicode,url:{},rid:{}", url, rid);
+//            }
+//            anchor.setRid(rid);
+//            anchor.setName(names.get(i));
+//            anchor.setTitle(titles.get(i));
+//            anchor.setCategory(categories.get(i));
+//            anchor.setPopularityStr(popularitiyStr);
+//            anchor.setPopularityNum(popularitiyNum);
+//            anchor.setJob(job);
+//            anchor.setPlat(plat);
+//            anchor.setGame(gameCategory);
+//            anchor.setUrl(url);
+//            String result = anchor.toString();
+//            results.add(result);
+//        }
         return results;
     }
 

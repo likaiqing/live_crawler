@@ -4,7 +4,6 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.mail.SendMail;
 import com.pandatv.pipeline.DouyuNewlivePipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.*;
@@ -28,9 +27,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
     private static String url = "https://www.douyu.com/member/recommlist/getfreshlistajax?bzdata=0&clickNum=";
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room/";
     private static Set<DetailAnchor> detailAnchorSet = new HashSet<>();
-    private static String job = "";
     private static int exCnt;
-    private static SendMail mail;
 
     @Override
     public void process(Page page) {
@@ -87,7 +84,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
             failedUrl.append(curUrl + ";");
 //            mail.sendAlarmmail(Const.HUYAEXFLAG, "url: " + curUrl);
             if (exCnt++ > Const.EXTOTAL) {
-                mail.sendAlarmmail("斗鱼新秀process异常过多退出", "url: " + curUrl);
+                MailTools.sendAlarmmail("斗鱼新秀process异常过多退出", "url: " + curUrl);
                 System.exit(1);
             }
         }
@@ -100,12 +97,9 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        mail = new SendMail("likaiqing@panda.tv", "");
         job = args[0];
-        String from = DateTools.getCurDate();
         String date = args[1];
         String hour = args[2];
-        String curMinute = DateTools.getCurMinute();
         long s = System.currentTimeMillis();
         HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;

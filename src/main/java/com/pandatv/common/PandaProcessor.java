@@ -1,5 +1,6 @@
 package com.pandatv.common;
 
+import com.pandatv.mail.SendMail;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
 import org.apache.commons.lang.RandomStringUtils;
@@ -18,8 +19,11 @@ import java.util.List;
  */
 public abstract class PandaProcessor implements PageProcessor {
     protected static List<String> detailAnchors = new ArrayList<>();
+    protected static List<String> anchors = new ArrayList<>();
+    protected static String job;
     protected static StringBuffer failedUrl = new StringBuffer("failedUrl:");
     protected static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
+    protected static String from = DateTools.getCurDate();
     protected static String curMinute = DateTools.getCurMinute();
     protected static long s = System.currentTimeMillis();
     protected static HiveJDBCConnect hive = new HiveJDBCConnect();

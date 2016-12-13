@@ -134,14 +134,10 @@ public class IndexRecProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        String from = DateTools.getCurDate();
         String date = args[1];
         String hour = args[2];
-        String curMinute = DateTools.getCurMinute();
-        long s = System.currentTimeMillis();
         douyuIndex = "https://www.douyu.com/";
         huyaIndex = "http://www.huya.com/";
-        HiveJDBCConnect hive = new HiveJDBCConnect();
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         try {

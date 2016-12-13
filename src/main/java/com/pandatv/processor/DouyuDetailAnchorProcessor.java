@@ -25,7 +25,6 @@ import java.util.List;
 public class DouyuDetailAnchorProcessor extends PandaProcessor {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(DouyuDetailAnchorProcessor.class);
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room";
-    private static String job = "";
     private static int exCnt;
 
     @Override
@@ -118,7 +117,6 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
      * @param args
      */
     public static void crawler(String[] args) {
-        String from = DateTools.getCurDate();
         job = args[0];//douyuanchordetail
         String date = args[1];
         String hour = args[2];
@@ -136,7 +134,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             MailTools.sendAlarmmail("斗鱼hive.write异常", e.getMessage().toString());
         }
         if (Integer.parseInt(hour) % 5 == 0) {
-            MailTools.sendTaskMail(Const.DOUYUFINISH + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
+            MailTools.sendTaskMail(Const.DOUYUFINISHDETAIL + date + hour, from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - s) + "毫秒;", detailAnchors.size(), timeOutUrl, failedUrl);
         }
     }
 }
