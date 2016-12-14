@@ -136,16 +136,16 @@ public class CommonTools {
         return site;
     }
 
-    public static void writeAndMail(String hivePaht, String douyufinish, List<String> anchors) {
+    public static void writeAndMail(String hivePaht, String douyufinish, List<String> list) {
         try {
-            if (anchors.size() > 0) {
-                PandaProcessor.hive.write2(hivePaht, anchors, PandaProcessor.job, PandaProcessor.curMinute);
+            if (list.size() > 0) {
+                PandaProcessor.hive.write2(hivePaht, list, PandaProcessor.job, PandaProcessor.curMinute);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (Integer.parseInt(PandaProcessor.hour) % 5 == 0) {
-            MailTools.sendTaskMail(douyufinish + PandaProcessor.date + PandaProcessor.hour, PandaProcessor.from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - PandaProcessor.s) + "毫秒;", anchors.size(), PandaProcessor.timeOutUrl, PandaProcessor.failedUrl);
+            MailTools.sendTaskMail(douyufinish + PandaProcessor.date + PandaProcessor.hour, PandaProcessor.from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - PandaProcessor.s) + "毫秒;", list.size(), PandaProcessor.timeOutUrl, PandaProcessor.failedUrl);
         }
     }
 }

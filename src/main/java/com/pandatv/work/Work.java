@@ -71,6 +71,11 @@ public class Work {
                 judgeParam(args, 6);
                 ExportData.export2Excel(args);
                 break;
+            case Const.CATEGORYCRAWLER://斗鱼和虎牙首页推荐的douyuindexrec  huyaindexrec
+                logger.info("ChushouAnchorProcessor.crawler start");
+                judgeParam(args, 3);
+                CategoryCrawlerProcessor.crawler(args);
+                break;
         }
     }
 

@@ -89,6 +89,6 @@ public class QuanminAnchorProcessor extends PandaProcessor {
         String hivePaht = Const.HIVEDIR + "panda_anchor_crawler/" + date + hour;
         String dateStr = format.format(new Date());
         Spider.create(new QuanminAnchorProcessor()).addUrl(firUrl + dateStr).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        CommonTools.writeAndMail(hivePaht, Const.QUANMINFINISHDETAIL, anchors);
+        CommonTools.writeAndMail(hivePaht, Const.QUANMINFINISH, anchors);
     }
 }

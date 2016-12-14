@@ -1,5 +1,6 @@
 package com.pandatv.downloader.selenium;
 
+import com.pandatv.common.Const;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -48,8 +49,7 @@ public class SeleniumDownloader implements Downloader, Closeable {
      * @author bob.li.0718@gmail.com
      */
     public SeleniumDownloader() {
-        // System.setProperty("phantomjs.binary.path",
-        // "/Users/Bingo/Downloads/phantomjs-1.9.7-macosx/bin/phantomjs");
+        System.getProperties().setProperty("webdriver.chrome.driver", Const.CHROMEDRIVER);
     }
 
     /**
@@ -92,7 +92,7 @@ public class SeleniumDownloader implements Downloader, Closeable {
         }
 
 		/*
-		 * TODO You can add mouse event or other processes
+         * TODO You can add mouse event or other processes
 		 *
 		 * @author: bob.li.0718@gmail.com
 		 */

@@ -59,8 +59,12 @@ public class Const {
     public static final String EXPORTEXCELDIR = "/Users/likaiqing/Downloads/analyse/";
     public static final String DOUYUINDEXRECEXIT = "首页推荐抓取退出(douyu)";
     public static final String HUYAINDEXRECEXIT = "首页推荐抓取退出(huya)";
-    public static final String CHUSHOUFINISHDETAIL = "触手抓取退出";
-    public static final String ZHANQIFINISHDETAIL = "战旗抓取退出";
-    public static final String LONGZHUFINISHDETAIL = "龙珠抓取退出";
-    public static final String QUANMINFINISHDETAIL = "全民抓取退出";
+    public static final String CHUSHOUFINISH = "触手抓取退出";
+    public static final String ZHANQIFINISH = "战旗抓取退出";
+    public static final String LONGZHUFINISH = "龙珠抓取退出";
+    public static final String QUANMINFINISH = "全民抓取退出";
+    public static final String COMPETITORDIR = "/bigdata/hive/panda_competitor/";
+//    public static final String COMPETITORDIR = "/tmp/hive/likaiqing/panda_realtime/";
+    public static final String CATEGORYFINISH = "板块抓取退出";
+    public static final String CATEGORYCRAWLER = "categorycrawler";
 }
