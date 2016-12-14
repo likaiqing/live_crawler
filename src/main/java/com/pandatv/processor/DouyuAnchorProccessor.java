@@ -77,7 +77,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return CommonTools.getAbuyunSite(site).setSleepTime(10);
+        return this.site;
     }
 
     public static void main(String[] args) {
