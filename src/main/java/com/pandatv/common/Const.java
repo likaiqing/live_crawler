@@ -67,4 +67,7 @@ public class Const {
 //    public static final String COMPETITORDIR = "/tmp/hive/likaiqing/panda_realtime/";
     public static final String CATEGORYFINISH = "板块抓取退出";
     public static final String CATEGORYCRAWLER = "categorycrawler";
+    public static final String PANDAANCHOR = "pandaanchor";
+    public static final String PANDAANCHORFINISH = "pandaanchorfinish";
+    public static final String PANDA = "panda";
 }

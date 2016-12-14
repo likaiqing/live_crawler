@@ -63,18 +63,23 @@ public class Work {
                 break;
             case Const.INDEXREC://斗鱼和虎牙首页推荐的douyuindexrec  huyaindexrec
                 judgeParam(args, 3);
-                logger.info("ChushouAnchorProcessor.crawler start");
+                logger.info("IndexRecProcessor.crawler start");
                 IndexRecProcessor.crawler(args);
                 break;
-            case Const.EXPORT2EXCEL://斗鱼和虎牙首页推荐的douyuindexrec  huyaindexrec
-                logger.info("ChushouAnchorProcessor.crawler start");
+            case Const.EXPORT2EXCEL:
+                logger.info("ExportData.crawler start");
                 judgeParam(args, 6);
                 ExportData.export2Excel(args);
                 break;
-            case Const.CATEGORYCRAWLER://斗鱼和虎牙首页推荐的douyuindexrec  huyaindexrec
-                logger.info("ChushouAnchorProcessor.crawler start");
+            case Const.CATEGORYCRAWLER://7个板块数据爬取
+                logger.info("CategoryCrawlerProcessor.crawler start");
                 judgeParam(args, 3);
                 CategoryCrawlerProcessor.crawler(args);
+                break;
+            case Const.PANDAANCHOR://pandaanchor爬取
+                logger.info("PandaAnchorProcessor.crawler start");
+                judgeParam(args, 3);
+                PandaAnchorProcessor.crawler(args);
                 break;
         }
     }

@@ -20,6 +20,7 @@ import java.util.List;
 public abstract class PandaProcessor implements PageProcessor {
     protected static List<String> detailAnchors = new ArrayList<>();
     protected static List<String> anchors = new ArrayList<>();
+    protected static List<String> results = new ArrayList<>();
     public static String job;
     public static StringBuffer failedUrl = new StringBuffer("failedUrl:");
     public static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
