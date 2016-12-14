@@ -106,8 +106,8 @@ public class WebDriverPool {
         cliArgsCap.add("--ssl-protocol=any");
         cliArgsCap.add("--ignore-ssl-errors=true");
         //设置代理
-        cliArgsCap.add("--proxy=" + Const.ABUYUNPHOST + ":" + Const.ABUYUNPORT);
-        cliArgsCap.add("--proxy-auth=" + Const.GENERATORKEY + ":" + Const.GENERATORPASS);
+//        cliArgsCap.add("--proxy=" + Const.ABUYUNPHOST + ":" + Const.ABUYUNPORT);
+//        cliArgsCap.add("--proxy-auth=" + Const.GENERATORKEY + ":" + Const.GENERATORPASS);
 
         sCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,
                 cliArgsCap);
