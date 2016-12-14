@@ -144,7 +144,7 @@ public class CommonTools {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (Integer.parseInt(PandaProcessor.hour) % 5 == 0) {
+        if (PandaProcessor.mailHours.contains(PandaProcessor.hour)) {
             MailTools.sendTaskMail(douyufinish + PandaProcessor.date + PandaProcessor.hour, PandaProcessor.from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - PandaProcessor.s) + "毫秒;", list.size(), PandaProcessor.timeOutUrl, PandaProcessor.failedUrl);
         }
     }

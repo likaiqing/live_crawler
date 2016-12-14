@@ -1,6 +1,5 @@
 package com.pandatv.common;
 
-import com.pandatv.mail.SendMail;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
 import org.apache.commons.lang.RandomStringUtils;
@@ -30,6 +29,7 @@ public abstract class PandaProcessor implements PageProcessor {
     public static String hour;
     public static long s = System.currentTimeMillis();
     public static HiveJDBCConnect hive = new HiveJDBCConnect();
+    public static final String mailHours = "00,01,06,09,10,14,16,18,19";
 
     private static String randomStr = RandomStringUtils.random(10, new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});
     private static String randomTime = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
