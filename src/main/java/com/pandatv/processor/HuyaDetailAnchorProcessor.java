@@ -131,7 +131,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+        return this.site.setSleepTime(1);
     }
 
     public static void crawler(String[] args) {

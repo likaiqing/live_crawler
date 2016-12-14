@@ -40,7 +40,7 @@ public class IndexRecProcessor extends PandaProcessor {
                     page.addTargetRequest(douyuDetailUrltmp + rid);
                 }
             } else if (curUrl.equals(huyaIndex)) {
-                String js = page.getHtml().getDocument().getElementsByAttributeValue("data-fixed", "true").get(5).toString();
+                String js = page.getHtml().getDocument().getElementsByAttributeValue("data-fixed", "true").get(4).toString();
                 String recJson = js.substring(js.indexOf("var slides=") + 12, js.indexOf("var slideMainIndex")).trim().replace(";", "");
                 JSONArray jsonArray = JsonPath.read(recJson, "$");
                 for (Object rec : jsonArray) {

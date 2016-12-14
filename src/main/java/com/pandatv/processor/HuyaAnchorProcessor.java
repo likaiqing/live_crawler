@@ -1,9 +1,13 @@
 package com.pandatv.processor;
 
+import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
+import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
+import net.minidev.json.JSONArray;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -11,6 +15,7 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,15 +31,46 @@ public class HuyaAnchorProcessor extends PandaProcessor {
         logger.info("process url:{}", url);
         List<String> all = page.getJson().jsonPath("$.data.list").all();
         if (all.size() > 0) {
-            page.putField("json", page.getJson().toString());
             String newUrl = this.url + (Integer.parseInt(url.substring(url.lastIndexOf('=') + 1)) + 1);
             page.addTargetRequest(newUrl);
+            JSONArray list = JsonPath.read(page.getJson().get(), "$.data.list");
+            List<String> results = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                String jsonStr = list.get(i).toString();
+                String rid = JsonPath.read(jsonStr, "$.privateHost");
+                String name = JsonPath.read(jsonStr, "$.nick");
+                String title = JsonPath.read(jsonStr, "$.introduction");
+                String category = JsonPath.read(jsonStr, "$.gameFullName");
+                String popularityStr = JsonPath.read(jsonStr, "$.totalCount");
+                int popularityNum = Integer.parseInt(popularityStr);
+                if (StringUtils.isEmpty(rid) || StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(category) || StringUtils.isEmpty(popularityStr)) {
+                    continue;
+                }
+                if (rid.contains("\u0001")){
+                    logger.info("rid contains SEP,url:{},rid:{}",url,rid);
+                }
+                if (!CommonTools.isValidUnicode(rid)){
+                    logger.info("rid is not valid unicode,url:{},rid:{}",url,rid);
+                }
+                Anchor anchor = new Anchor();
+                anchor.setRid(rid);
+                anchor.setName(name);
+                anchor.setTitle(title);
+                anchor.setCategory(category);
+                anchor.setPopularityStr(popularityStr);
+                anchor.setPopularityNum(popularityNum);
+                anchor.setJob(job);
+                anchor.setPlat(Const.HUYA);
+                anchor.setGame(Const.GAMEALL);
+                anchor.setUrl(url);
+                anchors.add(anchor.toString());
+            }
         }
     }
 
     @Override
     public Site getSite() {
-        return this.site;
+        return this.site.setSleepTime(1);
     }
 
     public static void crawler(String[] args) {

@@ -108,7 +108,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+        return this.site.setSleepTime(500);
     }
 
     /**

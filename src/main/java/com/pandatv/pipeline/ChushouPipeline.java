@@ -68,22 +68,22 @@ public class ChushouPipeline implements Pipeline {
     private void parseJson(ResultItems resultItems, List<String> results) {
         String curUrl = resultItems.getRequest().getUrl();
         String json = resultItems.get("json");
-        JSONArray read = JsonPath.read(json, "$.data.items");
-        for (int i=0;i<read.size();i++){
-            String room = read.get(i).toString();
-            Anchor anchor = new Anchor();
-            anchor.setRid(JsonPath.read(room,"$.targetKey").toString());
-            anchor.setName(JsonPath.read(room,"$.meta.creator").toString());
-            anchor.setTitle(JsonPath.read(room,"$.name").toString());
-            anchor.setCategory(JsonPath.read(room,"$.meta.gameName").toString());
-            String popularyStr = JsonPath.read(room,"$.meta.onlineCount").toString();
-            anchor.setPopularityStr(popularyStr);
-            anchor.setPopularityNum(CommonTools.createNum(popularyStr));
-            anchor.setJob(job);
-            anchor.setPlat(Const.CHUSHOU);
-            anchor.setGame(Const.GAMEALL);
-            anchor.setUrl(curUrl);
-            results.add(anchor.toString());
-        }
+//        JSONArray read = JsonPath.read(json, "$.data.items");
+//        for (int i=0;i<read.size();i++){
+//            String room = read.get(i).toString();
+//            Anchor anchor = new Anchor();
+//            anchor.setRid(JsonPath.read(room,"$.targetKey").toString());
+//            anchor.setName(JsonPath.read(room,"$.meta.creator").toString());
+//            anchor.setTitle(JsonPath.read(room,"$.name").toString());
+//            anchor.setCategory(JsonPath.read(room,"$.meta.gameName").toString());
+//            String popularyStr = JsonPath.read(room,"$.meta.onlineCount").toString();
+//            anchor.setPopularityStr(popularyStr);
+//            anchor.setPopularityNum(CommonTools.createNum(popularyStr));
+//            anchor.setJob(job);
+//            anchor.setPlat(Const.CHUSHOU);
+//            anchor.setGame(Const.GAMEALL);
+//            anchor.setUrl(curUrl);
+//            results.add(anchor.toString());
+//        }
     }
 }
