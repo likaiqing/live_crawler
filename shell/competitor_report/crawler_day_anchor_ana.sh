@@ -14,7 +14,8 @@ SELECT
   coalesce(ana.max_pcu, rec.max_pcu)              max_pcu,
   coalesce(ana.weight, rec.weight)        weight,
   coalesce(ana.followers, rec.followers)  followers,
-  coalesce(rec.rec_times, 0)              rec_times
+  coalesce(rec.rec_times, 0)              rec_times,
+  '$date'
 FROM
   (
     SELECT
