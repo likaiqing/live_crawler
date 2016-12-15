@@ -120,6 +120,9 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         job = args[0];//douyuanchordetail
         date = args[1];
         hour = args[2];
+        if (args.length == 4 && args[3].contains(",")) {
+            mailHours = args[3];
+        }
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new DouyuDetailAnchorProcessor()).thread(6).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))

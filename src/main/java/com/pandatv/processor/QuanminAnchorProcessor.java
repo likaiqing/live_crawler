@@ -86,6 +86,9 @@ public class QuanminAnchorProcessor extends PandaProcessor {
         job = args[0];//quanminanchor
         date = args[1];//20161114
         hour = args[2];//10
+        if (args.length == 4 && args[3].contains(",")) {
+            mailHours = args[3];
+        }
         String hivePaht = Const.HIVEDIR + "panda_anchor_crawler/" + date + hour;
         String dateStr = format.format(new Date());
         Spider.create(new QuanminAnchorProcessor()).addUrl(firUrl + dateStr).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();

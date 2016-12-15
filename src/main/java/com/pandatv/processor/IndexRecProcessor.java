@@ -5,7 +5,8 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.*;
+import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
 import us.codecraft.webmagic.Page;
@@ -15,7 +16,6 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
-import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,6 +137,9 @@ public class IndexRecProcessor extends PandaProcessor {
         job = args[0];
         date = args[1];
         hour = args[2];
+        if (args.length == 4 && args[3].contains(",")) {
+            mailHours = args[3];
+        }
         douyuIndex = "https://www.douyu.com/";
         huyaIndex = "http://www.huya.com/";
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;

@@ -142,6 +142,9 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         job = args[0];//
         date = args[1];
         hour = args[2];
+        if (args.length == 4 && args[3].contains(",")) {
+            mailHours = args[3];
+        }
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();

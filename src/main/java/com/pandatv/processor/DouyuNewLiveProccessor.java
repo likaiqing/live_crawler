@@ -101,6 +101,9 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
         job = args[0];
         date = args[1];
         hour = args[2];
+        if (args.length == 4 && args[3].contains(",")) {
+            mailHours = args[3];
+        }
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new PandaDownloader())
         List<String> anchorList = new ArrayList<>();

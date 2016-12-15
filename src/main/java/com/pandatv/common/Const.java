@@ -68,6 +68,6 @@ public class Const {
     public static final String CATEGORYFINISH = "板块抓取退出";
     public static final String CATEGORYCRAWLER = "categorycrawler";
     public static final String PANDAANCHOR = "pandaanchor";
-    public static final String PANDAANCHORFINISH = "pandaanchorfinish";
+    public static final String PANDAANCHORFINISH = "熊猫抓取退出";
     public static final String PANDA = "panda";
 }
