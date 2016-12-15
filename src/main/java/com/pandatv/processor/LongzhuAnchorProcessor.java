@@ -67,7 +67,7 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
         if (args.length == 4 && args[3].contains(",")) {
             mailHours = args[3];
         }
-        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date + hour;
+        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         Spider.create(new LongzhuAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISH, anchors);
     }

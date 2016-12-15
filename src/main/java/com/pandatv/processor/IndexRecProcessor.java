@@ -36,8 +36,8 @@ public class IndexRecProcessor extends PandaProcessor {
         try {
             if (curUrl.equals(douyuIndex)) {
                 List<String> all = page.getHtml().xpath("//div[@class='c-items']/ul/li/@data-id").all();
-                for (String rid : all) {
-                    page.addTargetRequest(douyuDetailUrltmp + rid);
+                for (int i = 0; i < all.size(); i++) {
+                    page.addTargetRequest(new Request(douyuDetailUrltmp + all.get(i)).putExtra("location", i + 1));
                 }
             } else if (curUrl.equals(huyaIndex)) {
                 String js = page.getHtml().getDocument().getElementsByAttributeValue("data-fixed", "true").get(4).toString();
@@ -45,8 +45,10 @@ public class IndexRecProcessor extends PandaProcessor {
                 JSONArray jsonArray = JsonPath.read(recJson, "$");
                 for (Object rec : jsonArray) {
                     String rid = JsonPath.read(rec, "$.privateHost").toString();
+                    int location = Integer.parseInt(JsonPath.read(rec, "$.recommendSite").toString());
                     Request request = new Request(huyaIndex + rid);
                     request.putExtra("rid", rid);
+                    request.putExtra("location", location);
                     page.addTargetRequest(request);
                 }
 
@@ -55,6 +57,7 @@ public class IndexRecProcessor extends PandaProcessor {
                 if (null != cycleTriedTimes && (int) cycleTriedTimes >= Const.CYCLERETRYTIMES - 1) {
                     timeOutUrl.append(curUrl).append(";");
                 }
+                Integer location = (Integer) page.getRequest().getExtra("location");
                 String json = page.getJson().get();
                 String rid = JsonPath.read(json, "$.data.room_id");
                 String name = JsonPath.read(json, "$.data.owner_name");
@@ -75,12 +78,13 @@ public class IndexRecProcessor extends PandaProcessor {
                 detailAnchor.setUrl(curUrl);
                 detailAnchor.setLastStartTime(lastStartTime);
                 detailAnchor.setJob(Const.DOUYUINDEXREC);
-                detailAnchors.add(detailAnchor.toString());
+                detailAnchors.add(detailAnchor.toString() + Const.SEP + location);
             } else if (curUrl.startsWith(huyaIndex) && !curUrl.endsWith("/")) {
                 Object cycleTriedTimes = page.getRequest().getExtra("_cycle_tried_times");
                 if (null != cycleTriedTimes && (int) cycleTriedTimes >= Const.CYCLERETRYTIMES - 1) {
                     timeOutUrl.append(curUrl).append(";");
                 }
+                Integer location = (Integer) page.getRequest().getExtra("location");
                 Html html = page.getHtml();
                 String rid = null == page.getRequest().getExtra("rid") ? "" : page.getRequest().getExtra("rid").toString();
                 String name = html.xpath("//span[@class='host-name']/text()").get();
@@ -114,7 +118,7 @@ public class IndexRecProcessor extends PandaProcessor {
                 detailAnchor.setNotice(notice);
                 detailAnchor.setJob(Const.HUYAINDEXREC);
                 detailAnchor.setUrl(curUrl);
-                detailAnchors.add(detailAnchor.toString());
+                detailAnchors.add(detailAnchor.toString() + Const.SEP + location);
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
@@ -142,7 +146,7 @@ public class IndexRecProcessor extends PandaProcessor {
         }
         douyuIndex = "https://www.douyu.com/";
         huyaIndex = "http://www.huya.com/";
-        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date + hour;
+        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;
         Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
     }
