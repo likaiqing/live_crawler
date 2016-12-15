@@ -28,7 +28,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         if (args.length == 4 && args[3].contains(",")) {
             mailHours = args[3];
         }
-        String hivePaht = Const.HIVEDIR + "panda_anchor_crawler/" + date + hour;
+        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date + hour;
         String firstUrl = "https://www.douyu.com/directory/all";
         Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(1).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
         CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISH, anchors);

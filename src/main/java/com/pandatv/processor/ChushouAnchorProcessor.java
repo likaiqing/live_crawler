@@ -90,7 +90,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
         if (args.length == 4 && args[3].contains(",")) {
             mailHours = args[3];
         }
-        String hivePaht = Const.HIVEDIR + "panda_anchor_crawler/" + date + hour;
+        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date + hour;
         Spider.create(new ChushouAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISH, anchors);
     }

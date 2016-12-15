@@ -42,7 +42,7 @@ FROM
       OVER (PARTITION BY par_date,hour,task,task_random,rid) r
     FROM panda_realtime.panda_anchor_crawler
     WHERE par_date = '$date' and hour='$hour' AND (task='chushouanchor' or task='douyuanchor' 
-or task='huyaanchor' or task='longzhuanchor' or task='quanminanchor' or task='zhanqianchor') AND category != '' AND category IS NOT NULL and name !='' and name is not null
+or task='huyaanchor' or task='longzhuanchor' or task='quanminanchor' or task='zhanqianchor' or task='pandaanchor') AND category != '' AND category IS NOT NULL and name !='' and name is not null
   ) r
 WHERE r.r = 1 ;
 "

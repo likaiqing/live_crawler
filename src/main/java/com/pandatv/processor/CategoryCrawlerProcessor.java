@@ -86,7 +86,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
         if (args.length == 4 && args[3].contains(",")) {
             mailHours = args[3];
         }
-        String hivePaht = Const.COMPETITORDIR + "panda_category/" + date;
+        String hivePaht = Const.COMPETITORDIR + "crawler_category/" + date;
         Spider.create(new CategoryCrawlerProcessor()).addUrl("https://www.douyu.com/directory", "http://www.huya.com/g", "https://www.zhanqi.tv/games", "http://www.quanmin.tv/json/categories/list.json?_t=" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date()), "http://longzhu.com/games/?from=rmallgames", "http://chushou.tv/gamezone.htm", "http://www.panda.tv/cate").addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         CommonTools.writeAndMail(hivePaht, Const.CATEGORYFINISH, categories);
     }

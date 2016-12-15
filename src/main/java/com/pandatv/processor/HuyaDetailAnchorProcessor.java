@@ -146,7 +146,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
-        String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
+        String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date + hour;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);
     }

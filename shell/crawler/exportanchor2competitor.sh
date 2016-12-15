@@ -21,6 +21,8 @@ insert overwrite table panda_competitor.panda_quanmin_anchor partition(par_date)
 hive -e "
 insert overwrite table panda_competitor.panda_chushou_anchor partition(par_date) select rid,name,title,category,populary_str,populary_num,task,plat,url_cate,create_time,url,task_random,hour,par_date from panda_result.panda_anchor_crawler where par_date='$date' and task='chushouanchor'; "
 
+hive -e "
+insert overwrite table panda_competitor.panda_anchor partition(par_date) select rid,name,title,category,populary_str,populary_num,task,plat,url_cate,create_time,url,task_random,hour,par_date from panda_result.panda_anchor_crawler where par_date='$date' and task='pandaanchor'; "
 
 
 

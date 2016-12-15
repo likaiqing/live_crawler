@@ -94,6 +94,16 @@ FROM
           create_time
         FROM panda_competitor.panda_chushou_anchor
         WHERE par_date = '$date'
+	UNION ALL
+        SELECT
+          DISTINCT
+          rid,
+          name,
+          plat,
+          category,
+          create_time
+        FROM panda_competitor.panda_anchor
+        WHERE par_date = '$date'
       ) anc
   )r
 WHERE r.r=1;

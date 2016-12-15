@@ -142,7 +142,7 @@ public class IndexRecProcessor extends PandaProcessor {
         }
         douyuIndex = "https://www.douyu.com/";
         huyaIndex = "http://www.huya.com/";
-        String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
+        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date + hour;
         Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
     }
