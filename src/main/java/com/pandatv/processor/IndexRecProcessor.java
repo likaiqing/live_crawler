@@ -75,7 +75,7 @@ public class IndexRecProcessor extends PandaProcessor {
                 detailAnchor.setUrl(curUrl);
                 detailAnchor.setLastStartTime(lastStartTime);
                 detailAnchor.setJob(Const.DOUYUINDEXREC);
-                douyuRecAnchors.add(detailAnchor.toString());
+                detailAnchors.add(detailAnchor.toString());
             } else if (curUrl.startsWith(huyaIndex) && !curUrl.endsWith("/")) {
                 Object cycleTriedTimes = page.getRequest().getExtra("_cycle_tried_times");
                 if (null != cycleTriedTimes && (int) cycleTriedTimes >= Const.CYCLERETRYTIMES - 1) {
@@ -114,7 +114,7 @@ public class IndexRecProcessor extends PandaProcessor {
                 detailAnchor.setNotice(notice);
                 detailAnchor.setJob(Const.HUYAINDEXREC);
                 detailAnchor.setUrl(curUrl);
-                huyaRecAnchors.add(detailAnchor.toString());
+                detailAnchors.add(detailAnchor.toString());
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
@@ -144,7 +144,6 @@ public class IndexRecProcessor extends PandaProcessor {
         huyaIndex = "http://www.huya.com/";
         String hivePaht = Const.HIVEDIR + "panda_detail_anchor_crawler/" + date + hour;
         Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        CommonTools.writeAndMail(hivePaht, Const.DOUYUINDEXRECEXIT, douyuRecAnchors);
-        CommonTools.writeAndMail(hivePaht, Const.HUYAINDEXRECEXIT, huyaRecAnchors);
+        CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
     }
 }
