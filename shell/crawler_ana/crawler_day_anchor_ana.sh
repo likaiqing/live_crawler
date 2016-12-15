@@ -51,7 +51,7 @@ FROM
                  WHEN substr(create_time, 15, 2) > 30
                    THEN 35 END)        task_random
         FROM
-          panda_result.panda_anchor_crawler
+          panda_competitor.crawler_anchor
         WHERE par_date ='$date' AND category != '' AND category IS NOT NULL
       ) anc_crawler
     GROUP BY par_date, rid, name, plat, category

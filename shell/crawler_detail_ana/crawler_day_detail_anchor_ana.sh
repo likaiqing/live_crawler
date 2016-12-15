@@ -118,7 +118,7 @@ FROM
               max(weight_num)             weight_num,
               count(DISTINCT task_random) live_times
             FROM
-              panda_result.panda_detail_anchor_crawler
+              panda_competitor.crawler_detail_anchor
             WHERE par_date = '$date' AND task = 'douyudetailanchor'
             GROUP BY par_date, rid, name, category_sec
           ) d_anc
@@ -131,7 +131,7 @@ FROM
           name,
           category_sec,
           count(DISTINCT task_random) times
-        FROM panda_result.panda_detail_anchor_crawler
+        FROM panda_competitor.crawler_indexrec_detail_anchor
         WHERE par_date = '$date' AND task = 'douyuindexrec'
         GROUP BY par_date, rid, name, category_sec
       ) rec_times
@@ -165,7 +165,7 @@ FROM
                   category_sec,
                   max(online_num) max_pcu
                 FROM
-                  panda_result.panda_detail_anchor_crawler
+                  panda_competitor.crawler_detail_anchor
                 WHERE
                   par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'douyudetailanchor'
                 GROUP BY par_date, rid, name, category_sec
@@ -203,7 +203,7 @@ FROM
                   category_sec,
                   max(weight_num) max_weight
                 FROM
-                  panda_result.panda_detail_anchor_crawler
+                  panda_competitor.crawler_detail_anchor
                 WHERE
                   par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'douyudetailanchor'
                 GROUP BY par_date, rid, name, category_sec
@@ -241,7 +241,7 @@ FROM
                   category_sec,
                   max(follower_num) max_followers
                 FROM
-                  panda_result.panda_detail_anchor_crawler
+                  panda_competitor.crawler_detail_anchor
                 WHERE
                   par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'douyudetailanchor'
                 GROUP BY par_date, rid, name, category_sec
@@ -368,7 +368,7 @@ FROM
               max(weight_num)             weight_num,
               count(DISTINCT task_random) live_times
             FROM
-              panda_result.panda_detail_anchor_crawler
+              panda_competitor.crawler_detail_anchor
             WHERE par_date = '$date' AND task = 'huyadetailanchor'
             GROUP BY par_date, rid, name, category_sec
           ) d_anc
@@ -381,7 +381,7 @@ FROM
           name,
           category_sec,
           count(DISTINCT task_random) times
-        FROM panda_result.panda_detail_anchor_crawler
+        FROM panda_competitor.crawler_indexrec_detail_anchor
         WHERE par_date = '$date' AND task = 'huyaindexrec'
         GROUP BY par_date, rid, name, category_sec
       ) rec_times
@@ -415,7 +415,7 @@ FROM
                   category_sec,
                   max(online_num) max_pcu
                 FROM
-                  panda_result.panda_detail_anchor_crawler
+                  panda_competitor.crawler_detail_anchor
                 WHERE
                   par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'huyadetailanchor'
                 GROUP BY par_date, rid, name, category_sec
@@ -453,7 +453,7 @@ FROM
                   category_sec,
                   max(weight_num) max_weight
                 FROM
-                  panda_result.panda_detail_anchor_crawler
+                  panda_competitor.crawler_detail_anchor
                 WHERE
                   par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'huyadetailanchor'
                 GROUP BY par_date, rid, name, category_sec
@@ -491,7 +491,7 @@ FROM
                   category_sec,
                   max(follower_num) max_followers
                 FROM
-                  panda_result.panda_detail_anchor_crawler
+                  panda_competitor.crawler_detail_anchor
                 WHERE
                   par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'huyadetailanchor'
                 GROUP BY par_date, rid, name, category_sec

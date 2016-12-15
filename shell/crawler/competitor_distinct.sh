@@ -11,7 +11,8 @@ SELECT
   coalesce(dis.name,anc.name) name,
   coalesce(dis.plat,anc.plat) plat,
   coalesce(dis.category,anc.category) category,
-  coalesce(dis.create_time,anc.create_time) create_time
+  coalesce(dis.create_time,anc.create_time) create_time,
+  '$date'
 FROM
   (
     SELECT
@@ -70,7 +71,7 @@ FROM
           ) r
         WHERE r.r = 1
       ) time_max
-        ON pcu_max.rid = time_max.rid AND pcu_max.plat = pcu_max.plat
+        ON pcu_max.rid = time_max.rid AND pcu_max.plat = time_max.plat
   ) dis
   FULL JOIN
   (

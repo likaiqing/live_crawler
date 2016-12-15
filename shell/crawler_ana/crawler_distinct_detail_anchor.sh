@@ -23,7 +23,7 @@ FROM
       DISTINCT
       rid,
       task
-    FROM panda_result.panda_detail_anchor_crawler
+    FROM panda_competitor.crawler_detail_anchor
     WHERE par_date = '$date'
   ) al;
   "
