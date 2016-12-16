@@ -74,8 +74,8 @@ FROM
                  WHEN substr(create_time, 15, 2) > 30
                    THEN 35 END) task_random
         FROM
-          panda_competitor.crawler_anchor and task like '%anchor'
-        WHERE par_date = '$date'
+          panda_competitor.crawler_anchor
+        WHERE par_date = '$date' and task like '%anchor'
       ) anc_crawler
       LEFT JOIN
       (
