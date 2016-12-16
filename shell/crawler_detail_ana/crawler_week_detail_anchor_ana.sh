@@ -407,8 +407,8 @@ FROM
       LEFT JOIN
       (
         SELECT rid
-        FROM panda_result.panda_distinct_detail_anchor_crawler
-        WHERE par_date = '$sub_7_days' AND task = 'douyudetailanchor'
+        FROM panda_competitor.crawler_distinct_anchor
+        WHERE par_date = '$sub_7_days' AND task = 'douyu'
       ) all_crawler
         ON r.rid = all_crawler.rid
   ) anc
@@ -813,8 +813,8 @@ FROM
       LEFT JOIN
       (
         SELECT rid
-        FROM panda_result.panda_distinct_detail_anchor_crawler
-        WHERE par_date = '$sub_7_days' AND task = 'huyadetailanchor'
+        FROM panda_competitor.crawler_distinct_anchor
+        WHERE par_date = '$sub_7_days' AND task = 'huya'
       ) all_crawler
         ON r.rid = all_crawler.rid
   ) anc;

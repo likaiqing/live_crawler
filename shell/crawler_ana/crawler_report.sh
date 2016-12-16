@@ -3,8 +3,8 @@
 date=$1
 date=${date:=`date -d 'yesterday' +%Y%m%d`}
 
-sh /home/likaiqing/shell/crawler_ana/crawler_distinct_anchor.sh $date
-sh /home/likaiqing/shell/crawler_ana/crawler_distinct_detail_anchor.sh $date
+#sh /home/likaiqing/shell/crawler_ana/crawler_distinct_anchor.sh $date
+#sh /home/likaiqing/shell/crawler_ana/crawler_distinct_detail_anchor.sh $date
 
 sh /home/likaiqing/shell/crawler_ana/crawler_day_anchor_ana.sh $date
 sh /home/likaiqing/shell/crawler_ana/crawler_week_anchor_ana.sh $date

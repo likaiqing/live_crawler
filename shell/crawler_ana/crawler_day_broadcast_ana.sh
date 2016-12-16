@@ -82,7 +82,7 @@ FROM
         SELECT
           rid,
           plat
-        FROM panda_result.panda_distinct_anchor_crawler
+        FROM panda_competitor.crawler_distinct_anchor
         WHERE par_date = '$sub_1_days'
       ) dis
         ON anc_crawler.rid = dis.rid AND anc_crawler.plat = dis.plat

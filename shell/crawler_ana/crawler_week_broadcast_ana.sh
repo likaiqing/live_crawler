@@ -39,7 +39,7 @@ FROM
                    THEN 35 END)        task_random
         FROM
           panda_competitor.crawler_anchor
-        WHERE par_date BETWEEN '$sub_6_days' AND '$date' AND category != '' AND category IS NOT NULL
+        WHERE par_date BETWEEN '$sub_6_days' AND '$date' AND category != '' AND category IS NOT NULL and task like '%anchor'
       ) format
     GROUP BY plat, rid
   ) agg
@@ -79,7 +79,7 @@ FROM
                    THEN 35 END)        task_random
         FROM
          panda_competitor.crawler_anchor
-        WHERE par_date BETWEEN '$sub_6_days' AND '$date' AND category != '' AND category IS NOT NULL
+        WHERE par_date BETWEEN '$sub_6_days' AND '$date' AND category != '' AND category IS NOT NULL and task like '%anchor'
       ) format
     GROUP BY plat, rid
   ) agg
@@ -88,7 +88,7 @@ FROM
     SELECT
       rid,
       plat
-    FROM panda_result.panda_distinct_anchor_crawler
+    FROM panda_competitor.crawler_distinct_anchor
     WHERE par_date = '$sub_7_days'
   ) dis
     ON agg.rid = dis.rid AND agg.plat = dis.plat

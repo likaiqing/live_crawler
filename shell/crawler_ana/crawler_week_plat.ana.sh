@@ -40,7 +40,7 @@ FROM
                    THEN 35 END)        task_random
         FROM
           panda_competitor.crawler_anchor
-        WHERE par_date BETWEEN '$six_day_ago' AND '$date' AND category != '' AND category IS NOT NULL
+        WHERE par_date BETWEEN '$six_day_ago' AND '$date' AND category != '' AND category IS NOT NULL and task like '%anchor'
       ) format
     GROUP BY plat, category
   ) agg;
