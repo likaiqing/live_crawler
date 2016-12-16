@@ -12,6 +12,9 @@ import sun.misc.BASE64Encoder;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Site;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -21,6 +24,27 @@ import java.util.*;
  */
 public class CommonTools {
     private static final Logger logger = LoggerFactory.getLogger(CommonTools.class);
+    public static String getFormatStr(String str){
+        byte[] by=str.getBytes();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        int j=0;
+        for(int i=0;i<by.length;i++){
+            if(by[i]!=1){
+                out.write(by[i]);
+                j++;
+            }
+        }
+        String result = "";
+        try {
+            result = new String(out.toByteArray(), "UTF-8");
+            out.close();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     public static List<String> getUrls(ResultItems resultItems, String job, String plat, String gameCategory) {
 

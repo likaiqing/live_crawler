@@ -52,7 +52,7 @@ FROM
                    THEN 35 END)        task_random
         FROM
           panda_competitor.crawler_anchor
-        WHERE par_date ='$date' AND category != '' AND category IS NOT NULL
+        WHERE par_date ='$date' AND category != '' AND category IS NOT NULL and task like '%anchor'
       ) anc_crawler
     GROUP BY par_date, rid, name, plat, category
   ) group_tmp;

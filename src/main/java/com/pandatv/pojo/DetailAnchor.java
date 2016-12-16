@@ -44,7 +44,7 @@ public class DetailAnchor {
     }
 
     public String getName() {
-        return name;
+        return CommonTools.getFormatStr(name);
     }
 
     public void setName(String name) {
@@ -52,7 +52,7 @@ public class DetailAnchor {
     }
 
     public String getTitle() {
-        return title;
+        return CommonTools.getFormatStr(title);
     }
 
     public void setTitle(String title) {

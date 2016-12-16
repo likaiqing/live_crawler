@@ -2,6 +2,7 @@ package com.pandatv.pojo;
 
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
+import com.pandatv.tools.CommonTools;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,7 +39,7 @@ public class Anchor {
     }
 
     public String getName() {
-        return name;
+        return CommonTools.getFormatStr(name);
     }
 
     public void setName(String name) {
@@ -54,7 +55,7 @@ public class Anchor {
     }
 
     public String getTitle() {
-        return title;
+        return CommonTools.getFormatStr(title);
     }
 
     public void setTitle(String title) {
