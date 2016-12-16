@@ -256,7 +256,7 @@ FROM
         SELECT
           rid
         FROM panda_competitor.crawler_distinct_anchor
-        WHERE par_date = '$sub_1_days' AND task = 'douyu'
+        WHERE par_date = '$sub_1_days' AND plat = 'douyu'
       ) all_crawler
         ON r.rid = all_crawler.rid
   ) anc
@@ -506,7 +506,7 @@ FROM
         SELECT
           rid
         FROM panda_competitor.crawler_distinct_anchor
-        WHERE par_date = '$sub_1_days' AND task = 'huya'
+        WHERE par_date = '$sub_1_days' AND plat = 'huya'
       ) all_crawler
         ON  r.rid = all_crawler.rid
   ) anc;
