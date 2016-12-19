@@ -8,9 +8,9 @@ insert overwrite table panda_competitor.crawler_day_plat_analyse partition(par_d
 SELECT
   coalesce(ana.plat, rec.plat)            plat,
   coalesce(ana.category, rec.category)    category,
+  coalesce(ana.max_pcu, rec.max_pcu)              max_pcu,
   coalesce(ana.live_times, rec.rec_times) live_times,
   coalesce(ana.duration, rec.duration)    duraion,
-  coalesce(ana.max_pcu, rec.max_pcu)              max_pcu,
   coalesce(ana.weight, rec.weight)        weight,
   coalesce(ana.followers, rec.followers)  followers,
   coalesce(rec.rec_times, 0)              rec_times,
