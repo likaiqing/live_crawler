@@ -2,7 +2,7 @@
 
 date=$1
 date=${date:=`date -d 'yesterday' +%Y%m%d`}
-
+hive -e "alter table panda_competitor.crawler_day_anchor_analyse drop if exists partition(par_date='$date')"
 hive -e "
 insert overwrite table panda_competitor.crawler_day_anchor_analyse partition(par_date)
 SELECT
@@ -57,7 +57,7 @@ FROM
           (
             SELECT
               rid,
-              split(task, 'anchor') [0]   plat,
+              split(task, 'detailanchor') [0]   plat,
               category_sec                category,
               count(DISTINCT task_random) live_times,
               max(online_num)             pcu,
@@ -66,7 +66,7 @@ FROM
             FROM
               panda_competitor.crawler_detail_anchor
             WHERE par_date = '$date'
-            GROUP BY rid, split(task, 'anchor') [0], category_sec
+            GROUP BY rid, split(task, 'detailanchor') [0], category_sec
           ) d
       ) pcu
         ON dur.rid = pcu.rid AND dur.plat = pcu.plat AND dur.category = pcu.category

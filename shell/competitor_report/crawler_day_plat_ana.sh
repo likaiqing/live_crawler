@@ -63,7 +63,7 @@ FROM
           (
             SELECT
               task_random,
-              split(task, 'anchor') [0] plat,
+              split(task, 'detailanchor') [0] plat,
               category_sec              category,
               count(DISTINCT rid)       anchors,
               sum(online_num)           pcu,
@@ -72,7 +72,7 @@ FROM
             FROM
               panda_competitor.crawler_detail_anchor
             WHERE par_date = '$date'
-            GROUP BY task_random, split(task, 'anchor') [0], category_sec
+            GROUP BY task_random, split(task, 'detailanchor') [0], category_sec
           ) d
         GROUP BY plat, category
       ) pcu
