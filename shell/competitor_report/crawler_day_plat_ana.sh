@@ -31,7 +31,7 @@ FROM
           plat,
           category,
           sum(anchors)          live_times,
-          sum(anchors) / 60 * 5 duration,
+          round(sum(anchors) / 60 * 5,2) duration,
           max(pcu)              max_pcu
         FROM
           (
@@ -54,8 +54,8 @@ FROM
           category,
           sum(anchors)                   live_times,
           CASE WHEN plat = 'douyu'
-            THEN sum(anchors) / 60
-          ELSE sum(anchors) / 60 * 5 END duration,
+            THEN round(sum(anchors) / 60,2)
+          ELSE round(sum(anchors) / 60 * 5,2) END duration,
           max(pcu)                       max_pcu,
           max(weight)                    weight,
           max(followers)                 followers
@@ -78,13 +78,13 @@ FROM
       ) pcu
         ON dur.plat = pcu.plat AND dur.category = pcu.category
   ) ana
-  LEFT JOIN
+  FULL JOIN
   (
     SELECT
       plat,
       category,
       sum(anchors)          rec_times,
-      sum(anchors) / 60 * 5 duration,
+      round(sum(anchors) / 60 * 5,2) duration,
       max(max_pcu)          max_pcu,
       max(weight)           weight,
       max(followers)        followers
