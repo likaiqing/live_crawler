@@ -43,15 +43,6 @@ public class HuyaAnchorProcessor extends PandaProcessor {
                 String category = JsonPath.read(jsonStr, "$.gameFullName");
                 String popularityStr = JsonPath.read(jsonStr, "$.totalCount");
                 int popularityNum = Integer.parseInt(popularityStr);
-                if (StringUtils.isEmpty(rid) || StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(category) || StringUtils.isEmpty(popularityStr)) {
-                    continue;
-                }
-                if (rid.contains("\u0001")){
-                    logger.info("rid contains SEP,url:{},rid:{}",url,rid);
-                }
-                if (!CommonTools.isValidUnicode(rid)){
-                    logger.info("rid is not valid unicode,url:{},rid:{}",url,rid);
-                }
                 Anchor anchor = new Anchor();
                 anchor.setRid(rid);
                 anchor.setName(name);

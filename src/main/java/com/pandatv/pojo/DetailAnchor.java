@@ -36,7 +36,7 @@ public class DetailAnchor {
     }
 
     public String getRid() {
-        return rid;
+        return CommonTools.getFormatStr(rid.trim());
     }
 
     public void setRid(String rid) {
@@ -44,7 +44,7 @@ public class DetailAnchor {
     }
 
     public String getName() {
-        return CommonTools.getFormatStr(name);
+        return CommonTools.getFormatStr(name.trim());
     }
 
     public void setName(String name) {
@@ -52,7 +52,7 @@ public class DetailAnchor {
     }
 
     public String getTitle() {
-        return CommonTools.getFormatStr(title);
+        return CommonTools.getFormatStr(title.trim());
     }
 
     public void setTitle(String title) {
@@ -131,7 +131,7 @@ public class DetailAnchor {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.rid).append(Const.SEP).append(this.name).append(Const.SEP).append(this.title).append(Const.SEP).append(this.categoryFir).append(Const.SEP).append(this.categorySec).append(Const.SEP).append(this.viewerNum).append(Const.SEP).append(this.followerNum).append(Const.SEP).append(this.job).append(Const.SEP).append(rank).append(Const.SEP).append(this.weightStr).append(Const.SEP).append(this.weightNum).append(Const.SEP).append(this.tag).append(Const.SEP).append(this.url).append(Const.SEP).append(createTime).append(Const.SEP).append(this.notice).append(Const.SEP).append(this.lastStartTime).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
+        return sb.append(this.getRid()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getTitle()).append(Const.SEP).append(this.getCategoryFir()).append(Const.SEP).append(this.getCategorySec()).append(Const.SEP).append(this.getViewerNum()).append(Const.SEP).append(this.getFollowerNum()).append(Const.SEP).append(this.getJob()).append(Const.SEP).append(this.getRank()).append(Const.SEP).append(this.getWeightStr()).append(Const.SEP).append(this.getWeightNum()).append(Const.SEP).append(this.getTag()).append(Const.SEP).append(this.getUrl()).append(Const.SEP).append(createTime).append(Const.SEP).append(this.getNotice()).append(Const.SEP).append(this.getLastStartTime()).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
     }
 
     @Override
