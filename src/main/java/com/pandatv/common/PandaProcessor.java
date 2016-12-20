@@ -36,6 +36,7 @@ public abstract class PandaProcessor implements PageProcessor {
 
     protected Site site = Site.me()
             .setSleepTime(500)
+            .setTimeOut(10 * 1000)
             .setUseGzip(true)
             .setRetryTimes(5)
             .setCharset("UTF-8")
