@@ -5,7 +5,7 @@ date=${date:=`date -d 'yesterday' +%Y%m%d`}
 sub_1_days=`date -d "-1day $date" +%Y%m%d`
 
 hive -e "
-insert overwrite table panda_competitor.crawler_day_plat_analyse partition(par_date)
+insert overwrite table panda_competitor.crawler_day_cate_analyse partition(par_date)
 SELECT
   coalesce(ana.plat, rec.plat)            plat,
   coalesce(ana.category, rec.category)    category,

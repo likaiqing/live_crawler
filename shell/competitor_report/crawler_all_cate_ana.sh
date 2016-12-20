@@ -5,7 +5,7 @@ date=${date:=`date -d 'yesterday' +%Y%m%d`}
 sub_1_days=`date -d "-1days $date" +%Y%m%d`
 
 hive -e "
-insert overwrite table panda_competitor.crawler_all_plat_analyse partition(par_date)
+insert overwrite table panda_competitor.crawler_all_cate_analyse partition(par_date)
 SELECT
   coalesce(all_anc.plat, day_plat.plat)                                  plat,
   coalesce(all_anc.category, day_plat.category)                          category,
@@ -46,7 +46,7 @@ FROM
       lives,
       new_anchors
     FROM
-      panda_competitor.crawler_day_plat_analyse
+      panda_competitor.crawler_day_cate_analyse
     WHERE par_date = '$date'
   ) day_plat
   FULL JOIN
@@ -67,7 +67,7 @@ FROM
       new_rec_times,
       sum_rec_times
     FROM
-      panda_competitor.crawler_all_plat_analyse
+      panda_competitor.crawler_all_cate_analyse
     WHERE par_date = '$sub_1_days'
   ) all_anc
     ON day_plat.plat = all_anc.plat AND day_plat.category = all_anc.category
