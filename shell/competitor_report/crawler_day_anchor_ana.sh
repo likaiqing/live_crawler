@@ -8,7 +8,7 @@ hive -e "
 insert overwrite table panda_competitor.crawler_day_anchor_analyse partition(par_date)
 SELECT
   p1.rid,
-  plat,
+  p1.plat,
   category,
   max_pcu,
   live_times,
@@ -107,9 +107,9 @@ FROM
   ) p1
   LEFT JOIN
   (
-    SELECT rid
+    SELECT distinct rid,plat
     FROM panda_competitor.crawler_distinct_anchor
     WHERE par_date = '$sub_1_days'
   ) p2
-    ON p1.rid = p2.rid;
+    ON p1.rid = p2.rid and p1.plat=p2.plat;
 "

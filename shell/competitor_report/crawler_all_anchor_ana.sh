@@ -71,9 +71,9 @@ FROM
     ON day_anc.rid = all_anc.rid AND day_anc.plat = all_anc.plat AND day_anc.category = all_anc.category
   LEFT JOIN
   (
-    SELECT rid
+    SELECT distinct rid,plat
     FROM panda_competitor.crawler_distinct_anchor
     WHERE par_date = '$sub_1_days'
   ) dis
-    ON day_anc.rid = dis.rid;
+    ON day_anc.rid = dis.rid and day_anc.plat=dis.plat;
 "
