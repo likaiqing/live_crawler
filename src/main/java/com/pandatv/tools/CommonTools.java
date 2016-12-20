@@ -25,6 +25,9 @@ import java.util.*;
 public class CommonTools {
     private static final Logger logger = LoggerFactory.getLogger(CommonTools.class);
     public static String getFormatStr(String str){
+        if (StringUtils.isEmpty(str)){
+            return "";
+        }
         byte[] by=str.getBytes();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int j=0;
