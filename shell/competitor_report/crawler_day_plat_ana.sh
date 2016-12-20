@@ -175,7 +175,7 @@ FROM
               split(task, 'detailanchor') [0] plat,
               rid
             FROM panda_competitor.crawler_detail_anchor
-            WHERE par_date = '$date' AND task LIKE '%indexrec'
+            WHERE par_date = '$date' AND task LIKE '%detailanchor'
             UNION ALL
             SELECT
               DISTINCT
