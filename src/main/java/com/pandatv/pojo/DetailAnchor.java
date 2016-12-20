@@ -108,7 +108,7 @@ public class DetailAnchor {
     }
 
     public String getNotice() {
-        return notice;
+        return CommonTools.getFormatStr(notice);
     }
 
     public void setNotice(String notice) {
