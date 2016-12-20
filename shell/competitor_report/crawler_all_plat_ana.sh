@@ -30,7 +30,7 @@ SELECT
   coalesce(cate.is_new, 1)                is_new,
   coalesce(cate.is_closed, 0)             is_closed,
   coalesce(day_plat.lives,0) lives,
-  coalesce(day_plat.new_anchors,0) new_anchors
+  coalesce(day_plat.new_anchors,0) new_anchors,
   '$date'
 FROM
   (
