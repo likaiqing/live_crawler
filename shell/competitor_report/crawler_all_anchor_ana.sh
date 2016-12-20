@@ -27,7 +27,8 @@ SELECT
   coalesce(day_anc.duration, all_anc.new_duration, 0)                   new_duration,
   coalesce(all_anc.sum_duration, 0) + coalesce(day_anc.duration, 0)     sum_duration,
   coalesce(day_anc.rec_times, all_anc.new_rec_times, 0)                 new_rec_times,
-  coalesce(all_anc.sum_rec_times, 0) + coalesce(day_anc.rec_times,0)      sum_rec_times,
+  coalesce(all_anc.sum_rec_times, 0) + coalesce(day_anc.rec_times, 0)   sum_rec_times,
+  CASE WHEN dis.rid IS NULL THEN 1 ELSE 0 END is_new,
   '$date'
 FROM
   (
@@ -67,5 +68,12 @@ FROM
       panda_competitor.crawler_all_anchor_analyse
     WHERE par_date = '$sub_1_days'
   ) all_anc
-    ON day_anc.rid = all_anc.rid AND day_anc.plat = all_anc.plat AND day_anc.category = all_anc.category;
+    ON day_anc.rid = all_anc.rid AND day_anc.plat = all_anc.plat AND day_anc.category = all_anc.category
+  LEFT JOIN
+  (
+    SELECT rid
+    FROM panda_competitor.crawler_distinct_anchor
+    WHERE par_date = '$sub_1_days'
+  ) dis
+    ON day_anc.rid = dis.rid;
 "

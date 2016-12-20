@@ -2,18 +2,21 @@
 
 date=$1
 date=${date:=`date -d 'yesterday' +%Y%m%d`}
+sub_1_days=`date -d "-1day $date" +%Y%m%d`
 
 hive -e "
 insert overwrite table panda_competitor.crawler_day_plat_analyse partition(par_date)
 SELECT
   coalesce(ana.plat, rec.plat)            plat,
   coalesce(ana.category, rec.category)    category,
-  coalesce(ana.max_pcu, rec.max_pcu)              max_pcu,
+  coalesce(ana.max_pcu, rec.max_pcu)      max_pcu,
   coalesce(ana.live_times, rec.rec_times) live_times,
   coalesce(ana.duration, rec.duration)    duraion,
   coalesce(ana.weight, rec.weight)        weight,
   coalesce(ana.followers, rec.followers)  followers,
   coalesce(rec.rec_times, 0)              rec_times,
+  coalesce(cate.is_new, 1)                is_new,
+  coalesce(cate.is_closed, 0)             is_closed,
   '$date'
 FROM
   (
@@ -30,9 +33,9 @@ FROM
         SELECT
           plat,
           category,
-          sum(anchors)          live_times,
-          round(sum(anchors) / 60 * 5,2) duration,
-          max(pcu)              max_pcu
+          sum(anchors)                    live_times,
+          round(sum(anchors) / 60 * 5, 2) duration,
+          max(pcu)                        max_pcu
         FROM
           (
             SELECT
@@ -42,7 +45,7 @@ FROM
               count(DISTINCT rid)       anchors,
               sum(populary_num)         pcu
             FROM panda_competitor.crawler_anchor
-            WHERE par_date = '$date'  and task like '%anchor'
+            WHERE par_date = '$date' AND task LIKE '%anchor'
             GROUP BY task_random, split(task, 'anchor') [0], category
           ) t_r
         GROUP BY plat, category
@@ -52,26 +55,26 @@ FROM
         SELECT
           plat,
           category,
-          sum(anchors)                   live_times,
+          sum(anchors)                             live_times,
           CASE WHEN plat = 'douyu'
-            THEN round(sum(anchors) / 60,2)
-          ELSE round(sum(anchors) / 60 * 5,2) END duration,
-          max(pcu)                       max_pcu,
-          max(weight)                    weight,
-          max(followers)                 followers
+            THEN round(sum(anchors) / 60, 2)
+          ELSE round(sum(anchors) / 60 * 5, 2) END duration,
+          max(pcu)                                 max_pcu,
+          max(weight)                              weight,
+          max(followers)                           followers
         FROM
           (
             SELECT
               task_random,
               split(task, 'detailanchor') [0] plat,
-              category_sec              category,
-              count(DISTINCT rid)       anchors,
-              sum(online_num)           pcu,
-              sum(weight_num)           weight,
-              sum(follower_num)         followers
+              category_sec                    category,
+              count(DISTINCT rid)             anchors,
+              sum(online_num)                 pcu,
+              sum(weight_num)                 weight,
+              sum(follower_num)               followers
             FROM
               panda_competitor.crawler_detail_anchor
-            WHERE par_date = '$date' and task like '%detailanchor'
+            WHERE par_date = '$date' AND task LIKE '%detailanchor'
             GROUP BY task_random, split(task, 'detailanchor') [0], category_sec
           ) d
         GROUP BY plat, category
@@ -83,11 +86,11 @@ FROM
     SELECT
       plat,
       category,
-      sum(anchors)          rec_times,
-      round(sum(anchors) / 60 * 5,2) duration,
-      max(max_pcu)          max_pcu,
-      max(weight)           weight,
-      max(followers)        followers
+      sum(anchors)                    rec_times,
+      round(sum(anchors) / 60 * 5, 2) duration,
+      max(max_pcu)                    max_pcu,
+      max(weight)                     weight,
+      max(followers)                  followers
     FROM
       (
         SELECT
@@ -100,10 +103,42 @@ FROM
           max(follower_num)        followers
         FROM
           panda_competitor.crawler_indexrec_detail_anchor
-        WHERE par_date = '$date' and task like '%indexrec'
+        WHERE par_date = '$date' AND task LIKE '%indexrec'
         GROUP BY task_random, split(task, 'index') [0], category_sec
       ) rec_tr
     GROUP BY plat, category
   ) rec
-    ON ana.plat = rec.plat AND ana.category = rec.category;
+    ON ana.plat = rec.plat AND ana.category = rec.category
+  FULL JOIN
+  (
+    SELECT
+      coalesce(cate1.plat_name, cate2.plat_name) plat_name,
+      coalesce(cate1.c_name, cate2.c_name)       c_name,
+      CASE WHEN cate2.c_name IS NULL
+        THEN 1
+      ELSE 0 END                                 is_new,
+      CASE WHEN cate1.c_name IS NULL
+        THEN 1
+      ELSE 0 END                                 is_closed
+    FROM
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          c_name
+        FROM panda_competitor.crawler_category
+        WHERE par_date = '$date'
+      ) cate1
+      FULL JOIN
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          c_name
+        FROM panda_competitor.crawler_category
+        WHERE par_date = '$sub_1_days'
+      ) cate2
+        ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
+  ) cate
+    ON ana.plat = cate.plat_name AND ana.category = cate.c_name;
 "

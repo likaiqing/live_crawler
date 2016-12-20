@@ -27,6 +27,8 @@ SELECT
   coalesce(all_anc.sum_duration, 0) + coalesce(day_plat.duration, 0)     sum_duration,
   coalesce(day_plat.rec_times, all_anc.new_rec_times, 0)                 new_rec_times,
   coalesce(all_anc.sum_rec_times, 0) + coalesce(day_plat.rec_times,0)      sum_rec_times,
+  coalesce(cate.is_new, 1)                is_new,
+  coalesce(cate.is_closed, 0)             is_closed,
   '$date'
 FROM
   (
@@ -64,5 +66,37 @@ FROM
       panda_competitor.crawler_all_plat_analyse
     WHERE par_date = '$sub_1_days'
   ) all_anc
-    ON day_plat.plat = all_anc.plat AND day_plat.category = all_anc.category;
+    ON day_plat.plat = all_anc.plat AND day_plat.category = all_anc.category
+    FULL JOIN
+  (
+    SELECT
+      coalesce(cate1.plat_name, cate2.plat_name) plat_name,
+      coalesce(cate1.c_name, cate2.c_name)       c_name,
+      CASE WHEN cate2.c_name IS NULL
+        THEN 1
+      ELSE 0 END                                 is_new,
+      CASE WHEN cate1.c_name IS NULL
+        THEN 1
+      ELSE 0 END                                 is_closed
+    FROM
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          c_name
+        FROM panda_competitor.crawler_category
+        WHERE par_date = '$date'
+      ) cate1
+      FULL JOIN
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          c_name
+        FROM panda_competitor.crawler_category
+        WHERE par_date = '$sub_1_days'
+      ) cate2
+        ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
+  ) cate
+    ON all_anc.plat = cate.plat_name AND all_anc.category = cate.c_name;
 "
