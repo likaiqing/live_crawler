@@ -47,7 +47,7 @@ FROM
               count(DISTINCT rid,task_random) anchors,
               sum(populary_num)               pcu
             FROM panda_competitor.crawler_anchor
-            WHERE par_date = '$date' AND task LIKE '%anchor'
+            WHERE par_date = '$date' AND task LIKE '%anchor' and category !=''
             GROUP BY task_random, split(task, 'anchor') [0], category
           ) t_r
         GROUP BY plat, category
@@ -76,7 +76,7 @@ FROM
               sum(follower_num)               followers
             FROM
               panda_competitor.crawler_detail_anchor
-            WHERE par_date = '$date' AND task LIKE '%detailanchor'
+            WHERE par_date = '$date' AND task LIKE '%detailanchor' and category_sec !=''
             GROUP BY task_random, split(task, 'detailanchor') [0], category_sec
           ) d
         GROUP BY plat, category
@@ -165,7 +165,7 @@ FROM
               category,
               rid
             FROM panda_competitor.crawler_anchor
-            WHERE par_date = '$date' AND task LIKE '%anchor'
+            WHERE par_date = '$date' AND task LIKE '%anchor' and category !=''
             UNION ALL
             SELECT
               DISTINCT
@@ -173,7 +173,7 @@ FROM
               category_sec,
               rid
             FROM panda_competitor.crawler_detail_anchor
-            WHERE par_date = '$date' AND task LIKE '%detailanchor'
+            WHERE par_date = '$date' AND task LIKE '%detailanchor' and category_sec !=''
             UNION ALL
             SELECT
               DISTINCT

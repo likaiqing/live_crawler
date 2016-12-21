@@ -53,7 +53,7 @@ FROM
               count(DISTINCT task_random)                     live_times,
               round(count(DISTINCT task_random) / 60 * 15, 2) duration
             FROM panda_competitor.crawler_anchor
-            WHERE par_date = '$date' AND task LIKE '%anchor'
+            WHERE par_date = '$date' AND task LIKE '%anchor' and category !=''
             GROUP BY rid, split(task, 'anchor') [0], category
           ) dur
           FULL JOIN
@@ -81,7 +81,7 @@ FROM
                   max(follower_num)               followers
                 FROM
                   panda_competitor.crawler_detail_anchor
-                WHERE par_date = '$date' AND task LIKE '%detailanchor'
+                WHERE par_date = '$date' AND task LIKE '%detailanchor' and category_sec !=''
                 GROUP BY rid, split(task, 'detailanchor') [0], category_sec
               ) d
           ) pcu

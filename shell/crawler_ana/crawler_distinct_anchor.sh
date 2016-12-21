@@ -24,7 +24,7 @@ FROM
       rid,
       plat
     FROM panda_competitor.crawler_anchor
-    WHERE par_date = '$date'
+    WHERE par_date = '$date' and category !=''
   ) al;
   "
 

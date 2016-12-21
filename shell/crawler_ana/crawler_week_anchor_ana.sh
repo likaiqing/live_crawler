@@ -71,7 +71,7 @@ FROM
                            THEN 35 END)        task_random
                 FROM
                   panda_competitor.crawler_anchor
-                WHERE par_date BETWEEN '$six_day_ago' AND '$date' AND category != '' AND category IS NOT NULL and task like '%anchor'
+                WHERE par_date BETWEEN '$six_day_ago' AND '$date' AND category != '' AND category IS NOT NULL and task like '%anchor' and category !=''
               ) anc_crawler
             GROUP BY par_date, rid, name, plat, category
           ) group_tmp
@@ -108,7 +108,7 @@ FROM
               max(populary_num)            max_pcu
             FROM
               panda_competitor.crawler_anchor
-            WHERE par_date BETWEEN '$six_day_ago' AND '$date' AND category != '' AND category IS NOT NULL and task like '%anchor'
+            WHERE par_date BETWEEN '$six_day_ago' AND '$date' AND category != '' AND category IS NOT NULL and task like '%anchor' and category !=''
             GROUP BY par_date, rid, name, plat, category
           ) last
       ) r
@@ -148,7 +148,7 @@ FROM
               max(populary_num)            max_pcu
             FROM
               panda_competitor.crawler_anchor
-            WHERE par_date BETWEEN '$six_day_ago' AND '$date' AND category != '' AND category IS NOT NULL and task like '%anchor'
+            WHERE par_date BETWEEN '$six_day_ago' AND '$date' AND category != '' AND category IS NOT NULL and task like '%anchor' and category !=''
             GROUP BY par_date, rid, name, plat, category
           ) last
       ) r

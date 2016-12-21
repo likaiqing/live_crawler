@@ -119,7 +119,7 @@ FROM
               count(DISTINCT task_random) live_times
             FROM
               panda_competitor.crawler_detail_anchor
-            WHERE par_date = '$date' AND task = 'douyudetailanchor'
+            WHERE par_date = '$date' AND task = 'douyudetailanchor' and category_sec !=''
             GROUP BY par_date, rid, name, category_sec
           ) d_anc
       ) r
@@ -167,7 +167,7 @@ FROM
                 FROM
                   panda_competitor.crawler_detail_anchor
                 WHERE
-                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'douyudetailanchor'
+                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'douyudetailanchor' and category_sec !=''
                 GROUP BY par_date, rid, name, category_sec
               ) d_anc
           ) r
@@ -205,7 +205,7 @@ FROM
                 FROM
                   panda_competitor.crawler_detail_anchor
                 WHERE
-                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'douyudetailanchor'
+                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'douyudetailanchor' and category_sec !=''
                 GROUP BY par_date, rid, name, category_sec
               ) d_anc
           ) r
@@ -243,7 +243,7 @@ FROM
                 FROM
                   panda_competitor.crawler_detail_anchor
                 WHERE
-                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'douyudetailanchor'
+                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'douyudetailanchor' and category_sec !=''
                 GROUP BY par_date, rid, name, category_sec
               ) d_anc
           ) r
@@ -369,7 +369,7 @@ FROM
               count(DISTINCT task_random) live_times
             FROM
               panda_competitor.crawler_detail_anchor
-            WHERE par_date = '$date' AND task = 'huyadetailanchor'
+            WHERE par_date = '$date' AND task = 'huyadetailanchor' and category_sec !=''
             GROUP BY par_date, rid, name, category_sec
           ) d_anc
       ) r
@@ -417,7 +417,7 @@ FROM
                 FROM
                   panda_competitor.crawler_detail_anchor
                 WHERE
-                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'huyadetailanchor'
+                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'huyadetailanchor' and category_sec !=''
                 GROUP BY par_date, rid, name, category_sec
               ) d_anc
           ) r
@@ -455,7 +455,7 @@ FROM
                 FROM
                   panda_competitor.crawler_detail_anchor
                 WHERE
-                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'huyadetailanchor'
+                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'huyadetailanchor' and category_sec !=''
                 GROUP BY par_date, rid, name, category_sec
               ) d_anc
           ) r
@@ -493,7 +493,7 @@ FROM
                 FROM
                   panda_competitor.crawler_detail_anchor
                 WHERE
-                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'huyadetailanchor'
+                  par_date BETWEEN '$sub_7_days' AND '$sub_1_days' AND task = 'huyadetailanchor' and category_sec !=''
                 GROUP BY par_date, rid, name, category_sec
               ) d_anc
           ) r

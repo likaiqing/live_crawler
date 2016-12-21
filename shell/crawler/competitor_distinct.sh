@@ -42,7 +42,7 @@ FROM
                 ORDER BY populary_num DESC) r
             FROM
               panda_competitor.crawler_anchor
-            WHERE par_date = '$date'  and task like '%anchor'
+            WHERE par_date = '$date'  and task like '%anchor' and category !=''
           ) r
         WHERE r.r = 1
       ) pcu_max
@@ -67,7 +67,7 @@ FROM
                 ORDER BY create_time DESC) r
             FROM
               panda_competitor.crawler_anchor
-            WHERE par_date = '$date' and task like '%anchor'
+            WHERE par_date = '$date' and task like '%anchor' and category !=''
           ) r
         WHERE r.r = 1
       ) time_max
