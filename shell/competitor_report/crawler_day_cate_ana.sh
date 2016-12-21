@@ -7,14 +7,14 @@ sub_1_days=`date -d "-1day $date" +%Y%m%d`
 hive -e "
 insert overwrite table panda_competitor.crawler_day_cate_analyse partition(par_date)
 SELECT
-  cate1.plat_name plat,
-  cate1.c_name    category,
-  t.max_pcu       max_pcu,
-  t.live_times    live_times,
-  t.duration      duraion,
-  t.weight        weight,
-  t.followers     followers,
-  t.rec_times     rec_times,
+  coalesce(cate1.plat_name,cate2.plat_name) plat,
+  coalesce(cate1.c_name,cate2.c_name)    category,
+  coalesce(t.max_pcu,0)       max_pcu,
+  coalesce(t.live_times,0)    live_times,
+  coalesce(t.duration,0.0)      duraion,
+  coalesce(t.weight,0)        weight,
+  coalesce(t.followers,0)     followers,
+  coalesce(t.rec_times,0)     rec_times,
   CASE WHEN cate2.c_name IS NULL
     THEN 1
   ELSE 0 END      is_new,
