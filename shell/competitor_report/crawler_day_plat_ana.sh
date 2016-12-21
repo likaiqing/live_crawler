@@ -171,7 +171,7 @@ FROM
         SELECT
           DISTINCT
           plat_name,
-          c_name
+          trim(c_name) c_name
         FROM panda_competitor.crawler_category
         WHERE par_date = '$date'
       ) cate1
@@ -180,7 +180,7 @@ FROM
         SELECT
           DISTINCT
           plat_name,
-          c_name
+          trim(c_name) c_name
         FROM panda_competitor.crawler_category
         WHERE par_date = '$sub_1_days'
       ) cate2
