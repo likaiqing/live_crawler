@@ -144,6 +144,8 @@ SELECT
   row_number() OVER (PARTITION BY c1.plat ORDER BY c1.new_weight_rank-coalesce(c2.new_weight_rank,0) DESC ) weight_rank_change_rank,
   0,
   0,
+  0,
+  0,
   c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) new_anchors_rank_changed,
   row_number() OVER (PARTITION BY c1.plat ORDER BY c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) DESC ) new_anchors_rank_change_rank,
   c1.lives_rank-coalesce(c2.lives_rank,0) lives_rank,
