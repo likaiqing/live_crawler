@@ -100,7 +100,7 @@ public class DetailAnchor {
     }
 
     public long getWeightNum() {
-        return CommonTools.getDouyuWeight(weightStr);
+        return weightNum;
     }
 
     public void setWeightNum(long weightNum) {

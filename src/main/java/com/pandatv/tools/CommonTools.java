@@ -114,7 +114,11 @@ public class CommonTools {
         } else if (weightNum.endsWith("t")) {
             return (long) (Double.parseDouble(weightNum.replace("t", "")) * 1000000);
         } else {
-            return 0;
+            try{
+                return (long) Double.parseDouble(weightNum);
+            }catch (Exception e){
+                return 0;
+            }
         }
     }
 
