@@ -36,7 +36,6 @@ FROM
           plat,
           category,
           sum(anchors)                    live_times,
-          sum(lives)                      lives,
           round(sum(anchors) / 60 * 5, 2) duration,
           max(pcu)                        max_pcu
         FROM
