@@ -129,7 +129,7 @@ FROM
           plat_name,
           c_name
         FROM panda_competitor.crawler_category
-        WHERE par_date = '$date' AND task LIKE '%anchor'
+        WHERE par_date = '$date'
       ) cate1
       FULL JOIN
       (
@@ -137,7 +137,7 @@ FROM
           DISTINCT
           plat_name,
           c_name
-        FROM panda_competitor.crawler_category AND task LIKE '%anchor'
+        FROM panda_competitor.crawler_category
         WHERE par_date = '$sub_1_days'
       ) cate2
         ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
