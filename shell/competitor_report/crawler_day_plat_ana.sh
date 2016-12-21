@@ -14,8 +14,10 @@ SELECT
   coalesce(ana.weight, rec.weight)        weight,
   coalesce(ana.followers, rec.followers)  followers,
   coalesce(rec.rec_times, 0)              rec_times,
-  coalesce(ana.lives, rec.lives)          lives,
-  new_anchors.new_anchors,
+  anchors.lives                           lives,
+  anchors.new_anchors,
+  cates.categories,
+  cates.new_cates,
   '$date'
 FROM
   (
@@ -25,25 +27,22 @@ FROM
       coalesce(dur.duration, pcu.duration)     duration,
       coalesce(dur.max_pcu, pcu.max_pcu)       max_pcu,
       coalesce(pcu.weight, 0)                  weight,
-      coalesce(pcu.followers, 0)               followers,
-      coalesce(dur.lives, pcu.lives)           lives
+      coalesce(pcu.followers, 0)               followers
     FROM
       (
         SELECT
           plat,
           sum(live_times)                    live_times,
-          sum(lives)                      lives,
           round(sum(live_times) / 60 * 5, 2) duration,
-          max(pcu)                        max_pcu
+          max(pcu)                           max_pcu
         FROM
           (
             SELECT
               task_random,
-              split(task, 'anchor') [0]       plat,
+              split(task, 'anchor') [0] plat,
               category,
-              count(DISTINCT rid) live_times,
-              count(DISTINCT rid)             lives,
-              sum(populary_num)               pcu
+              count(DISTINCT rid)       live_times,
+              sum(populary_num)         pcu
             FROM panda_competitor.crawler_anchor
             WHERE par_date = '$date' AND task LIKE '%anchor'
             GROUP BY task_random, split(task, 'anchor') [0], category
@@ -58,7 +57,6 @@ FROM
           CASE WHEN plat = 'douyu'
             THEN round(sum(anchors) / 60, 2)
           ELSE round(sum(anchors) / 60 * 5, 2) END duration,
-          sum(lives)                               lives,
           max(pcu)                                 max_pcu,
           max(weight)                              weight,
           max(followers)                           followers
@@ -69,7 +67,6 @@ FROM
               split(task, 'detailanchor') [0] plat,
               category_sec                    category,
               count(DISTINCT rid,task_random) anchors,
-              count(DISTINCT rid)             lives,
               sum(online_num)                 pcu,
               sum(weight_num)                 weight,
               sum(follower_num)               followers
@@ -88,7 +85,6 @@ FROM
       plat,
       sum(anchors)                    rec_times,
       round(sum(anchors) / 60 * 5, 2) duration,
-      sum(lives)                      lives,
       max(max_pcu)                    max_pcu,
       max(weight)                     weight,
       max(followers)                  followers
@@ -99,7 +95,6 @@ FROM
           split(task, 'index') [0]        plat,
           category_sec                    category,
           count(DISTINCT rid,task_random) anchors,
-          count(DISTINCT rid)             lives,
           max(online_num)                 max_pcu,
           max(weight_num)                 weight,
           max(follower_num)               followers
@@ -115,7 +110,10 @@ FROM
   (
     SELECT
       dis1.plat,
-      count(1) new_anchors
+      count(1)        lives,
+      sum(CASE WHEN dis2.rid IS NULL
+        THEN 1
+          ELSE 0 END) new_anchors
     FROM
       (
         SELECT
@@ -157,8 +155,37 @@ FROM
         WHERE par_date = '$sub_1_days'
       ) dis2
         ON dis1.plat = dis2.plat AND dis1.rid = dis2.rid
-    WHERE dis2.rid IS NULL
     GROUP BY dis1.plat
-  ) new_anchors
-    ON ana.plat = new_anchors.plat;
+  ) anchors
+    ON ana.plat = anchors.plat
+  LEFT JOIN
+  (
+    SELECT
+      cate1.plat_name,
+      count(1)        categories,
+      sum(CASE WHEN cate2.c_name IS NULL
+        THEN 1
+          ELSE 0 END) new_cates
+    FROM
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          c_name
+        FROM panda_competitor.crawler_category
+        WHERE par_date = '$date'
+      ) cate1
+      LEFT JOIN
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          c_name
+        FROM panda_competitor.crawler_category
+        WHERE par_date = '$sub_1_days'
+      ) cate2
+        ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
+    GROUP BY cate1.plat_name
+  ) cates
+    ON ana.plat = cates.plat_name;
 "

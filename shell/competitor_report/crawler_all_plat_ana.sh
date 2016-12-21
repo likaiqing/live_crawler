@@ -36,6 +36,12 @@ SELECT
   new_anchors,
   row_number()
   OVER (ORDER BY new_anchors DESC)   new_anchors_plat_rank,
+  categories,
+  row_number()
+  OVER (ORDER BY categories DESC)   categories_plat_rank,
+  new_categories,
+  row_number()
+  OVER (ORDER BY new_categories DESC)   new_categories_plat_rank,
   '$date'
 FROM
   (
@@ -61,6 +67,8 @@ FROM
       coalesce(all_anc.sum_rec_times, 0) + coalesce(day_plat.rec_times, 0)   sum_rec_times,
       coalesce(day_plat.lives, 0)                                            lives,
       coalesce(day_plat.new_anchors, 0)                                      new_anchors,
+      coalesce(day_plat.categories,0) categories,
+      coalesce(day_plat.new_categories,0) new_categories,
       '$date'
     FROM
       (
@@ -73,7 +81,9 @@ FROM
           followers,
           rec_times,
           lives,
-          new_anchors
+          new_anchors,
+          categories,
+          new_categories
         FROM
           panda_competitor.crawler_day_plat_analyse
         WHERE par_date = '$date'

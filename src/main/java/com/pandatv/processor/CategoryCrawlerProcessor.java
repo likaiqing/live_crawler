@@ -32,8 +32,8 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
             List<String> names = html.xpath("//ul[@id='live-list-contentbox']/li/a/p/text()").all();
             add2Categories(curUrl, urls, names, PlatIdEnum.DOUYU);
         } else if (curUrl.equals("http://www.huya.com/g")) {
-            List<String> urls = html.xpath("//ul[@class='game-list']/li/a[@class='title']/@href").all();
-            List<String> names = html.xpath("//ul[@class='game-list']/li/a[@class='title']/text()").all();
+            List<String> urls = html.xpath("//ul[@id='js-game-list']/li/a/@href").all();
+            List<String> names = html.xpath("//ul[@id='js-game-list']/li/a/p/text()").all();
             add2Categories(curUrl, urls, names, PlatIdEnum.HUYA);
         } else if (curUrl.equals("https://www.zhanqi.tv/games")) {
             List<String> urls = html.xpath("//ul[@id='game-list-panel']/li/a/@href").all();

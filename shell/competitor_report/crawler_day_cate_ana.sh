@@ -17,8 +17,8 @@ SELECT
   coalesce(rec.rec_times, 0)              rec_times,
   coalesce(cate.is_new, 1)                is_new,
   coalesce(cate.is_closed, 0)             is_closed,
-  coalesce(ana.lives, rec.lives)          lives,
-  new_anchors.new_anchors,
+  anchors.lives          lives,
+  anchors.new_anchors,
   '$date'
 FROM
   (
@@ -29,8 +29,7 @@ FROM
       coalesce(dur.duration, pcu.duration)     duration,
       coalesce(dur.max_pcu, pcu.max_pcu)       max_pcu,
       coalesce(pcu.weight, 0)                  weight,
-      coalesce(pcu.followers, 0)               followers,
-      coalesce(dur.lives, pcu.lives)           lives
+      coalesce(pcu.followers, 0)               followers
     FROM
       (
         SELECT
@@ -47,7 +46,6 @@ FROM
               split(task, 'anchor') [0]       plat,
               category,
               count(DISTINCT rid,task_random) anchors,
-              count(DISTINCT rid)             lives,
               sum(populary_num)               pcu
             FROM panda_competitor.crawler_anchor
             WHERE par_date = '$date' AND task LIKE '%anchor'
@@ -64,7 +62,6 @@ FROM
           CASE WHEN plat = 'douyu'
             THEN round(sum(anchors) / 60, 2)
           ELSE round(sum(anchors) / 60 * 5, 2) END duration,
-          sum(lives)                               lives,
           max(pcu)                                 max_pcu,
           max(weight)                              weight,
           max(followers)                           followers
@@ -75,7 +72,6 @@ FROM
               split(task, 'detailanchor') [0] plat,
               category_sec                    category,
               count(DISTINCT rid,task_random) anchors,
-              count(DISTINCT rid)             lives,
               sum(online_num)                 pcu,
               sum(weight_num)                 weight,
               sum(follower_num)               followers
@@ -95,7 +91,6 @@ FROM
       category,
       sum(anchors)                    rec_times,
       round(sum(anchors) / 60 * 5, 2) duration,
-      sum(lives)                      lives,
       max(max_pcu)                    max_pcu,
       max(weight)                     weight,
       max(followers)                  followers
@@ -106,7 +101,6 @@ FROM
           split(task, 'index') [0]        plat,
           category_sec                    category,
           count(DISTINCT rid,task_random) anchors,
-          count(DISTINCT rid)             lives,
           max(online_num)                 max_pcu,
           max(weight_num)                 weight,
           max(follower_num)               followers
@@ -154,18 +148,22 @@ FROM
   (
     SELECT
       dis1.plat,
-      count(1) new_anchors
+      dis1.category,
+      count(1) lives,
+      sum(CASE WHEN dis2.rid IS NULL THEN 1 ELSE 0 end) new_anchors
     FROM
       (
         SELECT
           DISTINCT
           plat,
+          category,
           rid
         FROM
           (
             SELECT
               DISTINCT
               split(task, 'anchor') [0] plat,
+              category,
               rid
             FROM panda_competitor.crawler_anchor
             WHERE par_date = '$date' AND task LIKE '%anchor'
@@ -173,6 +171,7 @@ FROM
             SELECT
               DISTINCT
               split(task, 'detailanchor') [0] plat,
+              category_sec,
               rid
             FROM panda_competitor.crawler_detail_anchor
             WHERE par_date = '$date' AND task LIKE '%detailanchor'
@@ -180,6 +179,7 @@ FROM
             SELECT
               DISTINCT
               split(task, 'index') [0] plat,
+              category_sec,
               rid
             FROM
               panda_competitor.crawler_indexrec_detail_anchor
@@ -196,8 +196,7 @@ FROM
         WHERE par_date = '$sub_1_days'
       ) dis2
         ON dis1.plat = dis2.plat AND dis1.rid = dis2.rid
-    WHERE dis2.rid IS NULL
-    GROUP BY dis1.plat
-  ) new_anchors
-    ON ana.plat = new_anchors.plat;
+    GROUP BY dis1.plat,dis1.category
+  ) anchors
+    ON ana.plat = anchors.plat AND ana.category=anchors.category;
 "
