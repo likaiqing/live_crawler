@@ -85,7 +85,7 @@ FROM
 hive -e "
 insert overwrite table panda_competitor_result.plat_day_change_analyse partition(par_date)
 SELECT
-  c1.plat,
+  day_c.plat,
   c1.new_pcu_rank-coalesce(c2.new_pcu_rank,0) pcu_rank_changed,
   row_number() OVER ( ORDER BY c1.new_pcu_rank-coalesce(c2.new_pcu_rank,0) DESC ) pcu_rank_change_rank,
   c1.new_duration_rank-coalesce(c2.new_duration_rank,0) dur_rank_changed,
@@ -108,6 +108,13 @@ SELECT
 FROM
   (
     SELECT
+    plat
+    FROM  panda_competitor.crawler_day_plat_analyse
+    WHERE par_date='$date'
+  )day_c
+    LEFT JOIN
+  (
+    SELECT
       plat,
       new_pcu_rank,
       new_duration_rank,
@@ -121,6 +128,7 @@ FROM
       panda_competitor.crawler_all_plat_analyse
     WHERE par_date = '$date'
   ) c1
+  ON day_c.plat=c1.plat
   LEFT JOIN
   (
     SELECT

@@ -132,26 +132,48 @@ insert overwrite table panda_competitor_result.category_day_change_analyse parti
 SELECT
   c1.plat,
   c1.category,
-  c1.new_pcu_rank-coalesce(c2.new_pcu_rank,0) pcu_rank_changed,
-  row_number() OVER (PARTITION BY c1.plat ORDER BY c1.new_pcu_rank-coalesce(c2.new_pcu_rank,0) DESC ) pcu_rank_change_rank,
-  c1.new_duration_rank-coalesce(c2.new_duration_rank,0) dur_rank_changed,
-  row_number() OVER (PARTITION BY c1.plat ORDER BY c1.new_duration_rank-coalesce(c2.new_duration_rank,0) DESC ) dur_rank_change_rank,
-  c1.new_rec_times_rank-coalesce(c2.new_rec_times_rank,0) rec_times_rank_changed,
-  row_number() OVER (PARTITION BY c1.plat ORDER BY c1.new_rec_times_rank-coalesce(c2.new_rec_times_rank,0) DESC ) rec_times_rank_change_rank,
-  c1.new_followers_rank-coalesce(c2.new_followers_rank,0) fol_rank_changed,
-  row_number() OVER (PARTITION BY c1.plat ORDER BY c1.new_followers_rank-coalesce(c2.new_followers_rank,0) DESC ) fol_rank_change_rank,
-  c1.new_weight_rank-coalesce(c2.new_weight_rank,0) weight_rank_changed,
-  row_number() OVER (PARTITION BY c1.plat ORDER BY c1.new_weight_rank-coalesce(c2.new_weight_rank,0) DESC ) weight_rank_change_rank,
+  c1.new_pcu_rank - coalesce(c2.new_pcu_rank, 0)                              pcu_rank_changed,
+  row_number()
+  OVER (PARTITION BY c1.plat
+    ORDER BY c1.new_pcu_rank - coalesce(c2.new_pcu_rank, 0) DESC)             pcu_rank_change_rank,
+  c1.new_duration_rank - coalesce(c2.new_duration_rank, 0)                    dur_rank_changed,
+  row_number()
+  OVER (PARTITION BY c1.plat
+    ORDER BY c1.new_duration_rank - coalesce(c2.new_duration_rank, 0) DESC)   dur_rank_change_rank,
+  c1.new_rec_times_rank - coalesce(c2.new_rec_times_rank, 0)                  rec_times_rank_changed,
+  row_number()
+  OVER (PARTITION BY c1.plat
+    ORDER BY c1.new_rec_times_rank - coalesce(c2.new_rec_times_rank, 0) DESC) rec_times_rank_change_rank,
+  c1.new_followers_rank - coalesce(c2.new_followers_rank, 0)                  fol_rank_changed,
+  row_number()
+  OVER (PARTITION BY c1.plat
+    ORDER BY c1.new_followers_rank - coalesce(c2.new_followers_rank, 0) DESC) fol_rank_change_rank,
+  c1.new_weight_rank - coalesce(c2.new_weight_rank, 0)                        weight_rank_changed,
+  row_number()
+  OVER (PARTITION BY c1.plat
+    ORDER BY c1.new_weight_rank - coalesce(c2.new_weight_rank, 0) DESC)       weight_rank_change_rank,
   0,
   0,
   0,
   0,
-  c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) new_anchors_rank_changed,
-  row_number() OVER (PARTITION BY c1.plat ORDER BY c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) DESC ) new_anchors_rank_change_rank,
-  c1.lives_rank-coalesce(c2.lives_rank,0) lives_rank,
-  row_number() OVER (PARTITION BY c1.plat ORDER BY c1.lives_rank-coalesce(c2.lives_rank,0) DESC ) lives_rank_change_rank,
+  c1.new_anchors_rank - coalesce(c2.new_anchors_rank, 0)                      new_anchors_rank_changed,
+  row_number()
+  OVER (PARTITION BY c1.plat
+    ORDER BY c1.new_anchors_rank - coalesce(c2.new_anchors_rank, 0) DESC)     new_anchors_rank_change_rank,
+  c1.lives_rank - coalesce(c2.lives_rank, 0)                                  lives_rank,
+  row_number()
+  OVER (PARTITION BY c1.plat
+    ORDER BY c1.lives_rank - coalesce(c2.lives_rank, 0) DESC)                 lives_rank_change_rank,
   '$date'
 FROM
+  (
+    SELECT
+      plat,
+      category
+    FROM panda_competitor.crawler_day_cate_analyse
+    WHERE par_date = '$date'
+  ) day_c
+  LEFT JOIN
   (
     SELECT
       plat,
@@ -167,6 +189,7 @@ FROM
       panda_competitor.crawler_all_cate_analyse
     WHERE par_date = '$date'
   ) c1
+    ON day_c.plat = c1.plat AND day_c.category=c1.category
   LEFT JOIN
   (
     SELECT
@@ -183,5 +206,5 @@ FROM
       panda_competitor.crawler_all_cate_analyse
     WHERE par_date = '$sub_1_days'
   ) c2
-  ON c1.plat=c2.plat AND c1.category=c2.category;
+    ON c1.plat = c2.plat AND c1.category = c2.category;
 "
