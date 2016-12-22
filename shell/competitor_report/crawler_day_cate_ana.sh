@@ -17,8 +17,8 @@ SELECT
   coalesce(t.rec_times, 0)  rec_times,
   cate1.is_new,
   cate1.is_closed,
-  anchors.lives             lives,
-  anchors.new_anchors,
+  coalesce(anchors.lives,0)             lives,
+  coalesce(anchors.new_anchors,0) new_anchors,
   '$date'
 FROM
   (
