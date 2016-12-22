@@ -7,31 +7,49 @@ sub_1_days=`date -d "-1day $date" +%Y%m%d`
 hive -e "
 insert overwrite table panda_competitor.crawler_day_cate_analyse partition(par_date)
 SELECT
-  coalesce(cate1.plat_name,cate2.plat_name) plat,
-  coalesce(cate1.c_name,cate2.c_name)    category,
-  coalesce(t.max_pcu,0)       max_pcu,
-  coalesce(t.live_times,0)    live_times,
-  coalesce(t.duration,0.0)      duraion,
-  coalesce(t.weight,0)        weight,
-  coalesce(t.followers,0)     followers,
-  coalesce(t.rec_times,0)     rec_times,
-  CASE WHEN cate2.c_name IS NULL
-    THEN 1
-  ELSE 0 END      is_new,
-  CASE WHEN cate1.c_name IS NULL
-    THEN 1
-  ELSE 0 END      is_closed,
-  anchors.lives   lives,
+  cate1.plat,
+  cate1.category,
+  coalesce(t.max_pcu, 0)    max_pcu,
+  coalesce(t.live_times, 0) live_times,
+  coalesce(t.duration, 0.0) duraion,
+  coalesce(t.weight, 0)     weight,
+  coalesce(t.followers, 0)  followers,
+  coalesce(t.rec_times, 0)  rec_times,
+  cate1.is_new,
+  cate1.is_closed,
+  anchors.lives             lives,
   anchors.new_anchors,
   '$date'
 FROM
   (
     SELECT
-      DISTINCT
-      plat_name,
-      trim(c_name) c_name
-    FROM panda_competitor.crawler_category
-    WHERE par_date = '$date'
+      coalesce(cate1.plat_name, cate2.plat_name) plat,
+      coalesce(cate1.c_name, cate2.c_name)       category,
+      CASE WHEN cate2.c_name IS NULL
+        THEN 1
+      ELSE 0 END                                 is_new,
+      CASE WHEN cate1.c_name IS NULL
+        THEN 1
+      ELSE 0 END                                 is_closed
+    FROM
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          trim(c_name) c_name
+        FROM panda_competitor.crawler_category
+        WHERE par_date = '$date'
+      ) cate1
+      FULL JOIN
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          trim(c_name) c_name
+        FROM panda_competitor.crawler_category
+        WHERE par_date = '$sub_1_days'
+      ) cate2
+        ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
   ) cate1
   LEFT JOIN
   (
@@ -136,17 +154,7 @@ FROM
       ) rec
         ON ana.plat = rec.plat AND ana.category = rec.category
   ) t
-    ON cate1.plat_name = t.plat AND cate1.c_name = t.category
-  FULL JOIN
-  (
-    SELECT
-      DISTINCT
-      plat_name,
-      trim(c_name) c_name
-    FROM panda_competitor.crawler_category
-    WHERE par_date = '$sub_1_days'
-  ) cate2
-    ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
+    ON cate1.plat = t.plat AND cate1.category = t.category
   LEFT JOIN
   (
     SELECT
@@ -203,5 +211,4 @@ FROM
         ON dis1.plat = dis2.plat AND dis1.rid = dis2.rid
     GROUP BY dis1.plat, dis1.category
   ) anchors
-    ON cate1.plat_name = anchors.plat AND cate1.c_name = anchors.category;
-"
+    ON cate1.plat = anchors.plat AND cate1.category = anchors.category;"
