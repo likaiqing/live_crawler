@@ -144,6 +144,7 @@ FROM
             WHERE par_date = '$sub_1_days'
           ) cate2
             ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
+            where coalesce(cate1.plat_name, cate2.plat_name) is not null and coalesce(cate1.plat_name, cate2.plat_name) !='' and coalesce(cate1.c_name, cate2.c_name) is not null and coalesce(cate1.c_name, cate2.c_name) !=''
       ) cate
         ON all_anc.plat = cate.plat_name AND all_anc.category = cate.c_name
   ) t;
