@@ -100,14 +100,19 @@ SELECT
   0,
   0,
   0,
-  c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) new_anchors_rank_changed,
-  row_number() OVER (ORDER BY c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) DESC ) new_anchors_rank_change_rank,
   c1.lives_rank-coalesce(c2.lives_rank,0) lives_rank,
   row_number() OVER (ORDER BY c1.lives_rank-coalesce(c2.lives_rank,0) DESC ) lives_rank_change_rank,
+  c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) new_anchors_rank_changed,
+  row_number() OVER (ORDER BY c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) DESC ) new_anchors_rank_change_rank,
+  c1.categories_rank-coalesce(c2.categories_rank,0) categories_rank_change,
+  row_number() OVER (ORDER BY c1.categories_rank-coalesce(c2.categories_rank,0) DESC ) categories_rank_change_rank,
+  c1.new_categories_rank-coalesce(c2.new_categories_rank,0) new_categories_rank_change,
+  row_number() OVER (ORDER BY c1.new_categories_rank-coalesce(c2.new_categories_rank,0) DESC ) new_categories_rank_change_rank,
   '$date'
 FROM
   (
     SELECT
+      DISTINCT
     plat
     FROM  panda_competitor.crawler_day_plat_analyse
     WHERE par_date='$date'
@@ -123,7 +128,8 @@ FROM
       new_weight_rank,
       new_anchors_rank,
       lives_rank,
-      new_categories_rank
+      new_categories_rank,
+      categories_rank
     FROM
       panda_competitor.crawler_all_plat_analyse
     WHERE par_date = '$date'
@@ -140,7 +146,8 @@ FROM
       new_weight_rank,
       new_anchors_rank,
       lives_rank,
-      new_categories_rank
+      new_categories_rank,
+      categories_rank
     FROM
       panda_competitor.crawler_all_plat_analyse
     WHERE par_date = '$sub_1_days'
