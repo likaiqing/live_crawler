@@ -12,7 +12,7 @@ SELECT
   c1.pcu - coalesce(c2.new_pcu, 0)                              pcu_changed,
   row_number()
   OVER (ORDER BY c1.pcu - coalesce(c2.new_pcu, 0) DESC)             pcu_changed_rank,
-  c1.duration - coalesce(c2.new_duration, 0.0)                  duration_changed,
+  round(c1.duration - coalesce(c2.new_duration, 0.0),2)                  duration_changed,
   row_number()
   OVER (ORDER BY c1.duration - coalesce(c2.new_duration, 0.0) DESC) duration_change_rank,
   c1.rec_times - coalesce(c2.new_rec_times, 0)                  rectimes_changed,
