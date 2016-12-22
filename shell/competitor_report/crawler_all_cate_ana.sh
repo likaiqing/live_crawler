@@ -26,11 +26,11 @@ SELECT
   max_followers,
   new_live_times,
   sum_live_times,
-  new_duration,
+  round(new_duration,2) new_duration,
   row_number()
   OVER (PARTITION BY plat
     ORDER BY new_duration DESC)  dur_plat_rank,
-  sum_duration,
+  round(sum_duration,2) sum_duration,
   new_rec_times,
   row_number()
   OVER (PARTITION BY plat

@@ -59,7 +59,7 @@ SELECT
   row_number()
   OVER (PARTITION BY c1.plat
     ORDER BY c1.pcu - coalesce(c2.new_pcu, 0) DESC)             pcu_changed_rank,
-  c1.duration - coalesce(c2.new_duration, 0.0)                  duration_changed,
+  round(c1.duration - coalesce(c2.new_duration, 0.0),2)                  duration_changed,
   row_number()
   OVER (PARTITION BY c1.plat
     ORDER BY c1.duration - coalesce(c2.new_duration, 0.0) DESC) duration_change_rank,
