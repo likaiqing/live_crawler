@@ -18,5 +18,5 @@ sh $(dirname $0)/crawler_all_plat_ana.sh $date
 echo "crawler_all_plat_ana.sh $date down"
 sh $(dirname $0)/crawler_category_analyse.sh $date
 echo "crawler_category_analyse.sh $date down"
-sh $(dirname $0)/crawler_day_plat_ana.sh $date
-echo "crawler_day_plat_ana.sh $date down"
+sh $(dirname $0)/crawler_plat_analyse.sh $date
+echo "crawler_plat_analyse.sh $date down"

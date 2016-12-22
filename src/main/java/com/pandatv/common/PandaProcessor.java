@@ -35,7 +35,7 @@ public abstract class PandaProcessor implements PageProcessor {
     private static String randomTime = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
 
     protected Site site = Site.me()
-            .setSleepTime(500)
+            .setSleepTime(10)
             .setTimeOut(10 * 1000)
             .setUseGzip(true)
             .setRetryTimes(5)
