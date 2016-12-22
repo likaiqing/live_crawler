@@ -18,6 +18,8 @@ SELECT
   coalesce(anchors.new_anchors, 0) new_anchors,
   coalesce(cates.categories, 0)    categories,
   coalesce(cates.new_cates, 0)     new_cates,
+  coalesce(cates.reduce_cates, 0)     reduce_cates,
+  ana.max_lives,
   '$date'
 FROM
   (
@@ -25,6 +27,7 @@ FROM
       coalesce(ana.plat, rec.plat)            plat,
       coalesce(ana.max_pcu, rec.max_pcu)      max_pcu,
       coalesce(ana.live_times, rec.rec_times) live_times,
+      coalesce(ana.max_lives, rec.max_lives) max_lives,
       coalesce(ana.duration, rec.duration)    duraion,
       coalesce(ana.weight, rec.weight)        weight,
       coalesce(ana.followers, rec.followers)  followers,
@@ -34,6 +37,7 @@ FROM
         SELECT
           coalesce(dur.plat, pcu.plat)             plat,
           coalesce(dur.live_times, pcu.live_times) live_times,
+          coalesce(dur.max_lives, pcu.max_lives) max_lives,
           coalesce(dur.duration, pcu.duration)     duration,
           coalesce(dur.max_pcu, pcu.max_pcu)       max_pcu,
           coalesce(pcu.weight, 0)                  weight,
@@ -43,6 +47,7 @@ FROM
             SELECT
               plat,
               sum(live_times)                    live_times,
+              max(live_times)           max_lives,
               round(sum(live_times) / 60 * 5, 2) duration,
               max(pcu)                           max_pcu
             FROM
@@ -64,6 +69,7 @@ FROM
             SELECT
               plat,
               sum(anchors)                             live_times,
+              max(anchors)      max_lives,
               CASE WHEN plat = 'douyu'
                 THEN round(sum(anchors) / 60, 2)
               ELSE round(sum(anchors) / 60 * 5, 2) END duration,
@@ -94,6 +100,7 @@ FROM
         SELECT
           plat,
           sum(anchors)                    rec_times,
+          max(anchors)      max_lives,
           round(sum(anchors) / 60 * 5, 2) duration,
           max(max_pcu)                    max_pcu,
           max(weight)                     weight,
@@ -173,7 +180,8 @@ FROM
   (
     SELECT
       cate1.plat_name,
-      count(1)        categories,
+      count(distinct case when cate1.c_name is not null then cate1.c_name else null end)        categories,
+      sum(CASE WHEN cate1.c_name IS NULL then 1 else 0 end) reduce_cates,
       sum(CASE WHEN cate2.c_name IS NULL
         THEN 1
           ELSE 0 END) new_cates
@@ -186,7 +194,7 @@ FROM
         FROM panda_competitor.crawler_category
         WHERE par_date = '$date'
       ) cate1
-      LEFT JOIN
+      FULL JOIN
       (
         SELECT
           DISTINCT
