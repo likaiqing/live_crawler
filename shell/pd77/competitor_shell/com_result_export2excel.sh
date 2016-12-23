@@ -17,7 +17,7 @@ exportdir=/home/likaiqing/shell/crawler_ana/competitor_report/
 /usr/bin/java -jar $export2exceljar $date panda_competitor_result.category_day_change_report par_date,plat_id,plat_name,category,lives,lives_changed_rank_change,followers,followers_changed_rank_change "日期,平台ID,平台名称,板块mingc,直播数,直播数增减位订阅数,订阅数,订阅数增减位" $exportdir
 
 #主播PCU排行
-/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_pcu_rank par_date,plat_id,plat,rid,name,rank,pcu,weight,fol,rank_changed,room_cootent "日期,平台ID,平台名称,主播ID,主播,排名,PCU,体重,订阅,名次变化,房间内容" /home/likaiqing/shell/crawler_ana/competitor_report/
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_pcu_rank par_date,plat_id,plat,rid,name,rank,pcu,weight,fol,rank_changed,room_content "日期,平台ID,平台名称,主播ID,主播,排名,PCU,体重,订阅,名次变化,房间内容" /home/likaiqing/shell/crawler_ana/competitor_report/
 
 #主播变化趋势增减表
 /usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_changed_rank par_date,plat_id,plat,rid,name,catrgory,pcu,pcu_changed,livetime,livetime_changed,fol,weight,weight_changed "日期,平台ID,平台名称,主播ID,主播,所属版区,Pcu,pcu增减数变化,开播时长,开播时长增减位数,订阅数,体重,体重增减位数" /home/likaiqing/shell/crawler_ana/competitor_report/
