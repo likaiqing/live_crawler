@@ -9,7 +9,8 @@ import java.util.Date;
 /**
  * Created by likaiqing on 2016/12/23.
  */
-public class DouyuGift {
+public class GiftInfo {
+    private String plat;
     private String rId;
     private String category;
     private String giftId;
@@ -60,8 +61,8 @@ public class DouyuGift {
         if (null == obj) {
             return false;
         }
-        if (null instanceof DouyuGift) {
-            return this.getGiftId().equals(((DouyuGift) obj).getGiftId());
+        if (null instanceof GiftInfo) {
+            return this.getGiftId().equals(((GiftInfo) obj).getGiftId());
         } else {
             return false;
         }
@@ -71,7 +72,7 @@ public class DouyuGift {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.getrId()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getGiftId()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getType()).append(Const.SEP).append(this.getPrice()).append(Const.SEP).append(this.getExp()).append(Const.SEP).append(PandaProcessor.getRandomStr()).append(Const.SEP).append(createTime).toString();
+        return sb.append(this.getPlat()).append(Const.SEP).append(this.getrId()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getGiftId()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getType()).append(Const.SEP).append(this.getPrice()).append(Const.SEP).append(this.getExp()).append(Const.SEP).append(PandaProcessor.getRandomStr()).append(Const.SEP).append(createTime).toString();
     }
 
     public String getrId() {
@@ -96,5 +97,13 @@ public class DouyuGift {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getPlat() {
+        return plat;
+    }
+
+    public void setPlat(String plat) {
+        this.plat = plat;
     }
 }

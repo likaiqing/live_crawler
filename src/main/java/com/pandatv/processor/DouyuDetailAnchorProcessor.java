@@ -6,7 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.DouyuDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.pojo.DouyuGift;
+import com.pandatv.pojo.GiftInfo;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
@@ -91,7 +91,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                         String gType = JsonPath.read(gift, "$.type");
                         int gPrice = JsonPath.read(gift, "$.pc");
                         int gExp = JsonPath.read(gift, "$.gx");
-                        DouyuGift douyuGift = new DouyuGift();
+                        GiftInfo douyuGift = new GiftInfo();
+                        douyuGift.setPlat(Const.DOUYU);
                         douyuGift.setrId(rid);
                         douyuGift.setCategory(categorySec);
                         douyuGift.setGiftId(gId);
