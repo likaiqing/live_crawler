@@ -40,7 +40,7 @@ exportdir=/home/likaiqing/shell/crawler_ana/competitor_report/
 
 zip_dir=/home/likaiqing/shell/crawler_ana
 rm -rf $zip_dir/competitor_report_${date}.zip
-cd $exportdir
+cd $zip_dir
 zip -m $zip_dir/competitor_report_${date}.zip ./competitor_report/*${date}.xlsx
 
 #/usr/bin/java -jar $mailjar "竞品分析:$date" "报表见附件" $zip_dir/competitor_report_${date}.zip
