@@ -22,5 +22,9 @@ sh $(dirname $0)/crawler_plat_analyse.sh $date
 echo "crawler_plat_analyse.sh $date down"
 sh $(dirname $0)/competitor_result_report.sh $date
 echo "competitor_result_report.sh $date down"
+sh $(dirname $0)/anchor_change_day.sh $date
+echo "anchor_change_day.sh $date down"
+sh $(dirname $0)/seven_insert.sh $date
+echo "seven_insert.sh $date down"
 
-#ssh 10.110.20.77 "sh /home/likaiqing/shell/crawler_ana/competitor_shell/com_result_export2excel.sh $date"
+ssh 10.110.20.77 "sh /home/likaiqing/shell/crawler_ana/competitor_shell/com_result_export2excel.sh $date"

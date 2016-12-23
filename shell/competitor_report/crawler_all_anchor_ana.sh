@@ -11,44 +11,44 @@ SELECT
   day_anc.plat,
   category,
   new_pcu,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat
     ORDER BY new_pcu DESC)       pcu_plat_rank,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat, category
     ORDER BY new_pcu DESC)       pcu_cate_rank,
   max_pcu,
   new_weight,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat
     ORDER BY new_weight DESC)    weight_plat_rank,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat, category
     ORDER BY new_weight DESC)    weight_cate_rank,
   max_weight,
   new_followers,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat
     ORDER BY new_followers DESC) fol_plat_rank,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat, category
     ORDER BY new_followers DESC) fol_cate_rank,
   max_followers,
   new_live_times,
   sum_live_times,
   new_duration,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat
     ORDER BY new_duration DESC)  dur_plat_rank,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat, category
     ORDER BY new_duration DESC)  dur_cate_rank,
   sum_duration,
   new_rec_times,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat
     ORDER BY new_rec_times DESC) rectimes_plat_rank,
-  row_number()
+  rank()
   OVER (PARTITION BY day_anc.plat, category
     ORDER BY new_rec_times DESC) rectimes_cate_rank,
   sum_rec_times,

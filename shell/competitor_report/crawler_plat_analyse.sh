@@ -10,35 +10,35 @@ insert overwrite table panda_competitor_result.plat_day_changed partition(par_da
 SELECT
   c1.plat,
   c1.pcu - coalesce(c2.new_pcu, 0)                              pcu_changed,
-  row_number()
+  rank()
   OVER (ORDER BY c1.pcu - coalesce(c2.new_pcu, 0) DESC)             pcu_changed_rank,
   round(c1.duration - coalesce(c2.new_duration, 0.0),2)                  duration_changed,
-  row_number()
+  rank()
   OVER (ORDER BY c1.duration - coalesce(c2.new_duration, 0.0) DESC) duration_change_rank,
   c1.rec_times - coalesce(c2.new_rec_times, 0)                  rectimes_changed,
-  row_number()
+  rank()
   OVER (ORDER BY c1.rec_times - coalesce(c2.new_rec_times, 0) DESC) rectimes_change_rank,
   c1.followers - coalesce(c2.new_followers, 0)                  fol_chaned,
-  row_number()
+  rank()
   OVER (ORDER BY c1.followers - coalesce(c2.new_followers, 0) DESC) fol_change_rank,
   c1.weight - coalesce(c2.new_weight, 0.0)                      weight_changed,
-  row_number()
+  rank()
   OVER (ORDER BY c1.weight - coalesce(c2.new_weight, 0.0) DESC)     weight_change_rank,
   0.0,
   0,
   0,
   0,
   c1.lives - coalesce(c2.lives, 0)                              activeanchors_changed,
-  row_number()
+  rank()
   OVER (ORDER BY c1.lives - coalesce(c2.lives, 0) DESC)             lives_change_rank,
   c1.new_anchors - coalesce(c2.new_anchors, 0)                  newanchors_changed,
-  row_number()
+  rank()
   OVER (ORDER BY c1.new_anchors - coalesce(c2.new_anchors, 0) DESC) newanchors_change_rank,
   c1.categories-coalesce(c2.categories, 0) categories_changed,
-  row_number()
+  rank()
   OVER (ORDER BY c1.categories - coalesce(c2.categories, 0) DESC) categories_change_rank,
   c1.new_categories-coalesce(c2.new_categories, 0) new_categories_changed,
-  row_number()
+  rank()
   OVER (ORDER BY c1.new_categories - coalesce(c2.new_categories, 0) DESC) new_categories_change_rank,
   '$date'
 FROM
@@ -87,27 +87,27 @@ insert overwrite table panda_competitor_result.plat_day_change_analyse partition
 SELECT
   day_c.plat,
   c1.new_pcu_rank-coalesce(c2.new_pcu_rank,0) pcu_rank_changed,
-  row_number() OVER ( ORDER BY c1.new_pcu_rank-coalesce(c2.new_pcu_rank,0) DESC ) pcu_rank_change_rank,
+  rank() OVER ( ORDER BY c1.new_pcu_rank-coalesce(c2.new_pcu_rank,0) DESC ) pcu_rank_change_rank,
   c1.new_duration_rank-coalesce(c2.new_duration_rank,0) dur_rank_changed,
-  row_number() OVER (ORDER BY c1.new_duration_rank-coalesce(c2.new_duration_rank,0) DESC ) dur_rank_change_rank,
+  rank() OVER (ORDER BY c1.new_duration_rank-coalesce(c2.new_duration_rank,0) DESC ) dur_rank_change_rank,
   c1.new_rec_times_rank-coalesce(c2.new_rec_times_rank,0) rec_times_rank_changed,
-  row_number() OVER (ORDER BY c1.new_rec_times_rank-coalesce(c2.new_rec_times_rank,0) DESC ) rec_times_rank_change_rank,
+  rank() OVER (ORDER BY c1.new_rec_times_rank-coalesce(c2.new_rec_times_rank,0) DESC ) rec_times_rank_change_rank,
   c1.new_followers_rank-coalesce(c2.new_followers_rank,0) fol_rank_changed,
-  row_number() OVER (ORDER BY c1.new_followers_rank-coalesce(c2.new_followers_rank,0) DESC ) fol_rank_change_rank,
+  rank() OVER (ORDER BY c1.new_followers_rank-coalesce(c2.new_followers_rank,0) DESC ) fol_rank_change_rank,
   c1.new_weight_rank-coalesce(c2.new_weight_rank,0) weight_rank_changed,
-  row_number() OVER (ORDER BY c1.new_weight_rank-coalesce(c2.new_weight_rank,0) DESC ) weight_rank_change_rank,
+  rank() OVER (ORDER BY c1.new_weight_rank-coalesce(c2.new_weight_rank,0) DESC ) weight_rank_change_rank,
   0,
   0,
   0,
   0,
   c1.lives_rank-coalesce(c2.lives_rank,0) lives_rank,
-  row_number() OVER (ORDER BY c1.lives_rank-coalesce(c2.lives_rank,0) DESC ) lives_rank_change_rank,
+  rank() OVER (ORDER BY c1.lives_rank-coalesce(c2.lives_rank,0) DESC ) lives_rank_change_rank,
   c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) new_anchors_rank_changed,
-  row_number() OVER (ORDER BY c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) DESC ) new_anchors_rank_change_rank,
+  rank() OVER (ORDER BY c1.new_anchors_rank-coalesce(c2.new_anchors_rank,0) DESC ) new_anchors_rank_change_rank,
   c1.categories_rank-coalesce(c2.categories_rank,0) categories_rank_change,
-  row_number() OVER (ORDER BY c1.categories_rank-coalesce(c2.categories_rank,0) DESC ) categories_rank_change_rank,
+  rank() OVER (ORDER BY c1.categories_rank-coalesce(c2.categories_rank,0) DESC ) categories_rank_change_rank,
   c1.new_categories_rank-coalesce(c2.new_categories_rank,0) new_categories_rank_change,
-  row_number() OVER (ORDER BY c1.new_categories_rank-coalesce(c2.new_categories_rank,0) DESC ) new_categories_rank_change_rank,
+  rank() OVER (ORDER BY c1.new_categories_rank-coalesce(c2.new_categories_rank,0) DESC ) new_categories_rank_change_rank,
   '$date'
 FROM
   (

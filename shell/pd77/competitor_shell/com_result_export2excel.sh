@@ -16,7 +16,26 @@ exportdir=/home/likaiqing/shell/crawler_ana/competitor_report/
 
 /usr/bin/java -jar $export2exceljar $date panda_competitor_result.category_day_change_report par_date,plat_id,plat_name,category,lives,lives_changed_rank_change,followers,followers_changed_rank_change "日期,平台ID,平台名称,板块mingc,直播数,直播数增减位订阅数,订阅数增减位" $exportdir
 
+#主播PCU排行
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_pcu_rank par_date,plat_id,plat,rid,name,rank,pcu.weight,fol,rank_changed,room_cootent "日期,平台ID,平台名称,主播ID,主播,排名,PCU,体重,订阅,名次变化,房间内容" /home/likaiqing/shell/crawler_ana/competitor_report/
 
+#主播变化趋势增减表
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_changed_rank par_date,plat_id,plat,rid,name,catrgory,pcu,pcu_changed,livetime,livetime_changed,fol,fol_changed "日期,平台ID,平台名称,主播ID,主播,所属版区,Pcu,pcu增减数变化,开播数,开播数增减位数,订阅数,体重,体重增减位数" /home/likaiqing/shell/crawler_ana/competitor_report/
+
+#主播订阅排行表：
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_fol_rank par_date,plat_id,plat,rid,name,rank,pcu,weight,finnal_fol,fol_up,room_content "日期,平台ID,平台名称,主播ID,主播昵称,排名,PCU,体重,最终订阅数,本日订阅增长,房间内容" /home/likaiqing/shell/crawler_ana/competitor_report/
+
+#主播订阅增长排行表：
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_fol_up_rank par_date,plat_id,plat,rid,name,rank,pcu,weight,finnal_fol,fol_up,room_conten "日期,平台ID,平台名称,主播ID,主播昵称,排名,PCU,体重,最终订阅数,本日订阅增长,房间内容" /home/likaiqing/shell/crawler_ana/competitor_report/
+
+#主播体重增长排行表：
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_weight_rank par_date,plat_id,plat,rid,name,rank,pcu,fol,weight_first,weight,final,room_content"日期,平台ID,平台名称,主播ID,主播昵称,排名,PCU,订阅数,初始体重,最终体重,房间内容" /home/likaiqing/shell/crawler_ana/competitor_report/
+
+#主播播放时长排行表
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_fol_rank par_date,plat_id,plat,rid,name,rank,pcu,fol,livetime,room_content "日期,平台ID,平台名称,主播ID,主播昵称,排名,PCU,订阅数,直播时长,房间内容" /home/likaiqing/shell/crawler_ana/competitor_report/
+
+#推荐味日表
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_fol_rank par_date,plat_id,plat_name,rid,name,pcu,followers,followers_changed,weight_changed,rec_duration "日期,平台ID,平台名称,推荐主播ID,推荐主播昵称,房间地址,推荐时长,PCU,订阅增长,体重增长" /home/likaiqing/shell/crawler_ana/competitor_report/
 
 
 zip_dir=/home/likaiqing/shell/crawler_ana
@@ -24,4 +43,4 @@ rm -rf $zip_dir/competitor_report_${date}.zip
 cd $exportdir
 zip -m $zip_dir/competitor_report_${date}.zip ./competitor_report/*${date}.xlsx
 
-/usr/bin/java -jar $mailjar "竞品分析:$date" "报表见附件" $zip_dir/competitor_report_${date}.zip
+#/usr/bin/java -jar $mailjar "竞品分析:$date" "报表见附件" $zip_dir/competitor_report_${date}.zip

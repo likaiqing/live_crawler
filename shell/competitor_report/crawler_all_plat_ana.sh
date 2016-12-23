@@ -9,38 +9,38 @@ insert overwrite table panda_competitor.crawler_all_plat_analyse partition(par_d
 SELECT
   plat,
   new_pcu,
-  row_number()
+  rank()
   OVER (ORDER BY new_pcu DESC)       pcu_plat_rank,
   max_pcu,
   new_weight,
-  row_number()
+  rank()
   OVER (ORDER BY new_weight DESC)    weight_plat_rank,
   max_weight,
   new_followers,
-  row_number()
+  rank()
   OVER (ORDER BY new_followers DESC) fol_plat_rank,
   max_followers,
   new_live_times,
   sum_live_times,
   new_duration,
-  row_number()
+  rank()
   OVER (ORDER BY new_duration DESC)  dur_plat_rank,
   sum_duration,
   new_rec_times,
-  row_number()
+  rank()
   OVER (ORDER BY new_rec_times DESC) rectimes_plat_rank,
   sum_rec_times,
   lives,
-  row_number()
+  rank()
   OVER (ORDER BY lives DESC)         lives_plat_rank,
   new_anchors,
-  row_number()
+  rank()
   OVER (ORDER BY new_anchors DESC)   new_anchors_plat_rank,
   categories,
-  row_number()
+  rank()
   OVER (ORDER BY categories DESC)   categories_plat_rank,
   new_categories,
-  row_number()
+  rank()
   OVER (ORDER BY new_categories DESC)   new_categories_plat_rank,
   '$date'
 FROM
