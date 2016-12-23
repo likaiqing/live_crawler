@@ -43,6 +43,7 @@ SELECT
   nvl(cast(a.livetime_plat_rank - c.new_duration_plat_rank AS INT), \`新上榜\`),
   a.weight,
   nvl(cast(a.weight_plat_rank - c.new_weight_plat_rank AS INT), \`新上榜\`),
+  a.fol,
   a.par_date
 
 FROM panda_competitor_result.crawler_anchor_day a
