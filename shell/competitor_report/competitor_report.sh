@@ -20,8 +20,8 @@ sh $(dirname $0)/crawler_category_analyse.sh $date
 echo "crawler_category_analyse.sh $date down"
 sh $(dirname $0)/crawler_plat_analyse.sh $date
 echo "crawler_plat_analyse.sh $date down"
-sh $(dirname $0)/competitor_result_report.sh $date
-echo "competitor_result_report.sh $date down"
+sh $(dirname $0)/competitor_result_analyse.sh $date
+echo "competitor_result_analyse.sh $date down"
 sh $(dirname $0)/anchor_change_day.sh $date
 echo "anchor_change_day.sh $date down"
 sh $(dirname $0)/seven_insert.sh $date
