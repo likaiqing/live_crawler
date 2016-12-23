@@ -16,7 +16,7 @@ SELECT
   a.pcu,
   a.weight,
   a.fol,
-  nvl(cast(a.pcu_plat_rank - c.new_pcu_plat_rank AS INT), '新上榜'),
+  nvl(cast(a.pcu_plat_rank - c.new_pcu_plat_rank AS INT), \`新上榜\`),
   a.category,
   a.par_date
 FROM panda_competitor_result.crawler_anchor_day a
@@ -38,11 +38,11 @@ SELECT
   a.name,
   a.category,
   a.pcu,
-  nvl(cast(a.pcu_plat_rank - c.new_pcu_plat_rank AS INT), '新上榜'),
+  nvl(cast(a.pcu_plat_rank - c.new_pcu_plat_rank AS INT), \`新上榜\`),
   a.livetime,
-  nvl(cast(a.livetime_plat_rank - c.new_duration_plat_rank AS INT), '新上榜'),
+  nvl(cast(a.livetime_plat_rank - c.new_duration_plat_rank AS INT), \`新上榜\`),
   a.weight,
-  nvl(cast(a.weight_plat_rank - c.new_weight_plat_rank AS INT), '新上榜'),
+  nvl(cast(a.weight_plat_rank - c.new_weight_plat_rank AS INT), \`新上榜\`),
   a.par_date
 
 FROM panda_competitor_result.crawler_anchor_day a
@@ -66,7 +66,7 @@ SELECT
   a.pcu,
   a.weight,
   a.fol,
-  nvl(cast(a.fol - c.new_followers AS INT), '新上榜'),
+  nvl(cast(a.fol - c.new_followers AS INT), \`新上榜\`),
   a.category,
   a.par_date
 

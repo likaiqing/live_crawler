@@ -98,10 +98,10 @@ FROM (
             plat,
             rid,
             category,
-            new_pcu,
+            pcu,
             row_number()
             OVER (PARTITION BY plat, rid
-              ORDER BY new_pcu DESC) AS rw
+              ORDER BY pcu DESC) AS rw
           FROM panda_competitor.crawler_day_anchor_analyse
           WHERE par_date = '${date}') c
            ON a.plat = c.plat AND a.rid = c.rid AND c.rw = 1
@@ -213,10 +213,10 @@ FROM
         plat,
         rid,
         category,
-        new_pcu,
+        pcu,
         row_number()
         OVER (PARTITION BY plat, rid
-          ORDER BY new_pcu DESC) AS rw
+          ORDER BY pcu DESC) AS rw
       FROM panda_competitor.crawler_day_anchor_analyse
       WHERE par_date = '${date}') c
        ON a.plat = c.plat AND a.rid = c.rid AND c.rw = 1
