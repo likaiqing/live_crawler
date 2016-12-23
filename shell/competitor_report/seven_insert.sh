@@ -141,7 +141,7 @@ SELECT
   a.livetime_plat_rank,
   a.pcu,
   a.fol,
-  c.new_duration_plat_rank,
+  a.livetime,
   a.category,
   a.par_date
 FROM panda_competitor_result.crawler_anchor_day a

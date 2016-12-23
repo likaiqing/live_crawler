@@ -6,7 +6,7 @@ date=${date:=`date -d 'yesterday' +%Y%m%d`}
 
 hive -e "
 insert overwrite table panda_competitor_result.plat_day_report partition(par_date)
-SELECT p.id, d_cate.plat, d_cate.pcu, d_cate.lives, d_cate.max_lives, d_change.activeanchors_changed_rank, d_cate.followers, d_change.fol_changed, d_cate.weight, d_change.weight_changed, d_cate.categories, d_cate.new_categories, d_cate.reduce_categories, '$date'
+SELECT p.id, d_cate.plat, d_cate.pcu, d_cate.lives, d_cate.max_lives, d_change.activeanchors_changed, d_cate.followers, d_change.fol_changed, d_cate.weight, d_change.weight_changed, d_cate.categories, d_cate.new_categories, d_cate.reduce_categories, '$date'
 FROM
   (
     SELECT plat, lives, max_lives, pcu, duration, followers, weight, rec_times, categories, new_categories, reduce_categories
@@ -19,7 +19,7 @@ FROM
     ON d_cate.plat = p.name
   LEFT JOIN
   (
-    SELECT plat, fol_changed, weight_changed, newanchors_changed, activeanchors_changed_rank, fol_changed_rank
+    SELECT plat, fol_changed, weight_changed, newanchors_changed, activeanchors_changed
     FROM
       panda_competitor_result.plat_day_changed
     WHERE par_date = '$date'

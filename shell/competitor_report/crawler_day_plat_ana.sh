@@ -55,12 +55,11 @@ FROM
                 SELECT
                   task_random,
                   split(task, 'anchor') [0] plat,
-                  category,
-                  count(DISTINCT rid)       live_times,
+                  count(DISTINCT rid,category)       live_times,
                   sum(populary_num)         pcu
                 FROM panda_competitor.crawler_anchor
                 WHERE par_date = '$date' AND task LIKE '%anchor' AND category != ''
-                GROUP BY task_random, split(task, 'anchor') [0], category
+                GROUP BY task_random, split(task, 'anchor') [0]
               ) t_r
             GROUP BY plat
           ) dur
@@ -81,15 +80,14 @@ FROM
                 SELECT
                   task_random,
                   split(task, 'detailanchor') [0] plat,
-                  category_sec                    category,
-                  count(DISTINCT rid,task_random) anchors,
+                  count(DISTINCT rid,category_sec) anchors,
                   sum(online_num)                 pcu,
                   sum(weight_num)                 weight,
                   sum(follower_num)               followers
                 FROM
                   panda_competitor.crawler_detail_anchor
                 WHERE par_date = '$date' AND task LIKE '%detailanchor' AND category_sec != ''
-                GROUP BY task_random, split(task, 'detailanchor') [0], category_sec
+                GROUP BY task_random, split(task, 'detailanchor') [0]
               ) d
             GROUP BY plat
           ) pcu
@@ -110,15 +108,14 @@ FROM
             SELECT
               task_random,
               split(task, 'index') [0]        plat,
-              category_sec                    category,
-              count(DISTINCT rid,task_random) anchors,
+              count(DISTINCT rid,category_sec) anchors,
               max(online_num)                 max_pcu,
               max(weight_num)                 weight,
               max(follower_num)               followers
             FROM
               panda_competitor.crawler_indexrec_detail_anchor
             WHERE par_date = '$date' AND task LIKE '%indexrec'
-            GROUP BY task_random, split(task, 'index') [0], category_sec
+            GROUP BY task_random, split(task, 'index') [0]
           ) rec_tr
         GROUP BY plat
       ) rec
