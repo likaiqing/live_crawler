@@ -1,21 +1,8 @@
 #!/bin/bash
-date=${1}
-date_sub=1
-if [[ ${date} == "" ]]
-then
 
-date=`date -d "-1 day" +%Y%m%d`;
-date_sub=`date -d "-2 day"+%Y%m%d`
-
-fi
-tmp=$(date +%s -d ${date} );
-tmp=`expr ${tmp} - 86400`;
-date_sub=`date -d @${tmp} "+%Y%m%d"`;
-
-echo ${date};
-echo ${date_sub};
-
-
+date=$1
+date=${date:=`date -d 'yesterday' +%Y%m%d`}
+date_sub=`date -d "-1day $date" +%Y%m%d`
 
 #主播PCU排行
 hive -e "
