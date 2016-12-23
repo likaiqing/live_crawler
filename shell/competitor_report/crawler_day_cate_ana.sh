@@ -9,47 +9,65 @@ insert overwrite table panda_competitor.crawler_day_cate_analyse partition(par_d
 SELECT
   cate1.plat,
   cate1.category,
-  coalesce(t.max_pcu, 0)    max_pcu,
-  coalesce(t.live_times, 0) live_times,
-  coalesce(t.duration, 0.0) duraion,
-  coalesce(t.weight, 0)     weight,
-  coalesce(t.followers, 0)  followers,
-  coalesce(t.rec_times, 0)  rec_times,
+  coalesce(t.max_pcu, 0)           max_pcu,
+  coalesce(t.live_times, 0)        live_times,
+  coalesce(t.duration, 0.0)        duraion,
+  coalesce(t.weight, 0)            weight,
+  coalesce(t.followers, 0)         followers,
+  coalesce(t.rec_times, 0)         rec_times,
   cate1.is_new,
   cate1.is_closed,
-  coalesce(anchors.lives,0)             lives,
-  coalesce(anchors.new_anchors,0) new_anchors,
+  coalesce(anchors.lives, 0)       lives,
+  coalesce(anchors.new_anchors, 0) new_anchors,
   '$date'
 FROM
   (
     SELECT
-      coalesce(cate1.plat_name, cate2.plat_name) plat,
-      coalesce(cate1.c_name, cate2.c_name)       category,
-      CASE WHEN cate2.c_name IS NULL
-        THEN 1
-      ELSE 0 END                                 is_new,
-      CASE WHEN cate1.c_name IS NULL
-        THEN 1
-      ELSE 0 END                                 is_closed
+      cate1.plat,
+      cate1.category,
+      cate_all.is_new,
+      cate_all.is_closed
     FROM
       (
         SELECT
           DISTINCT
-          plat_name,
-          trim(c_name) c_name
+          plat_name    plat,
+          trim(c_name) category
         FROM panda_competitor.crawler_category
         WHERE par_date = '$date'
       ) cate1
-      FULL JOIN
+      LEFT JOIN
       (
         SELECT
-          DISTINCT
-          plat_name,
-          trim(c_name) c_name
-        FROM panda_competitor.crawler_category
-        WHERE par_date = '$sub_1_days'
-      ) cate2
-        ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
+          coalesce(cate1.plat_name, cate2.plat_name) plat,
+          coalesce(cate1.c_name, cate2.c_name)       category,
+          CASE WHEN cate2.c_name IS NULL
+            THEN 1
+          ELSE 0 END                                 is_new,
+          CASE WHEN cate1.c_name IS NULL
+            THEN 1
+          ELSE 0 END                                 is_closed
+        FROM
+          (
+            SELECT
+              DISTINCT
+              plat_name,
+              trim(c_name) c_name
+            FROM panda_competitor.crawler_category
+            WHERE par_date = '$date'
+          ) cate1
+          FULL JOIN
+          (
+            SELECT
+              DISTINCT
+              plat_name,
+              trim(c_name) c_name
+            FROM panda_competitor.crawler_category
+            WHERE par_date = '$sub_1_days'
+          ) cate2
+            ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
+      ) cate_all
+        ON cate1.plat = cate_all.plat AND cate1.category = cate_all.category
   ) cate1
   LEFT JOIN
   (
@@ -211,4 +229,5 @@ FROM
         ON dis1.plat = dis2.plat AND dis1.rid = dis2.rid
     GROUP BY dis1.plat, dis1.category
   ) anchors
-    ON cate1.plat = anchors.plat AND cate1.category = anchors.category;"
+    ON cate1.plat = anchors.plat AND cate1.category = anchors.category;
+    "
