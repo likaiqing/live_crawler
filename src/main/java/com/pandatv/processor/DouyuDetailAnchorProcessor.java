@@ -34,7 +34,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             if (curUrl.equals("https://www.douyu.com/directory/all")) {
                 String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
                 int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));
-                for (int i = 1; i < 3; i++) {
+                for (int i = 1; i < endPage; i++) {
                     Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
                     page.addTargetRequest(request);
                 }
