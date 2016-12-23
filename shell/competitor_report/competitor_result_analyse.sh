@@ -53,7 +53,7 @@ FROM
 
 hive -e "
 insert overwrite table panda_competitor_result.category_day_report partition(par_date)
-SELECT p.id, d_cate.plat, d_cate.category, d_cate.lives, d_change.activeanchors_changed_rank, d_cate.pcu, d_cate.followers, d_change.fol_changed, d_cate.weight, d_change.weight_changed, d_cate.is_new, d_cate.duration, '$date'
+SELECT p.id, d_cate.plat, d_cate.category, d_cate.lives, d_change.activeanchors_changed, d_cate.pcu, d_cate.followers, d_change.fol_changed, d_cate.weight, d_change.weight_changed, d_cate.is_new, d_cate.duration, '$date'
 FROM
   (
     SELECT plat, category, lives, pcu, live_times, duration, followers, weight, rec_times, is_new
@@ -66,7 +66,7 @@ FROM
     ON d_cate.plat = p.name
   LEFT JOIN
   (
-    SELECT plat, category, fol_changed, weight_changed, newanchors_changed, activeanchors_changed_rank, fol_changed_rank
+    SELECT plat, category, fol_changed, weight_changed, activeanchors_changed
     FROM
       panda_competitor_result.category_day_changed
     WHERE par_date = '$date'
