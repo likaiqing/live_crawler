@@ -141,8 +141,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new DouyuDetailAnchorProcessor()).thread(6).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
-//        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
-        String giftIdPath = Const.COMPETITORDIR + "douyu_gift_id/" + date;
+        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
+        String giftIdPath = Const.COMPETITORDIR + "crawler_gift_id/" + date;
         CommonTools.writeAndMail(giftIdPath, Const.DOUYUGIFTIDFINISHDETAIL, douyuGifts);
     }
 }
