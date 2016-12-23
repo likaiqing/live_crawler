@@ -72,7 +72,7 @@ public class GiftInfo {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.getPlat()).append(Const.SEP).append(this.getrId()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getGiftId()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getType()).append(Const.SEP).append(this.getPrice()).append(Const.SEP).append(this.getExp()).append(Const.SEP).append(PandaProcessor.getRandomStr()).append(Const.SEP).append(createTime).toString();
+        return sb.append(this.getPlat()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getrId()).append(Const.SEP).append(this.getGiftId()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getType()).append(Const.SEP).append(this.getPrice()).append(Const.SEP).append(this.getExp()).append(Const.SEP).append(PandaProcessor.getRandomStr()).append(Const.SEP).append(createTime).toString();
     }
 
     public String getrId() {
