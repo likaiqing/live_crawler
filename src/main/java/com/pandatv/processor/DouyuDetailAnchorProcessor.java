@@ -6,17 +6,16 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.DouyuDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
+import com.pandatv.pojo.DouyuGift;
 import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.DateTools;
-import com.pandatv.tools.IOTools;
 import com.pandatv.tools.MailTools;
+import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 
-import java.io.BufferedWriter;
 import java.util.List;
 
 /**
@@ -35,19 +34,10 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             if (curUrl.equals("https://www.douyu.com/directory/all")) {
                 String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
                 int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));
-                for (int i = 1; i < endPage; i++) {
+                for (int i = 1; i < 3; i++) {
                     Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
                     page.addTargetRequest(request);
                 }
-//            } else if (curUrl.equals("https://www.douyu.com/")) {
-//                List<String> tuijian = page.getHtml().xpath("//div[@class='c-items']/ul/li/@data-id").all();
-//                for (String rid : tuijian) {
-//                    Request request = new Request(thirdApi + "/" + rid);
-//                    Map<String, Object> map = new HashMap<>();
-//                    map.put("job", "douyushouyetuijian");
-//                    request.setExtras(map);
-//                    page.addTargetRequest(request.setPriority(3));
-//                }
             } else if (curUrl.startsWith("https://www.douyu.com/directory/all?isAjax=1&page=")) {
                 List<String> detailUrls = page.getHtml().xpath("//body/li/a/@href").all();
                 for (String url : detailUrls) {
@@ -92,6 +82,30 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setLastStartTime(lastStartTime);
                 detailAnchor.setJob(job);
                 detailAnchors.add(detailAnchor.toString());
+                if (douyuGiftHours.contains(hour)) {
+                    JSONArray gifts = JsonPath.read(json, "$.data.gift");
+                    for (int i = 0; i < gifts.size(); i++) {
+                        String gift = gifts.get(i).toString();
+                        String gId = JsonPath.read(gift, "$.id");
+                        String gName = JsonPath.read(gift, "$.name");
+                        String gType = JsonPath.read(gift, "$.type");
+                        int gPrice = JsonPath.read(gift, "$.pc");
+                        int gExp = JsonPath.read(gift, "$.gx");
+                        DouyuGift douyuGift = new DouyuGift();
+                        douyuGift.setrId(rid);
+                        douyuGift.setCategory(categorySec);
+                        douyuGift.setGiftId(gId);
+                        douyuGift.setName(gName);
+                        try {
+                            douyuGift.setType(Integer.parseInt(gType));
+                            douyuGift.setPrice(gPrice);
+                            douyuGift.setExp(gExp);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        douyuGifts.add(douyuGift.toString());
+                    }
+                }
             }
             page.setSkip(true);
         } catch (Exception e) {
@@ -126,6 +140,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new DouyuDetailAnchorProcessor()).thread(6).addUrl(firstUrl).addPipeline(new DouyuDetailAnchorPipeline(detailAnchors, hive, hivePaht)).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
-        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
+//        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
+        String giftIdPath = Const.COMPETITORDIR + "douyu_gift_id/" + date;
+        CommonTools.writeAndMail(giftIdPath, Const.DOUYUGIFTIDFINISHDETAIL, douyuGifts);
     }
 }

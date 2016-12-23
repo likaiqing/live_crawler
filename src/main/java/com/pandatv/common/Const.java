@@ -70,4 +70,5 @@ public class Const {
     public static final String PANDAANCHOR = "pandaanchor";
     public static final String PANDAANCHORFINISH = "熊猫抓取退出";
     public static final String PANDA = "panda";
+    public static final String DOUYUGIFTIDFINISHDETAIL = "斗鱼爬取结束(gitfId)";
 }

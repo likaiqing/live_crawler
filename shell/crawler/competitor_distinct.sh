@@ -12,6 +12,7 @@ SELECT
   coalesce(dis.plat,anc.plat) plat,
   coalesce(dis.category,anc.category) category,
   coalesce(dis.create_time,anc.create_time) create_time,
+  coalesce(dis.url,anc.url) url,
   '$date'
 FROM
   (
@@ -20,7 +21,10 @@ FROM
       time_max.name,
       pcu_max.plat,
       pcu_max.category,
-      time_max.create_time
+      time_max.create_time,
+      case when pcu_max.plat!='chushou' then
+      concat(case when pcu_max.plat='douyu' then 'https://www.douyu.com/' when pcu_max.plat='huya' then 'http://www.huya.com/' when pcu_max.plat='panda' then 'http://www.panda.tv/' when pcu_max.plat='zhanqi' then 'https://www.zhanqi.tv/' when pcu_max.plat='longzhu' then 'http://star.longzhu.com/' when pcu_max.plat='quanmin' then 'http://www.quanmin.tv/v/' end,pcu_max.rid)
+      else concat('http://chushou.tv/room/',pcu_max.rid,'.htm') end url
     FROM
       (
         SELECT
@@ -80,7 +84,8 @@ FROM
       name,
       plat,
       category,
-      create_time
+      create_time,
+      url
     FROM panda_competitor.crawler_distinct_anchor
     WHERE par_date = '$sub_1_days'
   ) anc
