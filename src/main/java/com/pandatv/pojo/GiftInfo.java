@@ -16,7 +16,7 @@ public class GiftInfo {
     private String giftId;
     private String name;
     private int type;
-    private int price; //价格,单位元
+    private double price; //价格,单位元
     private int exp; //经验值,10=1元
 
     public String getName() {
@@ -35,13 +35,6 @@ public class GiftInfo {
         this.type = type;
     }
 
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
 
     public int getExp() {
         return exp;
@@ -105,5 +98,13 @@ public class GiftInfo {
 
     public void setPlat(String plat) {
         this.plat = plat;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

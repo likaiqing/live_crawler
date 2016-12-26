@@ -89,7 +89,15 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                         String gId = JsonPath.read(gift, "$.id");
                         String gName = JsonPath.read(gift, "$.name");
                         String gType = JsonPath.read(gift, "$.type");
-                        int gPrice = JsonPath.read(gift, "$.pc");
+                        double gPrice = 0.0;
+                        try {
+                            int priceInt = JsonPath.read(gift, "$.pc");
+                            gPrice = (double) priceInt;
+                        } catch (ClassCastException e) {
+                            gPrice = JsonPath.read(gift, "$.pc");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         int gExp = JsonPath.read(gift, "$.gx");
                         GiftInfo douyuGift = new GiftInfo();
                         douyuGift.setPlat(Const.DOUYU);
