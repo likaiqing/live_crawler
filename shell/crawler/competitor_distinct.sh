@@ -13,12 +13,14 @@ SELECT
   coalesce(dis.category,anc.category) category,
   coalesce(dis.create_time,anc.create_time) create_time,
   coalesce(dis.url,anc.url) url,
+  coalesce(dis.title,anc.title) title,
   '$date'
 FROM
   (
     SELECT
       pcu_max.rid,
       time_max.name,
+      time_max.title,
       pcu_max.plat,
       pcu_max.category,
       time_max.create_time,
@@ -55,6 +57,7 @@ FROM
         SELECT
           rid,
           name,
+          title,
           plat,
           category,
           create_time
@@ -63,6 +66,7 @@ FROM
             SELECT
               rid,
               name,
+              title,
               plat,
               category,
               create_time,
@@ -85,7 +89,8 @@ FROM
       plat,
       category,
       create_time,
-      url
+      url,
+      title
     FROM panda_competitor.crawler_distinct_anchor
     WHERE par_date = '$sub_1_days'
   ) anc
