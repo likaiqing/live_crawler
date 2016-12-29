@@ -3,7 +3,7 @@
 date=$1
 date=${date:=`date -d 'yesterday' +%Y%m%d`}
 sub_1_days=`date -d "-1day $date" +%Y%m%d`
-
+minutes=15
 hive -e "
 insert overwrite table panda_competitor.crawler_day_plat_analyse partition(par_date)
 SELECT
@@ -48,7 +48,7 @@ FROM
               plat,
               sum(live_times)                    live_times,
               max(live_times)           max_lives,
-              round(sum(live_times) / 60 * 5, 2) duration,
+              round(sum(live_times) / 60 * $minutes, 2) duration,
               max(pcu)                           max_pcu
             FROM
               (
@@ -71,7 +71,7 @@ FROM
               max(anchors)      max_lives,
               CASE WHEN plat = 'douyu'
                 THEN round(sum(anchors) / 60, 2)
-              ELSE round(sum(anchors) / 60 * 5, 2) END duration,
+              ELSE round(sum(anchors) / 60 * $minutes, 2) END duration,
               max(pcu)                                 max_pcu,
               max(weight)                              weight,
               max(followers)                           followers
@@ -99,7 +99,7 @@ FROM
           plat,
           sum(anchors)                    rec_times,
           max(anchors)      max_lives,
-          round(sum(anchors) / 60 * 5, 2) duration,
+          round(sum(anchors) / 60 * $minutes, 2) duration,
           max(max_pcu)                    max_pcu,
           max(weight)                     weight,
           max(followers)                  followers

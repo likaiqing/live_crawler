@@ -3,7 +3,7 @@
 date=$1
 date=${date:=`date -d 'yesterday' +%Y%m%d`}
 sub_1_days=`date -d "-1day $date" +%Y%m%d`
-
+minutes=15
 hive -e "
 insert overwrite table panda_competitor.crawler_day_anchor_analyse partition(par_date)
 SELECT
@@ -51,7 +51,7 @@ FROM
               category,
               max(populary_num)                               max_pcu,
               count(DISTINCT task_random)                     live_times,
-              round(count(DISTINCT task_random) / 60 * 15, 2) duration
+              round(count(DISTINCT task_random) / 60 * $minutes, 2) duration
             FROM panda_competitor.crawler_anchor
             WHERE par_date = '$date' AND task LIKE '%anchor' and category !=''
             GROUP BY rid, split(task, 'anchor') [0], category
@@ -65,7 +65,7 @@ FROM
               live_times,
               CASE WHEN plat = 'douyu'
                 THEN round(live_times / 60, 2)
-              ELSE round(live_times / 60 * 15, 2) END duration,
+              ELSE round(live_times / 60 * $minutes, 2) END duration,
               pcu                                     max_pcu,
               weight,
               followers
@@ -94,7 +94,7 @@ FROM
           split(task, 'index') [0]                        plat,
           category_sec                                    category,
           count(DISTINCT task_random)                     rec_times,
-          round(count(DISTINCT task_random) / 60 * 15, 2) duration,
+          round(count(DISTINCT task_random) / 60 * $minutes, 2) duration,
           max(online_num)                                 max_pcu,
           max(weight_num)                                 weight,
           max(follower_num)                               followers
