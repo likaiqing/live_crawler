@@ -99,7 +99,7 @@ public class PandaDownloader extends AbstractDownloader {
             } else {
                 logger.warn(" PandaDownloader code error " + statusCode + "\t" + request.getUrl());
 //                System.out.println("code error " + statusCode + "\t" + request.getUrl());
-                if (proxyRetry++ > Const.PROXYRETRY) {
+                if (proxyRetry++ > Const.PROXYRETRY && proxyRetry %200==0) {
                     new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", "代理非200次数超出" + Const.PROXYRETRY);
                 }
                 return addToCycleRetry(request, site);//默认只会再重复1次
