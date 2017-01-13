@@ -167,7 +167,7 @@ public class CommonTools {
         return site;
     }
 
-    public static void writeAndMail(String hivePaht, String douyufinish, List<String> list) {
+    public static void writeAndMail(String hivePaht, String douyufinish, Set<String> list) {
         try {
             if (list.size() > 0) {
                 PandaProcessor.hive.write2(hivePaht, list, PandaProcessor.job, PandaProcessor.curMinute);

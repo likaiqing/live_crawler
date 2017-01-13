@@ -71,7 +71,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                 anchor.setJob(job);
                 anchor.setPlat(Const.DOUYU);
                 anchor.setGame(Const.GAMEALL);
-                anchor.setUrl(url);
+                anchor.setUrl(curUrl);
                 String result = anchor.toString();
                 anchors.add(result);
             }

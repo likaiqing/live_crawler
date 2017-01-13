@@ -9,18 +9,16 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by likaiqing on 2016/11/7.
  */
 public abstract class PandaProcessor implements PageProcessor {
-    protected static List<String> detailAnchors = new ArrayList<>();
-    protected static List<String> douyuGifts = new ArrayList<>();
-    protected static List<String> anchors = new ArrayList<>();
-    protected static List<String> results = new ArrayList<>();
+    protected static Set<String> detailAnchors = new HashSet<>();
+    protected static Set<String> douyuGifts = new HashSet<>();
+    protected static Set<String> anchors = new HashSet<>();
+    protected static Set<String> results = new HashSet<>();
     public static String job;
     public static StringBuffer failedUrl = new StringBuffer("failedUrl:");
     public static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");

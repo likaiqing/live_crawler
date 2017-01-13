@@ -167,7 +167,7 @@ public class HiveJDBCConnect {
             return null;
         }
     }
-    public void write2(String path, List<String> list,String job,String curMinute) {
+    public void write2(String path, Set<String> list,String job,String curMinute) {
         path = (path.endsWith("/")) ? path : (path + "/");
         Configuration conf = new Configuration();
         conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));

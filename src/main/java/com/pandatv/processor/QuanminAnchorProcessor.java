@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by likaiqing on 2016/11/14.
@@ -50,7 +51,7 @@ public class QuanminAnchorProcessor extends PandaProcessor {
         }
     }
 
-    private void addAnchors(List<String> anchors, String json, String curUrl) {
+    private void addAnchors(Set<String> anchors, String json, String curUrl) {
         JSONArray data = JsonPath.read(json, "$.data");
         for (int i = 0; i < data.size(); i++) {
             Anchor anchor = new Anchor();

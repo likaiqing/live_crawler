@@ -9,6 +9,8 @@ import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -40,8 +42,19 @@ public class IndexRecProcessor extends PandaProcessor {
                     page.addTargetRequest(new Request(douyuDetailUrltmp + all.get(i)).putExtra("location", i + 1));
                 }
             } else if (curUrl.equals(huyaIndex)) {
-                String js = page.getHtml().getDocument().getElementsByAttributeValue("data-fixed", "true").get(5).toString();
-                String recJson = js.substring(js.indexOf("var slides=") + 12, js.indexOf("\"}];")+4).trim().replace(";", "");
+                Elements js = page.getHtml().getDocument().getElementsByAttributeValue("data-fixed", "true");
+                String slide="";
+                for (int i=0;i<js.size();i++){
+                    Element element = js.get(i);
+                    if (element.toString().contains("var slides=")){
+                        slide=element.toString();
+                        break;
+                    }
+                }
+                if (StringUtils.isEmpty(slide)){
+                    return;
+                }
+                String recJson = slide.substring(slide.indexOf("var slides=") + 12, slide.indexOf("\"}];")+4).trim().replace(";", "");
                 JSONArray jsonArray = JsonPath.read(recJson, "$");
                 for (Object rec : jsonArray) {
                     String rid = JsonPath.read(rec, "$.privateHost").toString();

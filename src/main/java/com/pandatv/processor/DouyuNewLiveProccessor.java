@@ -27,7 +27,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
     private static int maxPage = 100;
     private static String url = "https://www.douyu.com/member/recommlist/getfreshlistajax?bzdata=0&clickNum=";
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room/";
-    private static Set<DetailAnchor> detailAnchorSet = new HashSet<>();
+    private static Set<String> detailAnchorSet = new HashSet<>();
     private static int exCnt;
 
     @Override
@@ -79,7 +79,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
                 detailAnchor.setUrl(curUrl);
                 detailAnchor.setLastStartTime(lastStartTime);
                 detailAnchor.setJob(job);
-                detailAnchorSet.add(detailAnchor);
+                detailAnchorSet.add(detailAnchor.toString());
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";");
@@ -106,11 +106,11 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_newlive_anchor/" + date;
         Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new PandaDownloader())
-        List<String> anchorList = new ArrayList<>();
-        for (DetailAnchor detailAnchor : detailAnchorSet) {
-            anchorList.add(detailAnchor.toString());
-        }
-        CommonTools.writeAndMail(hivePaht, Const.DOUYUNEWLIVEFINISH, anchorList);
+//        List<String> anchorList = new ArrayList<>();
+//        for (DetailAnchor detailAnchor : detailAnchorSet) {
+//            anchorList.add(detailAnchor.toString());
+//        }
+        CommonTools.writeAndMail(hivePaht, Const.DOUYUNEWLIVEFINISH, detailAnchorSet);
     }
 
     public static void main(String[] args) {

@@ -13,15 +13,13 @@ import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by likaiqing on 2016/12/13.
  */
 public class CategoryCrawlerProcessor extends PandaProcessor {
-    private static List<String> categories = new ArrayList<>();
+    private static Set<String> categories = new HashSet<>();
 
     @Override
     public void process(Page page) {
