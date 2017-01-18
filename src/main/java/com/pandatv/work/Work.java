@@ -21,6 +21,11 @@ public class Work {
                 logger.info("DouyuAnchorProccessor.crawler start");
                 DouyuAnchorProccessor.crawler(args);
                 break;
+            case Const.DOUYUANCHOR2FILE://destFile
+                judgeParam(args, 2);
+                logger.info("DouyuAnchor2FileProccessor.crawler start");
+                DouyuAnchor2FileProccessor.crawler(args);
+                break;
             case Const.DOUYUNEWLIVE://douyunewlive
                 judgeParam(args, 3);
                 logger.info("DouyuNewLiveProccessor.crawler start");
