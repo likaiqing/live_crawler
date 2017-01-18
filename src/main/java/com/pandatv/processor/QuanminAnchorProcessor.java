@@ -7,6 +7,7 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
 import net.minidev.json.JSONArray;
+import org.apache.commons.lang.StringUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -30,6 +31,9 @@ public class QuanminAnchorProcessor extends PandaProcessor {
     public void process(Page page) {
         String curUrl = page.getUrl().get();
         String json = page.getJson().toString();
+        if (StringUtils.isEmpty(json)){
+            return;
+        }
         int pageCount = JsonPath.read(json, "$.pageCount");
         if (curUrl.startsWith("http://www.quanmin.tv/json/play/list.json?_t=")) {
             if (pageCount > 1) {

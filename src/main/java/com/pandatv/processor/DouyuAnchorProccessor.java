@@ -5,6 +5,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -39,8 +40,15 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         String curUrl = page.getUrl().toString();
         logger.info("process url:{}", curUrl);
         if (curUrl.equals("https://www.douyu.com/directory/all")) {
-            String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
-            int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));
+            Elements elements = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript");
+            int endPage = 1;
+            for (int i = 0; i < elements.size(); i++) {
+                String element = elements.get(i).toString();
+                if (element.contains("count:")) {
+                    endPage = Integer.parseInt(element.substring(element.indexOf("count:") + 8, element.lastIndexOf(',') - 1));
+                    break;
+                }
+            }
             for (int i = 1; i < endPage; i++) {
                 page.addTargetRequest("https://www.douyu.com/directory/all?isAjax=1&page=" + i);
             }

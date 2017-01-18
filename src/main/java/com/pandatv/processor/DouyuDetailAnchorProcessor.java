@@ -10,6 +10,7 @@ import com.pandatv.pojo.GiftInfo;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
@@ -33,8 +34,15 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         logger.info("url:" + curUrl);
         try {
             if (curUrl.equals("https://www.douyu.com/directory/all")) {
-                String js = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript").get(3).toString();
-                int endPage = Integer.parseInt(js.substring(js.indexOf("count:") + 8, js.lastIndexOf(',') - 1));
+                Elements elements = page.getHtml().getDocument().getElementsByAttributeValue("type", "text/javascript");
+                int endPage = 1;
+                for (int i = 0; i < elements.size(); i++) {
+                    String element = elements.get(i).toString();
+                    if (element.contains("count:")) {
+                        endPage = Integer.parseInt(element.substring(element.indexOf("count:") + 8, element.lastIndexOf(',') - 1));
+                        break;
+                    }
+                }
                 for (int i = 1; i < endPage; i++) {
                     Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
                     page.addTargetRequest(request);
