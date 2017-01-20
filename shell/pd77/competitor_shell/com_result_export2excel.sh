@@ -37,6 +37,15 @@ exportdir=/home/likaiqing/shell/crawler_ana/competitor_report/
 #推荐味日表
 /usr/bin/java -jar $export2exceljar $date panda_competitor_result.indexrec_day_report par_date,plat_id,plat_name,rid,name,url,pcu,followers,followers_changed,weight_changed,rec_duration "日期,平台ID,平台名称,推荐主播ID,推荐主播昵称,房间地址,PCU,订阅数,订阅增长,体重增长,推荐时长" /home/likaiqing/shell/crawler_ana/competitor_report/
 
+#主播当天变化量
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.anchor_day_changed_analyse_by_sameday par_date,rid,name,plat,category,pcu,last_followers,last_weight,followers_changed,weight_changed,title "日期,主播ID,主播昵称,平台名称,版区名称,PCU,订阅数,体重,订阅增长,体重增长,房间内容" /home/likaiqing/shell/crawler_ana/competitor_report/
+
+#版区当天变化量
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.category_day_changed_analyse_by_sameday par_date,plat,category,pcu,last_followers,last_weight,followers_changed,weight_changed "日期,平台名称,版区名称,PCU,订阅数,体重,订阅增长,体重增长" /home/likaiqing/shell/crawler_ana/competitor_report/
+
+#平台当天变化量
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.plat_day_changed_analyse_by_sameday par_date,plat,pcu,last_followers,last_weight,followers_changed,weight_changed "日期,平台名称,PCU,订阅数,体重,订阅增长,体重增长" /home/likaiqing/shell/crawler_ana/competitor_report/
+
 
 zip_dir=/home/likaiqing/shell/crawler_ana
 rm -rf $zip_dir/competitor_report_${date}.zip
