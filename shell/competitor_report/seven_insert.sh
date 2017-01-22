@@ -384,6 +384,10 @@ WHERE a.par_date = '${date}';"
 
 
 #发送邮件
+#
+/usr/local/jdk1.8.0_60/bin/java -jar /home/zhengbo/java-jar/send_mail.jar "主播成长" "内容见附件" /home/zhengbo/java-jar/file/anchor_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv" 
 
+#
+/usr/local/jdk1.8.0_60/bin/java -jar /home/zhengbo/java-jar/send_mail.jar "主播综合" "内容见附件" /home/zhengbo/java-jar/file/anchor_growth_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv"
 
 
