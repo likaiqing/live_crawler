@@ -24,11 +24,11 @@ sh $(dirname $0)/competitor_result_analyse.sh $date
 echo "competitor_result_analyse.sh $date down"
 sh $(dirname $0)/anchor_change_day.sh $date
 echo "anchor_change_day.sh $date down"
-sh $(dirname $0)/../anchor_change_sameday.sh $date
+sh $(dirname $0)/../competitor_changed_sameday/anchor_change_sameday.sh $date
 echo "anchor_change_sameday.sh $date down"
-sh $(dirname $0)/../category_change_sameday.sh $date
+sh $(dirname $0)/../competitor_changed_sameday/category_change_sameday.sh $date
 echo "category_change_sameday.sh $date down"
-sh $(dirname $0)/../plat_change_sameday.sh $date
+sh $(dirname $0)/../competitor_changed_sameday/plat_change_sameday.sh $date
 echo "plat_change_sameday.sh $date down"
 sh $(dirname $0)/seven_insert.sh $date
 echo "seven_insert.sh $date down"
