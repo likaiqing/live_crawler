@@ -49,7 +49,7 @@ SELECT
 FROM panda_competitor_result.crawler_anchor_day a
   INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
   LEFT JOIN panda_competitor_result.plat_anchor_rank c
-    ON c.par_date = '${date_sub}' AND a.plat = c.plat AND a.rid = c.rid 
+    ON c.par_date = '${date_sub}' AND a.plat = c.plat AND a.rid = c.rid
 WHERE a.par_date = '${date}'
       AND a.pcu_plat_rank >= 1 AND a.pcu_plat_rank <= 1000;
 "
@@ -122,7 +122,7 @@ SELECT
 FROM panda_competitor_result.crawler_anchor_day a
   INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
   LEFT JOIN panda_competitor_result.plat_anchor_rank c
-    ON c.par_date = '${date_sub}' AND a.plat = c.plat AND a.rid = c.rid 
+    ON c.par_date = '${date_sub}' AND a.plat = c.plat AND a.rid = c.rid
 WHERE a.par_date = '${date}'
       AND a.weight_plat_rank >= 1 AND a.weight_plat_rank <= 1000;
 "
@@ -182,7 +182,7 @@ WHERE a.par_date = '${date}'
 hive -e "
 insert overwrite table panda_competitor_result.anchor_m_comprehensive_rank partition(par_date)
 
-select 
+select
 case when d.rid is null then c.rid else d.rid end,
 case when d.plat is null then c.plat else d.plat end,
 case when d.comprehensive_score is null then c.comprehensive_score else d.comprehensive_score end,
@@ -205,7 +205,7 @@ a.plat,
 
 row_number()over(
 partition by a.plat
-order by 
+order by
 --
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
@@ -220,7 +220,7 @@ cast((a.pcu/e.pcu_p)*e.pcu_w+
 
 row_number()over(
 partition by b.id
-order by 
+order by
 --
 cast(((a.pcu-nvl(c.pcu,0))/f.pcu_p)*f.pcu_w+
 ((a.weight-nvl(c.weight,0))/f.weight_p)*f.weight_w+
@@ -234,7 +234,7 @@ FROM panda_competitor_result.crawler_anchor_day a
   INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
   LEFT JOIN panda_competitor_result.plat_anchor_rank c
     ON c.par_date = '${date_sub}' AND a.plat = c.plat AND a.rid = c.rid
-  left join 
+  left join
   (select * from panda_competitor_result.anchor_live_parameter where type=0) e
   left join
   (select * from panda_competitor_result.anchor_live_parameter where type=1) f
@@ -252,11 +252,11 @@ on d.plat=c.plat and d.rid=c.rid;
  #主播综合排名
 hive -e "
 insert overwrite table panda_competitor_result.anchor_comprehensive_rank partition(par_date)
-select 
+select
 --排名
 row_number()over(
 partition by b.id
-order by 
+order by
 --
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
@@ -293,7 +293,7 @@ cast(a.weight-nvl(c.weight,0)as int),--体重增量
 
 row_number()over(
 partition by b.id
-order by 
+order by
 --
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
@@ -308,7 +308,7 @@ FROM panda_competitor_result.crawler_anchor_day a
   INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
   LEFT JOIN panda_competitor_result.plat_anchor_rank c
     ON c.par_date = '${date_sub}' AND a.plat = c.plat AND a.rid = c.rid
-  left join 
+  left join
   (select * from panda_competitor_result.anchor_live_parameter where type=0) e
   left join
   (select * from panda_competitor_result.anchor_live_parameter where type=1) f
@@ -322,10 +322,10 @@ WHERE a.par_date = '${date}';
 #主播成长排名
 hive -e "
 insert overwrite table panda_competitor_result.anchor_growth_rank partition(par_date)
-select 
+select
 row_number()over(
 partition by b.id
-order by 
+order by
 --
 cast(((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
 ((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w+
@@ -357,7 +357,7 @@ case when a.pcu=(a.pcu-nvl(c.pcu,0)) then 1 else 0 end,--pcu增值状态
 
 row_number()over(
 partition by b.id
-order by 
+order by
 --
 cast(((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
 ((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w+
@@ -369,7 +369,7 @@ FROM panda_competitor_result.crawler_anchor_day a
   INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
   LEFT JOIN panda_competitor_result.plat_anchor_rank c
     ON c.par_date = '${date_sub}' AND a.plat = c.plat AND a.rid = c.rid
-  left join 
+  left join
   (select * from panda_competitor_result.anchor_live_parameter where type=1) e
   left join
   (select * from panda_competitor_result.anchor_m_comprehensive_rank where par_date='${date_sub}') f
@@ -378,16 +378,16 @@ WHERE a.par_date = '${date}';"
 
 #####生成excel
 #成长
-/usr/local/jdk1.8.0_60/bin/java -jar /home/zhengbo/java-jar/export2excel.jar $date panda_competitor_result.anchor_comprehensive_rank par_date,rank,plat_id,plat,rid,name,puu,livetime,fol_up,weight_up,pcu_score,livetime_score,weight_score,fol_score,total_score,rank_change "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU,开播时长,订阅增量,体重增量,PCU分数,开播时长分数,体重增量分数,订阅增量分数,总分,名次变化" /home/zhengbo/java-jar/file
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_comprehensive_rank par_date,rank,plat_id,plat,rid,name,puu,livetime,fol_up,weight_up,pcu_score,livetime_score,weight_score,fol_score,total_score,rank_change "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU,开播时长,订阅增量,体重增量,PCU分数,开播时长分数,体重增量分数,订阅增量分数,总分,名次变化" /data/tmp/zhengbo/file/
 #增量
-/usr/local/jdk1.8.0_60/bin/java -jar /home/zhengbo/java-jar/export2excel.jar $date panda_competitor_result.anchor_growth_rank par_date,rank,plat_id,plat,rid,name,pcu_up,fol_up,weight_up,pcu_score,pcu_type,weight_up_score,fol_up_score,total_score,rank_change "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU增值,订阅增量,体重增量,PCU增值分数,PCU增值状态,体重增量分数,订阅增量分数,总分,名次变化" /home/zhengbo/java-jar/file
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_growth_rank par_date,rank,plat_id,plat,rid,name,pcu_up,fol_up,weight_up,pcu_score,pcu_type,weight_up_score,fol_up_score,total_score,rank_change "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU增值,订阅增量,体重增量,PCU增值分数,PCU增值状态,体重增量分数,订阅增量分数,总分,名次变化" /data/tmp/zhengbo/file/
 
 
 #发送邮件
 #
-/usr/local/jdk1.8.0_60/bin/java -jar /home/zhengbo/java-jar/send_mail.jar "主播成长" "内容见附件" /home/zhengbo/java-jar/file/anchor_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv"
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播成长" "内容见附件" /data/tmp/zhengbo/file/anchor_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv"
 
 #
-/usr/local/jdk1.8.0_60/bin/java -jar /home/zhengbo/java-jar/send_mail.jar "主播综合" "内容见附件" /home/zhengbo/java-jar/file/anchor_growth_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv"
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播综合" "内容见附件" /data/tmp/zhengbo/file/anchor_growth_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv"
 
 
