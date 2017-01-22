@@ -11,8 +11,12 @@ SELECT
   change.plat,
   change.category,
   pcu.pcu,
-  change.follower_num,
-  change.weight_num,
+  CASE WHEN change.follow_change / pcu.pcu > 1.4
+    THEN 0
+  ELSE change.follower_num END follower_num,
+  CASE WHEN change.weight_num < -10000
+    THEN 0
+  ELSE change.weight_num END weight_num,
   change.follow_change,
   change.weight_change,
   dis.title,
