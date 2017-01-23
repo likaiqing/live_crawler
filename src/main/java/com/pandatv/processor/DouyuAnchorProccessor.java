@@ -32,6 +32,9 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         String firstUrl = "https://www.douyu.com/directory/all";
         Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(1).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
+        for (Anchor anchor : anchorObjs) {
+            anchors.add(anchor.toString());
+        }
         CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISH, anchors);
     }
 
@@ -80,8 +83,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                 anchor.setPlat(Const.DOUYU);
                 anchor.setGame(Const.GAMEALL);
                 anchor.setUrl(curUrl);
-                String result = anchor.toString();
-                anchors.add(result);
+                anchorObjs.add(anchor);
             }
         }
     }

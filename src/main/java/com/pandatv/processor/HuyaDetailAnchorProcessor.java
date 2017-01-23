@@ -68,7 +68,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setViewerNum(Integer.parseInt(JsonPath.read(json, "$.data." + rid + ".totalCount").toString()));
                 detailAnchor.setFollowerNum(Integer.parseInt(JsonPath.read(json, "$.data." + rid + ".activityCount").toString()));
                 detailAnchor.setCategorySec(JsonPath.read(json, "$.data." + rid + ".gameFullName").toString());
-                detailAnchors.add(detailAnchor.toString());
+                detailAnchorObjs.add(detailAnchor);
                 page.setSkip(true);
             } else {
                 Object cycleTriedTimes = page.getRequest().getExtra("_cycle_tried_times");
@@ -108,7 +108,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setNotice(notice);
                 detailAnchor.setJob(job);
                 detailAnchor.setUrl(curUrl);
-                detailAnchors.add(detailAnchor.toString());
+                detailAnchorObjs.add(detailAnchor);
                 page.setSkip(true);
             }
         } catch (Exception e) {
@@ -148,6 +148,9 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        for (DetailAnchor detailAnchor:detailAnchorObjs){
+            detailAnchors.add(detailAnchor.toString());
+        }
         CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);
     }
 }

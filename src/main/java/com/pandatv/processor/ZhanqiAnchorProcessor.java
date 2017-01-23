@@ -56,8 +56,7 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
             anchor.setPlat(Const.ZHANQI);
             anchor.setGame(Const.GAMEALL);
             anchor.setUrl(curUrl);
-            String result = anchor.toString();
-            anchors.add(result);
+            anchorObjs.add(anchor);
         }
     }
 
@@ -76,6 +75,9 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         Spider.create(new ZhanqiAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        for (Anchor anchor : anchorObjs) {
+            anchors.add(anchor.toString());
+        }
         CommonTools.writeAndMail(hivePaht, Const.ZHANQIFINISH, anchors);
     }
 }

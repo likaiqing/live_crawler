@@ -90,7 +90,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setUrl(curUrl);
                 detailAnchor.setLastStartTime(lastStartTime);
                 detailAnchor.setJob(job);
-                detailAnchors.add(detailAnchor.toString());
+                detailAnchorObjs.add(detailAnchor);
                 if (douyuGiftHours.contains(hour)) {
                     JSONArray gifts = JsonPath.read(json, "$.data.gift");
                     for (int i = 0; i < gifts.size(); i++) {
@@ -158,6 +158,9 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new DouyuDetailAnchorProcessor()).thread(6).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
+        for (DetailAnchor detailAnchor:detailAnchorObjs){
+            detailAnchors.add(detailAnchor.toString());
+        }
         CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
         String giftIdPath = Const.COMPETITORDIR + "crawler_gift_id/" + date;
         CommonTools.writeAndMail(giftIdPath, Const.DOUYUGIFTIDFINISHDETAIL, douyuGifts);

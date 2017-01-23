@@ -5,6 +5,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pipeline.DouyuNewlivePipeline;
+import com.pandatv.pojo.Anchor;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.*;
 import net.minidev.json.JSONArray;
@@ -27,7 +28,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
     private static int maxPage = 100;
     private static String url = "https://www.douyu.com/member/recommlist/getfreshlistajax?bzdata=0&clickNum=";
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room/";
-    private static Set<String> detailAnchorSet = new HashSet<>();
+    private static Set<DetailAnchor> detailAnchorSet = new HashSet<>();
     private static int exCnt;
 
     @Override
@@ -79,7 +80,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
                 detailAnchor.setUrl(curUrl);
                 detailAnchor.setLastStartTime(lastStartTime);
                 detailAnchor.setJob(job);
-                detailAnchorSet.add(detailAnchor.toString());
+                detailAnchorSet.add(detailAnchor);
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";");
@@ -110,7 +111,10 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
 //        for (DetailAnchor detailAnchor : detailAnchorSet) {
 //            anchorList.add(detailAnchor.toString());
 //        }
-        CommonTools.writeAndMail(hivePaht, Const.DOUYUNEWLIVEFINISH, detailAnchorSet);
+        for (DetailAnchor anchor : detailAnchorSet) {
+            detailAnchors.add(anchor.toString());
+        }
+        CommonTools.writeAndMail(hivePaht, Const.DOUYUNEWLIVEFINISH, detailAnchors);
     }
 
     public static void main(String[] args) {

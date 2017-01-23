@@ -31,21 +31,21 @@ public class ChushouAnchorProcessor extends PandaProcessor {
             if (items.size() > 0) {
                 page.addTargetRequest(urlTmp + breakpoint);
                 JSONArray read = JsonPath.read(json, "$.data.items");
-                for (int i=0;i<read.size();i++){
+                for (int i = 0; i < read.size(); i++) {
                     String room = read.get(i).toString();
                     Anchor anchor = new Anchor();
-                    anchor.setRid(JsonPath.read(room,"$.targetKey").toString());
-                    anchor.setName(JsonPath.read(room,"$.meta.creator").toString());
-                    anchor.setTitle(JsonPath.read(room,"$.name").toString());
-                    anchor.setCategory(JsonPath.read(room,"$.meta.gameName").toString());
-                    String popularyStr = JsonPath.read(room,"$.meta.onlineCount").toString();
+                    anchor.setRid(JsonPath.read(room, "$.targetKey").toString());
+                    anchor.setName(JsonPath.read(room, "$.meta.creator").toString());
+                    anchor.setTitle(JsonPath.read(room, "$.name").toString());
+                    anchor.setCategory(JsonPath.read(room, "$.meta.gameName").toString());
+                    String popularyStr = JsonPath.read(room, "$.meta.onlineCount").toString();
                     anchor.setPopularityStr(popularyStr);
                     anchor.setPopularityNum(CommonTools.createNum(popularyStr));
                     anchor.setJob(job);
                     anchor.setPlat(Const.CHUSHOU);
                     anchor.setGame(Const.GAMEALL);
                     anchor.setUrl(curUrl);
-                    anchors.add(anchor.toString());
+                    anchorObjs.add(anchor);
                 }
             } else {
                 page.setSkip(true);
@@ -72,7 +72,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
                 anchor.setPlat(Const.CHUSHOU);
                 anchor.setGame(Const.GAMEALL);
                 anchor.setUrl(curUrl);
-                anchors.add(anchor.toString());
+                anchorObjs.add(anchor);
             }
         }
     }
@@ -92,6 +92,9 @@ public class ChushouAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         Spider.create(new ChushouAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        for (Anchor anchor : anchorObjs) {
+            anchors.add(anchor.toString());
+        }
         CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISH, anchors);
     }
 }

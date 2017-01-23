@@ -54,7 +54,7 @@ public class HuyaAnchorProcessor extends PandaProcessor {
                 anchor.setPlat(Const.HUYA);
                 anchor.setGame(Const.GAMEALL);
                 anchor.setUrl(url);
-                anchors.add(anchor.toString());
+                anchorObjs.add(anchor);
             }
         }
     }
@@ -74,6 +74,9 @@ public class HuyaAnchorProcessor extends PandaProcessor {
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         String firstUrl = "http://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=1";
         Spider.create(new HuyaAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        for (Anchor anchor : anchorObjs) {
+            anchors.add(anchor.toString());
+        }
         CommonTools.writeAndMail(hivePaht, Const.HUYAFINISH, anchors);
     }
 

@@ -39,7 +39,7 @@ public class QuanminAnchorProcessor extends PandaProcessor {
             if (pageCount > 1) {
                 String addUrl = urlTmp + 2 + urlJsonT + format.format(new Date());
                 page.addTargetRequest(addUrl);
-                addAnchors(anchors, json, curUrl);
+                addAnchors(anchorObjs, json, curUrl);
             } else {
                 page.setSkip(true);
             }
@@ -48,14 +48,14 @@ public class QuanminAnchorProcessor extends PandaProcessor {
             if (curPage < pageCount) {
                 String addUrl = urlTmp + (curPage + 1) + urlJsonT + format.format(new Date());
                 page.addTargetRequest(addUrl);
-                addAnchors(anchors, json, curUrl);
+                addAnchors(anchorObjs, json, curUrl);
             } else {
                 page.setSkip(true);
             }
         }
     }
 
-    private void addAnchors(Set<String> anchors, String json, String curUrl) {
+    private void addAnchors(Set<Anchor> anchors, String json, String curUrl) {
         JSONArray data = JsonPath.read(json, "$.data");
         for (int i = 0; i < data.size(); i++) {
             Anchor anchor = new Anchor();
@@ -76,8 +76,7 @@ public class QuanminAnchorProcessor extends PandaProcessor {
             anchor.setPlat(Const.QUANMIN);
             anchor.setGame(Const.GAMEALL);
             anchor.setUrl(curUrl);
-            String result = anchor.toString();
-            anchors.add(result);
+            anchors.add(anchor);
         }
     }
 
@@ -97,6 +96,9 @@ public class QuanminAnchorProcessor extends PandaProcessor {
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         String dateStr = format.format(new Date());
         Spider.create(new QuanminAnchorProcessor()).addUrl(firUrl + dateStr).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        for (Anchor anchor : anchorObjs) {
+            anchors.add(anchor.toString());
+        }
         CommonTools.writeAndMail(hivePaht, Const.QUANMINFINISH, anchors);
     }
 }

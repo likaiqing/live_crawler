@@ -1,5 +1,7 @@
 package com.pandatv.common;
 
+import com.pandatv.pojo.Anchor;
+import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
 import org.apache.commons.lang.RandomStringUtils;
@@ -16,9 +18,10 @@ import java.util.*;
  */
 public abstract class PandaProcessor implements PageProcessor {
     protected static Set<String> detailAnchors = new HashSet<>();
+    protected static Set<DetailAnchor> detailAnchorObjs = new HashSet<>();
     protected static Set<String> douyuGifts = new HashSet<>();
     protected static Set<String> anchors = new HashSet<>();
-    protected static Set<String> results = new HashSet<>();
+    protected static Set<Anchor> anchorObjs = new HashSet<>();
     public static String job;
     public static StringBuffer failedUrl = new StringBuffer("failedUrl:");
     public static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
