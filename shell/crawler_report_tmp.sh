@@ -1,17 +1,16 @@
 #!/bin/bash
 
-
+#按版区统计主播的PCU排名取前10个
 hive -e "
 set hive.cli.print.header=true;
-
 SELECT
   par_date,
-  r.rid,
-  r.plat,
-  category,
-  populary_num,
-  r,
-  dis.name
+  r.rid,            --主播id
+  r.plat,           --平台
+  category,         --版区
+  populary_num,     --PCU
+  r,                --排名
+  dis.name          --主播昵称
 FROM
   (
     SELECT
@@ -53,7 +52,7 @@ FROM
       plat_name,
       trim(c_name) c_name
     FROM panda_competitor.crawler_category
-    WHERE par_date BETWEEN '20161201' AND '20170120' and rid
+    WHERE par_date BETWEEN '20161201' AND '20170120'
   ) cate
     ON r.plat = cate.plat_name AND r.category = cate.c_name
   JOIN
@@ -63,19 +62,19 @@ FROM
       plat,
       name
     FROM panda_competitor.crawler_distinct_anchor
-    WHERE par_date = '20170123' and rid !='0' and rid !='0'
+    WHERE par_date = '20170123' and rid !='0'
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_pcu_rank_by_category.csv
-
+#按版区统计主播的订阅排名取前10个
 hive -e "
 set hive.cli.print.header=true;
 SELECT
   par_date,
   r.rid,
   r.plat,
-  category_sec,
-  follower_num,
+  category_sec,     --版区
+  follower_num,     --订阅数
   r,
   dis.name
 FROM
@@ -133,7 +132,7 @@ FROM
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_follow_rank_by_category.csv
-
+#按版区统计主播的体重排名取前10个
 hive -e "
 set hive.cli.print.header=true;
 SELECT
@@ -141,7 +140,7 @@ SELECT
   r.rid,
   r.plat,
   category_sec,
-  weight_num,
+  weight_num,       --体重
   r,
   dis.name
 FROM
@@ -199,7 +198,7 @@ FROM
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_weight_rank_by_category.csv
-
+#按平台统计主播的PCU排名取前10个
 hive -e "
 set hive.cli.print.header=true;
 SELECT
@@ -207,7 +206,7 @@ SELECT
   r.rid,
   r.plat,
   r.category,
-  r.populary_num,
+  r.populary_num,   --PCU
   r.r,
   dis.name
 FROM
@@ -257,7 +256,7 @@ FROM
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_pcu_rank_by_plat.csv
-
+#按平台统计主播的订阅排名取前10个
 hive -e "
 set hive.cli.print.header=true;
 SELECT
@@ -315,7 +314,7 @@ FROM
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_follow_rank_by_plat.csv
 
-
+#按平台统计主播的体重排名取前10个
 hive -e "
 set hive.cli.print.header=true;
 SELECT
@@ -372,15 +371,15 @@ FROM
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_weight_rank_by_plat.csv
-
+#按版区统计被推荐的次数和房间数
 hive -e "
 set hive.cli.print.header=true;
 SELECT
   par_date,
   plat,
   category_sec,
-  recs,
-  rec_rooms
+  recs,             --抓取到推荐次数
+  rec_rooms         --抓取到推荐主播数
 FROM
   (
     SELECT
@@ -404,7 +403,7 @@ FROM
   ) cate
     ON rec.plat = cate.plat_name AND rec.category_sec = cate.c_name;
 " > ~/tmp/rec_rooms_by_category.csv
-
+#推荐房间的订阅体重变化
 hive -e "
 set hive.cli.print.header=true;
 SELECT
@@ -412,8 +411,8 @@ SELECT
   r.rid,
   r.plat,
   r.category_sec,
-  r.follower_change,
-  r.weight_change,
+  r.follower_change,        --订阅数变化
+  r.weight_change,          --体重数变化
   dis.name
 FROM
   (
@@ -490,7 +489,7 @@ FROM
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/rec_fol_weigh_change.csv
-
+#版区的PCU订阅统计
 hive -e "
 set hive.cli.print.header=true;
 SELECT
@@ -503,18 +502,18 @@ FROM
   panda_competitor.crawler_day_cate_analyse
 WHERE par_date BETWEEN '20161201' AND '20170120';
 " > ~/tmp/category_analyse.csv
-
+#平台的相关统计
 hive -e "
 set hive.cli.print.header=true;
 SELECT
   day_plat.par_date,
   day_plat.plat,
   day_plat.pcu,
-  new_rids.activity_rids,
-  day_plat.lives,
+  new_rids.activity_rids, --有效主播数
+  day_plat.lives,--开播数
   day_plat.followers,
-  day_plat.new_categories,
-  rid_change.new_rids
+  coalesce(new_cate.new_categories,0) new_categories,--新版区数
+  rid_change.new_rids --新主播数
 FROM
   (
     SELECT
@@ -549,5 +548,41 @@ FROM
     WHERE par_date BETWEEN '20161201' AND '20170120' AND task LIKE '%anchor' AND CATEGORY != '' AND populary_num > 1050
     GROUP BY par_date, plat
   ) new_rids
-    ON day_plat.par_date = new_rids.par_date AND day_plat.plat = new_rids.plat;
+    ON day_plat.par_date = new_rids.par_date AND day_plat.plat = new_rids.plat
+  LEFT JOIN
+  (
+    SELECT
+      fir.par_date,
+      fir.plat_name                               plat,
+      coalesce(fir.cnt, 0) - coalesce(sec.cnt, 0) new_categories
+    FROM
+      (
+        SELECT
+          par_date,
+          plat_name,
+          count(DISTINCT trim(c_name)) cnt
+        FROM panda_competitor.crawler_distinct_category
+        WHERE par_date BETWEEN '20161201' AND '20170120'
+        GROUP BY par_date, plat_name
+      ) fir
+      LEFT JOIN
+      (
+        SELECT
+          from_unixtime(unix_timestamp(date_add(from_unixtime(unix_timestamp(par_date, 'yyyyMMdd'), 'yyyy-MM-dd'),1),'yyyy-MM-dd'),'yyyyMMdd') par_date,
+          plat_name,
+          cnt
+        FROM
+          (
+            SELECT
+              par_date,
+              plat_name,
+              count(DISTINCT trim(c_name)) cnt
+            FROM panda_competitor.crawler_distinct_category
+            WHERE par_date BETWEEN '20161201' AND '20170120'
+            GROUP BY par_date, plat_name
+          ) tmp
+      ) sec
+        ON fir.par_date = sec.par_date AND fir.plat_name = sec.plat_name
+  ) new_cate
+    ON day_plat.par_date = new_cate.par_date AND day_plat.plat = new_cate.plat;
 " > ~/tmp/plat_analyse.csv

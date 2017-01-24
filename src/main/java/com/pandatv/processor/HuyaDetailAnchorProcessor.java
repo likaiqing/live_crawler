@@ -4,9 +4,10 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.pipeline.HuyaDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.*;
+import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.MailTools;
+import com.pandatv.tools.UnicodeTools;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,9 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
-import java.io.BufferedWriter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by likaiqing on 2016/11/16.
@@ -30,6 +32,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static Set<String> competitionLive = new HashSet<>();
     private static String competitionUrl = "http://www.huya.com/cache.php?m=HotRecApi&do=getLiveInfo&yyid=";
     private static int exCnt;
+    private static Pattern isNotlivd = Pattern.compile("\"isNotLive\" : \"(\\d)\",");
 
     @Override
     public void process(Page page) {
@@ -76,6 +79,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                     timeOutUrl.append(curUrl).append(";");
                 }
                 Html html = page.getHtml();
+                Matcher matcher = isNotlivd.matcher(html.toString());
+                if (matcher.find() && matcher.group(1).equals("1")) {
+                    return;
+                }
                 String rid = null == page.getRequest().getExtra("rid") ? "" : page.getRequest().getExtra("rid").toString();
                 String name = html.xpath("//span[@class='host-name']/text()").get();
                 String title = html.xpath("//h1[@class='host-title']/text()").get();
@@ -148,7 +155,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(13).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        for (DetailAnchor detailAnchor:detailAnchorObjs){
+        for (DetailAnchor detailAnchor : detailAnchorObjs) {
             detailAnchors.add(detailAnchor.toString());
         }
         CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);

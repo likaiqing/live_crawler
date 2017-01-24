@@ -4,7 +4,6 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.pipeline.DouyuDetailAnchorPipeline;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.pojo.GiftInfo;
 import com.pandatv.tools.CommonTools;
@@ -19,6 +18,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by likaiqing on 2016/11/15.
@@ -27,6 +27,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(DouyuDetailAnchorProcessor.class);
     private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room";
     private static int exCnt;
+    private static Pattern showStatus = Pattern.compile("\"show_status\":(\\d*),");
 
     @Override
     public void process(Page page) {
@@ -69,6 +70,10 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                         failedUrl.append(curUrl + ";  ");
                     }
                     page.setSkip(true);
+                    return;
+                }
+                int online = JsonPath.read(json, "$.data.online");
+                if (online == 0) {
                     return;
                 }
                 DetailAnchor detailAnchor = new DetailAnchor();
@@ -158,7 +163,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new DouyuDetailAnchorProcessor()).thread(6).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
-        for (DetailAnchor detailAnchor:detailAnchorObjs){
+        for (DetailAnchor detailAnchor : detailAnchorObjs) {
             detailAnchors.add(detailAnchor.toString());
         }
         CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
