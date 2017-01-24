@@ -216,7 +216,7 @@ cast((a.pcu/e.pcu_p)*e.pcu_w+
 
 ((a.pcu-nvl(c.pcu,0))/f.pcu_p)*f.pcu_w+
 ((a.weight-nvl(c.weight,0))/f.weight_p)*f.weight_w+
-((a.fol-nvl(c.followers,0))/f.fol_p)*f.fol_w grow_score,--总分
+((a.fol-nvl(c.followers,0))/f.fol_p)*f.fol_w as grow_score,--总分
 
 row_number()over(
 partition by b.id
@@ -261,7 +261,7 @@ order by
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
 (a.weight/e.weight_p)*e.weight_w+
-(a.fol/e.fol_p)*e.fol_w as int) desc
+(a.fol/e.fol_p)*e.fol_w as decimal(10,5)) desc
 --
 ),--总分排序
 
@@ -275,21 +275,21 @@ a.pcu,--pcu
 a.livetime,--开播时长
 
 
-cast(a.fol - nvl(c.followers,0) AS INT),--订阅增长
-cast(a.weight-nvl(c.weight,0)as int),--体重增量
+a.fol,--订阅
+a.weight,--体重
 
-(a.pcu/e.pcu_p)*e.pcu_w,--pcu分数
-(1-a.livetime/e.livetime_p)*e.livetime_w,--开播时长分数
+cast((a.pcu/e.pcu_p)*e.pcu_w as decimal(10,5)),--pcu分数
+cast((1-a.livetime/e.livetime_p)*e.livetime_w as decimal(10,5)),--开播时长分数
 
-(a.weight/e.weight_p)*e.weight_w,--体重增量分数
-(a.fol/e.fol_p)*e.fol_w,--订阅增量分数
+cast((a.weight/e.weight_p)*e.weight_w as decimal(10,5)),--体重增量分数
+cast((a.fol/e.fol_p)*e.fol_w as decimal(10,5)),--订阅增量分数
 
 
 --总分
-(a.pcu/e.pcu_p)*e.pcu_w+
+cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
 (a.weight/e.weight_p)*e.weight_w+
-(a.fol/e.fol_p)*e.fol_w,
+(a.fol/e.fol_p)*e.fol_w as decimal(10,5)),
 
 row_number()over(
 partition by b.id
@@ -329,7 +329,7 @@ order by
 --
 cast(((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
 ((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w+
-((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as int) desc
+((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as decimal(10,5)) desc
 --
 ),--排序
 
@@ -348,12 +348,12 @@ case when a.pcu=(a.pcu-nvl(c.pcu,0)) then 1 else 0 end,--pcu增值状态
 
 
 
-((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w,--体重增量分数
-((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w,--订阅增量分数
+cast(((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w as decimal(10,5)),--体重增量分数
+cast(((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as decimal(10,5)),--订阅增量分数
 
-((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
+cast(((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
 ((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w+
-((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w,--总分
+((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as decimal(10,5)),--总分
 
 row_number()over(
 partition by b.id
@@ -361,7 +361,7 @@ order by
 --
 cast(((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
 ((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w+
-((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as int) desc
+((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as decimal(10,5)) desc
 --
 )-nvl(f.grow_rank,0),--名次变化
 a.par_date
@@ -378,16 +378,174 @@ WHERE a.par_date = '${date}';"
 
 #####生成excel
 #成长
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_comprehensive_rank par_date,rank,plat_id,plat,rid,name,puu,livetime,fol_up,weight_up,pcu_score,livetime_score,weight_score,fol_score,total_score,rank_change "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU,开播时长,订阅增量,体重增量,PCU分数,开播时长分数,体重增量分数,订阅增量分数,总分,名次变化" /data/tmp/zhengbo/file/
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_comprehensive_rank par_date,rank,plat_id,plat,rid,name,puu,livetime,fol_up,weight_up,pcu_score,livetime_score,weight_score,fol_score,total_score,rank_change "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU,开播时长,订阅,体重,PCU分数,开播时长分数,体重增量分数,订阅增量分数,总分,名次变化" /data/tmp/zhengbo/file/
 #增量
 /usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_growth_rank par_date,rank,plat_id,plat,rid,name,pcu_up,fol_up,weight_up,pcu_score,pcu_type,weight_up_score,fol_up_score,total_score,rank_change "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU增值,订阅增量,体重增量,PCU增值分数,PCU增值状态,体重增量分数,订阅增量分数,总分,名次变化" /data/tmp/zhengbo/file/
 
 
 #发送邮件
 #
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播成长" "内容见附件" /data/tmp/zhengbo/file/anchor_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+#/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播成长" "内容见附件" /data/tmp/zhengbo/file/anchor_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
 
 #
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播综合" "内容见附件" /data/tmp/zhengbo/file/anchor_growth_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+#/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播综合" "内容见附件" /data/tmp/zhengbo/file/anchor_growth_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+
+####################
+#20170123新增      平台，版区
+
+
+
+
+hive -e "
+insert overwrite table panda_competitor_result.plat_category_parameter partition(par_date)
+select 43000,max(a.followers_changed),b.v_anchor,20,40,40,0,a.par_date
+from panda_competitor_result.plat_day_changed_analyse_by_sameday a
+left join
+(
+select max(v_anchor) v_anchor
+from(
+select plat,
+count(distinct case when pcu>1050 then rid else null end) v_anchor 
+from panda_competitor_result.anchor_day_changed_analyse_by_sameday 
+where par_date='${date}'
+group by plat
+) zz 
+) b
+where a.par_date='${date}'
+group by b.v_anchor,a.par_date
+union all
+--版区
+select 9000,
+600000,--max(a.followers_changed),
+1200,--b.v_anchor,
+20,40,40,1,a.par_date
+from panda_competitor_result.category_day_changed_analyse_by_sameday a
+left join
+(
+select max(v_anchor) v_anchor
+from(
+select plat,category,
+count(distinct case when pcu>1050 then rid else null end) v_anchor 
+from panda_competitor_result.anchor_day_changed_analyse_by_sameday 
+where par_date='${date}'
+group by plat,category
+) zz 
+) b
+where a.par_date='${date}'
+group by b.v_anchor,a.par_date;
+"
+
+#######平台
+hive -e "
+insert overwrite table panda_competitor_result.plat_comprehensive_rank partition(par_date)
+select 
+row_number()over(
+partition by a.par_date
+order by
+ --
+cast(((a.followers_changed/d.fol)*d.fol_w+
+(c.valid_anchor/d.anchor)*d.anchor_w+
+(c.sum_anchor/d.live)*d.live_w
+) as int) desc
+--
+ ),--排序
+
+b.id,--平台ID
+a.plat,--平台名称
+a.followers_changed,--总订阅增量
+c.valid_anchor,--有效主播数
+c.sum_anchor,--开播数
+(a.followers_changed/d.fol)*d.fol_w,--总订阅增量分数
+(c.valid_anchor/d.anchor)*d.anchor_w,--有效主播数分数
+(c.sum_anchor/d.live)*d.live_w,--开播数分数
+
+((a.followers_changed/d.fol)*d.fol_w+
+(c.valid_anchor/d.anchor)*d.anchor_w+
+(c.sum_anchor/d.live)*d.live_w
+),--总分
+a.par_date
+from panda_competitor_result.plat_day_changed_analyse_by_sameday a
+INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
+left join
+(
+select plat,
+count(distinct case when pcu>1050 then rid else null end) as valid_anchor,
+count(distinct rid) sum_anchor
+from panda_competitor_result.anchor_day_changed_analyse_by_sameday 
+where par_date='${date}'
+group by plat
+) c on a.plat=c.plat
+
+left join
+(
+select *
+from panda_competitor_result.plat_category_parameter
+where par_date='${date}'
+and type=0
+) d
+
+where a.par_date='${date}';
+"
+
+####版区
+hive -e "
+insert overwrite table panda_competitor_result.category_comprehensive_rank partition(par_date)
+select 
+row_number()over(
+partition by b.id
+order by
+ --
+cast(((a.followers_changed/d.fol)*d.fol_w+
+(c.valid_anchor/d.anchor)*d.anchor_w+
+(c.sum_anchor/d.live)*d.live_w
+) as int) desc
+--
+ ),--排序
+ 
+
+b.id,--平台ID
+a.plat,--平台名称
+a.category,--版区名称
+c.sum_anchor,--开播数
+a.followers_changed,--总订阅增量
+c.valid_anchor,--有效主播数
+
+(c.sum_anchor/d.live)*d.live_w,--开播数分数
+(a.followers_changed/d.fol)*d.fol_w,--总订阅增量分数
+(c.valid_anchor/d.anchor)*d.anchor_w,--有效主播数分数
+
+((a.followers_changed/d.fol)*d.fol_w+
+(c.valid_anchor/d.anchor)*d.anchor_w+
+(c.sum_anchor/d.live)*d.live_w
+),--总分
+a.par_date
+from panda_competitor_result.category_day_changed_analyse_by_sameday a
+INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
+left join
+(
+select plat,category,
+count(distinct case when pcu>1050 then rid else null end) as valid_anchor,
+count(distinct rid) sum_anchor
+from panda_competitor_result.anchor_day_changed_analyse_by_sameday 
+where par_date='${date}' 
+group by plat,category
+) c on a.plat=c.plat and a.category=c.category
+left join(
+select *
+from panda_competitor_result.plat_category_parameter
+where par_date='${date}'
+and type=0
+)d
+where a.par_date='${date}';
+"
+#/home/likaiqing/hive-tool/export2excel.jar
+
+#####生成excel
+#平台
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar ${date} panda_competitor_result.plat_comprehensive_rank par_date,rank,plat_id,plat,fol_grow,v_anchor,s_anchor,fol_score,v_ahchor_score,s_anchor_score,total "日期,排序,平台ID,平台名称,总订阅增量,有效主播数,开播数,总订阅增量分数,有效主播数分数,开播数分数,总分" /data/tmp/zhengbo/file/
+
+#增量
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar ${date} panda_competitor_result.category_comprehensive_rank par_date,rank,plat_id,plat,category,s_anchor,fol_grow,v_anchor,s_anchor_score,fol_score,v_ahchor_score,total "日期,排序,平台ID,平台名称,版区名称,开播数,总订阅增量,有效主播数,开播数分数,总订阅增量分数,有效主播数分数,总分" /data/tmp/zhengbo/file/
+ 
 
 
