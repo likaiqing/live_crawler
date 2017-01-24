@@ -53,7 +53,7 @@ FROM
       plat_name,
       trim(c_name) c_name
     FROM panda_competitor.crawler_category
-    WHERE par_date BETWEEN '20161201' AND '20170120'
+    WHERE par_date BETWEEN '20161201' AND '20170120' and rid
   ) cate
     ON r.plat = cate.plat_name AND r.category = cate.c_name
   JOIN
@@ -63,7 +63,7 @@ FROM
       plat,
       name
     FROM panda_competitor.crawler_distinct_anchor
-    WHERE par_date = '20170123'
+    WHERE par_date = '20170123' and rid !='0' and rid !='0'
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_pcu_rank_by_category.csv
@@ -129,7 +129,7 @@ FROM
       plat,
       name
     FROM panda_competitor.crawler_distinct_anchor
-    WHERE par_date = '20170123'
+    WHERE par_date = '20170123' and rid !='0'
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_follow_rank_by_category.csv
@@ -195,7 +195,7 @@ FROM
       plat,
       name
     FROM panda_competitor.crawler_distinct_anchor
-    WHERE par_date = '20170123'
+    WHERE par_date = '20170123' and rid !='0'
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_weight_rank_by_category.csv
@@ -253,7 +253,7 @@ FROM
       plat,
       name
     FROM panda_competitor.crawler_distinct_anchor
-    WHERE par_date = '20170123'
+    WHERE par_date = '20170123' and rid !='0'
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_pcu_rank_by_plat.csv
@@ -310,7 +310,7 @@ FROM
       plat,
       name
     FROM panda_competitor.crawler_distinct_anchor
-    WHERE par_date = '20170123'
+    WHERE par_date = '20170123' and rid !='0'
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_follow_rank_by_plat.csv
@@ -368,7 +368,7 @@ FROM
       plat,
       name
     FROM panda_competitor.crawler_distinct_anchor
-    WHERE par_date = '20170123'
+    WHERE par_date = '20170123' and rid !='0'
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/anchor_weight_rank_by_plat.csv
@@ -486,7 +486,7 @@ FROM
       plat,
       name
     FROM panda_competitor.crawler_distinct_anchor
-    WHERE par_date = '20170123'
+    WHERE par_date = '20170123' and rid !='0'
   ) dis
     ON r.rid = dis.rid AND r.plat = dis.plat;
 " > ~/tmp/rec_fol_weigh_change.csv
@@ -534,7 +534,7 @@ FROM
       par_date,
       plat,
       count(DISTINCT rid) new_rids
-    FROM crawler_day_anchor_analyse
+    FROM panda_competitor.crawler_day_anchor_analyse
     WHERE is_new = 1
     GROUP BY par_date, plat
   ) rid_change

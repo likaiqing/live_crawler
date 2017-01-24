@@ -210,7 +210,7 @@ order by
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
 (a.weight/e.weight_p)*e.weight_w+
-(a.fol/e.fol_p)*e.fol_w as int) desc
+(a.fol/e.fol_p)*e.fol_w as decimal(10,5)) desc
 ) as comprehensive_rank,
 
 
@@ -224,7 +224,7 @@ order by
 --
 cast(((a.pcu-nvl(c.pcu,0))/f.pcu_p)*f.pcu_w+
 ((a.weight-nvl(c.weight,0))/f.weight_p)*f.weight_w+
-((a.fol-nvl(c.followers,0))/f.fol_p)*f.fol_w as int) desc
+((a.fol-nvl(c.followers,0))/f.fol_p)*f.fol_w as decimal(10,5)) desc
 ) grow_rank,
 
 a.par_date
@@ -298,7 +298,7 @@ order by
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
 (a.weight/e.weight_p)*e.weight_w+
-(a.fol/e.fol_p)*e.fol_w as int) desc
+(a.fol/e.fol_p)*e.fol_w as decimal(10,5)) desc
 --
 ) -nvl(g.comprehensive_rank,0), --名次变化
 
@@ -385,10 +385,10 @@ WHERE a.par_date = '${date}';"
 
 #发送邮件
 #
-#/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播成长" "内容见附件" /data/tmp/zhengbo/file/anchor_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播综合" "内容见附件" /data/tmp/zhengbo/file/anchor_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
 
 #
-#/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播综合" "内容见附件" /data/tmp/zhengbo/file/anchor_growth_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播成长" "内容见附件" /data/tmp/zhengbo/file/anchor_growth_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
 
 ####################
 #20170123新增      平台，版区
@@ -446,7 +446,7 @@ order by
 cast(((a.followers_changed/d.fol)*d.fol_w+
 (c.valid_anchor/d.anchor)*d.anchor_w+
 (c.sum_anchor/d.live)*d.live_w
-) as int) desc
+) as decimal(10,5)) desc
 --
  ),--排序
 
@@ -455,14 +455,14 @@ a.plat,--平台名称
 a.followers_changed,--总订阅增量
 c.valid_anchor,--有效主播数
 c.sum_anchor,--开播数
-(a.followers_changed/d.fol)*d.fol_w,--总订阅增量分数
-(c.valid_anchor/d.anchor)*d.anchor_w,--有效主播数分数
-(c.sum_anchor/d.live)*d.live_w,--开播数分数
+cast((a.followers_changed/d.fol)*d.fol_w as decimal(10,5)),--总订阅增量分数
+cast((c.valid_anchor/d.anchor)*d.anchor_w as decimal(10,5)),--有效主播数分数
+cast((c.sum_anchor/d.live)*d.live_w as decimal(10,5)),--开播数分数
 
-((a.followers_changed/d.fol)*d.fol_w+
+cast(((a.followers_changed/d.fol)*d.fol_w+
 (c.valid_anchor/d.anchor)*d.anchor_w+
 (c.sum_anchor/d.live)*d.live_w
-),--总分
+) as decimal(10,5)),--总分
 a.par_date
 from panda_competitor_result.plat_day_changed_analyse_by_sameday a
 INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
@@ -498,7 +498,7 @@ order by
 cast(((a.followers_changed/d.fol)*d.fol_w+
 (c.valid_anchor/d.anchor)*d.anchor_w+
 (c.sum_anchor/d.live)*d.live_w
-) as int) desc
+) as decimal(10,5)) desc
 --
  ),--排序
  
@@ -510,14 +510,14 @@ c.sum_anchor,--开播数
 a.followers_changed,--总订阅增量
 c.valid_anchor,--有效主播数
 
-(c.sum_anchor/d.live)*d.live_w,--开播数分数
-(a.followers_changed/d.fol)*d.fol_w,--总订阅增量分数
-(c.valid_anchor/d.anchor)*d.anchor_w,--有效主播数分数
+cast((c.sum_anchor/d.live)*d.live_w as decimal(10,5)),--开播数分数
+cast((a.followers_changed/d.fol)*d.fol_w as decimal(10,5)),--总订阅增量分数
+cast((c.valid_anchor/d.anchor)*d.anchor_w as decimal(10,5)),--有效主播数分数
 
-((a.followers_changed/d.fol)*d.fol_w+
+cast(((a.followers_changed/d.fol)*d.fol_w+
 (c.valid_anchor/d.anchor)*d.anchor_w+
 (c.sum_anchor/d.live)*d.live_w
-),--总分
+) as decimal(10,5)),--总分
 a.par_date
 from panda_competitor_result.category_day_changed_analyse_by_sameday a
 INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
@@ -544,8 +544,15 @@ where a.par_date='${date}';
 #平台
 /usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar ${date} panda_competitor_result.plat_comprehensive_rank par_date,rank,plat_id,plat,fol_grow,v_anchor,s_anchor,fol_score,v_ahchor_score,s_anchor_score,total "日期,排序,平台ID,平台名称,总订阅增量,有效主播数,开播数,总订阅增量分数,有效主播数分数,开播数分数,总分" /data/tmp/zhengbo/file/
 
-#增量
+#版区
 /usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar ${date} panda_competitor_result.category_comprehensive_rank par_date,rank,plat_id,plat,category,s_anchor,fol_grow,v_anchor,s_anchor_score,fol_score,v_ahchor_score,total "日期,排序,平台ID,平台名称,版区名称,开播数,总订阅增量,有效主播数,开播数分数,总订阅增量分数,有效主播数分数,总分" /data/tmp/zhengbo/file/
  
+
+#发送邮件
+#平台
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "平台综合" "内容见附件" /data/tmp/zhengbo/file/plat_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+
+#版区
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "版区综合" "内容见附件" /data/tmp/zhengbo/file/category_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
 
 
