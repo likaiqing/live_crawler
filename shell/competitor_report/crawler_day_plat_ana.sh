@@ -18,7 +18,7 @@ SELECT
   coalesce(anchors.new_anchors, 0) new_anchors,
   coalesce(cates.categories, 0)    categories,
   coalesce(cates.new_cates, 0)     new_cates,
-  coalesce(cates.reduce_cates, 0)     reduce_cates,
+  coalesce(reduce_cates.reduce_cates, 0)     reduce_cates,
   ana.max_lives,
   '$date'
 FROM
@@ -177,31 +177,61 @@ FROM
   (
     SELECT
       cate1.plat_name,
-      count(distinct case when cate1.c_name is not null then cate1.c_name else null end)        categories,
-      sum(CASE WHEN cate1.c_name IS NULL then 1 else 0 end) reduce_cates,
-      sum(CASE WHEN cate2.c_name IS NULL
-        THEN 1
-          ELSE 0 END) new_cates
+      count(1)                      categories,
+      count(DISTINCT CASE WHEN cate2.c_name IS NULL
+        THEN cate1.c_name
+                     ELSE NULL END) new_cates
     FROM
       (
         SELECT
           DISTINCT
           plat_name,
           trim(c_name) c_name
-        FROM panda_competitor.crawler_category
+        FROM
+          panda_competitor.crawler_category
         WHERE par_date = '$date'
       ) cate1
-      FULL JOIN
+      LEFT OUTER JOIN
       (
         SELECT
           DISTINCT
           plat_name,
           trim(c_name) c_name
-        FROM panda_competitor.crawler_category
+        FROM
+          panda_competitor.crawler_distinct_category
         WHERE par_date = '$sub_1_days'
       ) cate2
         ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
     GROUP BY cate1.plat_name
   ) cates
+  left join
+  (
+    SELECT
+      cate1.plat_name,
+      count(1) reduce_cates
+    FROM
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          trim(c_name) c_name
+        FROM
+          panda_competitor.crawler_category
+        WHERE par_date = '$sub_1_days'
+      ) cate1
+      LEFT JOIN
+      (
+        SELECT
+          DISTINCT
+          plat_name,
+          trim(c_name) c_name
+        FROM
+          panda_competitor.crawler_category
+        WHERE par_date = '$date'
+      ) cate2
+        ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
+    WHERE cate2.plat_name IS NULL
+    group by cate1.plat_name
+  )reduce_cates
     ON ana.plat = cates.plat_name;
 "

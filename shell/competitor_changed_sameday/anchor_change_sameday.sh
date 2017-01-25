@@ -11,13 +11,11 @@ SELECT
   change.plat,
   change.category,
   pcu.pcu,
-  CASE WHEN change.follow_change / pcu.pcu > 1.4
+  change.follower_num,
+  change.weight_num,
+  CASE WHEN (abs(change.follow_change) / pcu.pcu > 1.4) OR (change.follow_change < -10000)
     THEN 0
-  ELSE change.follower_num END follower_num,
-  CASE WHEN change.weight_num < -10000
-    THEN 0
-  ELSE change.weight_num END weight_num,
-  change.follow_change,
+  ELSE change.follow_change END follow_change,
   change.weight_change,
   dis.title,
   '$date'
