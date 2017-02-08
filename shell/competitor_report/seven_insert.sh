@@ -398,41 +398,19 @@ WHERE a.par_date = '${date}';"
 
 hive -e "
 insert overwrite table panda_competitor_result.plat_category_parameter partition(par_date)
-select 43000,max(a.followers_changed),b.v_anchor,20,40,40,0,a.par_date
-from panda_competitor_result.plat_day_changed_analyse_by_sameday a
-left join
-(
-select max(v_anchor) v_anchor
-from(
-select plat,
-count(distinct case when pcu>1050 then rid else null end) v_anchor 
-from panda_competitor_result.anchor_day_changed_analyse_by_sameday 
-where par_date='${date}'
-group by plat
-) zz 
-) b
-where a.par_date='${date}'
-group by b.v_anchor,a.par_date
+--平台
+select 43000,
+1000000,
+6500,
+20,40,40,0,'${date}' as par_date
+from default.dual
 union all
 --版区
 select 9000,
-600000,--max(a.followers_changed),
-1200,--b.v_anchor,
-20,40,40,1,a.par_date
-from panda_competitor_result.category_day_changed_analyse_by_sameday a
-left join
-(
-select max(v_anchor) v_anchor
-from(
-select plat,category,
-count(distinct case when pcu>1050 then rid else null end) v_anchor 
-from panda_competitor_result.anchor_day_changed_analyse_by_sameday 
-where par_date='${date}'
-group by plat,category
-) zz 
-) b
-where a.par_date='${date}'
-group by b.v_anchor,a.par_date;
+600000,
+1200,
+20,40,40,1,'${date}' as par_date
+from default.dual;
 "
 
 #######平台
@@ -534,7 +512,7 @@ left join(
 select *
 from panda_competitor_result.plat_category_parameter
 where par_date='${date}'
-and type=0
+and type=1
 )d
 where a.par_date='${date}';
 "

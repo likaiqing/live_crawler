@@ -88,8 +88,9 @@ FROM (
          LEFT JOIN
          (select rid,plat,name,title as room_content,
 row_number() over(partition by rid,plat order by create_time desc) as rw 
-from panda_competitor.crawler_distinct_anchor 
-where par_date='${date}') b
+from panda_competitor.crawler_anchor
+where par_date='${date}'
+and (rid is not null and rid <>'')) b
            ON b.rw=1 and a.rid = b.rid AND a.plat = b.plat
          LEFT JOIN
          (SELECT
