@@ -301,7 +301,7 @@ cast((a.pcu/e.pcu_p)*e.pcu_w+
 (a.fol/e.fol_p)*e.fol_w as decimal(10,5)) desc
 --
 ) -nvl(g.comprehensive_rank,0), --名次变化
-
+a.room_content,
 
 a.par_date
 FROM panda_competitor_result.crawler_anchor_day a
@@ -364,6 +364,7 @@ cast(((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
 ((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as decimal(10,5)) desc
 --
 )-nvl(f.grow_rank,0),--名次变化
+a.room_content,
 a.par_date
 FROM panda_competitor_result.crawler_anchor_day a
   INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
@@ -378,17 +379,17 @@ WHERE a.par_date = '${date}';"
 
 #####生成excel
 #成长
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_comprehensive_rank par_date,rank,plat_id,plat,rid,name,puu,livetime,fol_up,weight_up,pcu_score,livetime_score,weight_score,fol_score,total_score,rank_change "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU,开播时长,订阅,体重,PCU分数,开播时长分数,体重增量分数,订阅增量分数,总分,名次变化" /data/tmp/zhengbo/file/
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_comprehensive_rank par_date,rank,plat_id,plat,rid,name,puu,livetime,fol_up,weight_up,pcu_score,livetime_score,weight_score,fol_score,total_score,rank_change,room_content "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU,开播时长,订阅,体重,PCU分数,开播时长分数,体重增量分数,订阅增量分数,总分,名次变化,房间内容" /data/tmp/zhengbo/file/
 #增量
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_growth_rank par_date,rank,plat_id,plat,rid,name,pcu_up,fol_up,weight_up,pcu_score,pcu_type,weight_up_score,fol_up_score,total_score,rank_change "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU增值,订阅增量,体重增量,PCU增值分数,PCU增值状态,体重增量分数,订阅增量分数,总分,名次变化" /data/tmp/zhengbo/file/
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_growth_rank par_date,rank,plat_id,plat,rid,name,pcu_up,fol_up,weight_up,pcu_score,pcu_type,weight_up_score,fol_up_score,total_score,rank_change,room_content "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU增值,订阅增量,体重增量,PCU增值分数,PCU增值状态,体重增量分数,订阅增量分数,总分,名次变化,房间内容" /data/tmp/zhengbo/file/
 
 
 #发送邮件
 #
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播综合" "内容见附件" /data/tmp/zhengbo/file/anchor_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+#/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播综合" "内容见附件" /data/tmp/zhengbo/file/anchor_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
 
 #
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播成长" "内容见附件" /data/tmp/zhengbo/file/anchor_growth_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+#/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "主播成长" "内容见附件" /data/tmp/zhengbo/file/anchor_growth_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
 
 ####################
 #20170123新增      平台，版区
@@ -528,9 +529,13 @@ where a.par_date='${date}';
 
 #发送邮件
 #平台
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "平台综合" "内容见附件" /data/tmp/zhengbo/file/plat_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+#/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "平台综合" "内容见附件" /data/tmp/zhengbo/file/plat_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
 
 #版区
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "版区综合" "内容见附件" /data/tmp/zhengbo/file/category_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+#/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "版区综合" "内容见附件" /data/tmp/zhengbo/file/category_comprehensive_rank${date}.xlsx "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
 
+#压缩
+zip -m /data/tmp/zhengbo/file/rank_${date} /data/tmp/zhengbo/file/anchor_comprehensive_rank${date}.xlsx /data/tmp/zhengbo/file/anchor_growth_rank${date}.xlsx /data/tmp/zhengbo/file/plat_comprehensive_rank${date}.xlsx /data/tmp/zhengbo/file/category_comprehensive_rank${date}.xlsx
 
+###发送邮件
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "排名相关" "内容见附件" /data/tmp/zhengbo/file/rank_${date}.zip "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"

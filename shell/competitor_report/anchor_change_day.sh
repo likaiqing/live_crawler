@@ -88,7 +88,7 @@ FROM (
          LEFT JOIN
          (select rid,plat,name,title as room_content,
 row_number() over(partition by rid,plat order by create_time desc) as rw 
-from panda_competitor.crawler_anchor
+from panda_competitor.crawler_distinct_anchor
 where par_date='${date}'
 and (rid is not null and rid <>'')) b
            ON b.rw=1 and a.rid = b.rid AND a.plat = b.plat
@@ -216,8 +216,7 @@ where par_date='${date}') b
           ORDER BY pcu DESC) AS rw
       FROM panda_competitor.crawler_day_anchor_analyse
       WHERE par_date = '${date}') c
-       ON a.plat = c.plat AND a.rid = c.rid AND c.rw = 1
-   WHERE par_date = '${date}'
+
    GROUP BY a.par_date, a.plat, c.category, a.rid, b.name,b.room_content) aa
   LEFT JOIN
   (

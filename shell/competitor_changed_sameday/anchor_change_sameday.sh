@@ -106,5 +106,5 @@ FROM
       panda_competitor.crawler_distinct_anchor
     WHERE par_date = '$date'
   ) dis
-    ON change.rid = dis.rid AND change.plat = dis.plat AND change.category = dis.category;
+    ON change.rid = dis.rid AND change.plat = dis.plat;
 "
