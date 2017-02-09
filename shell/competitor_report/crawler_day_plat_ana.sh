@@ -204,6 +204,7 @@ FROM
         ON cate1.plat_name = cate2.plat_name AND cate1.c_name = cate2.c_name
     GROUP BY cate1.plat_name
   ) cates
+  ON ana.plat = cates.plat_name
   left join
   (
     SELECT
@@ -233,5 +234,5 @@ FROM
     WHERE cate2.plat_name IS NULL
     group by cate1.plat_name
   )reduce_cates
-    ON ana.plat = cates.plat_name;
+    ON ana.plat = reduce_cates.plat_name;
 "
