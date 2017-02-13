@@ -44,6 +44,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                         break;
                     }
                 }
+                endPage = endPage > 150 ? 150 : endPage;
                 for (int i = 1; i < endPage; i++) {
                     Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
                     page.addTargetRequest(request);

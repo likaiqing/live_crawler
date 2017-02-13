@@ -48,8 +48,11 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 //                }
                 if (all.size() > 0) {
                     page.putField("json", page.getJson().toString());
-                    String newUrl = this.tmpUrl + (Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1);
-                    page.addTargetRequest(newUrl);
+                    int newPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
+                    if (newPage<800){
+                        String newUrl = this.tmpUrl + (newPage);
+                        page.addTargetRequest(newUrl);
+                    }
                     List<String> rooms = page.getJson().jsonPath("$.data.list").all();
                     for (String room : rooms) {
                         String rid = JsonPath.read(room, "$.privateHost");
