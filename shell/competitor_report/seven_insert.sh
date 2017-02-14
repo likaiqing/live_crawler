@@ -210,7 +210,7 @@ order by
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
 (a.weight/e.weight_p)*e.weight_w+
-(a.fol/e.fol_p)*e.fol_w as decimal(10,5)) desc
+(a.fol/e.fol_p)*e.fol_w as decimal(10,2)) desc
 ) as comprehensive_rank,
 
 
@@ -224,7 +224,7 @@ order by
 --
 cast(((a.pcu-nvl(c.pcu,0))/f.pcu_p)*f.pcu_w+
 ((a.weight-nvl(c.weight,0))/f.weight_p)*f.weight_w+
-((a.fol-nvl(c.followers,0))/f.fol_p)*f.fol_w as decimal(10,5)) desc
+((a.fol-nvl(c.followers,0))/f.fol_p)*f.fol_w as decimal(10,2)) desc
 ) grow_rank,
 
 a.par_date
@@ -261,7 +261,7 @@ order by
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
 (a.weight/e.weight_p)*e.weight_w+
-(a.fol/e.fol_p)*e.fol_w as decimal(10,5)) desc
+(a.fol/e.fol_p)*e.fol_w as decimal(10,2)) desc
 --
 ),--总分排序
 
@@ -278,18 +278,18 @@ a.livetime,--开播时长
 a.fol,--订阅
 a.weight,--体重
 
-cast((a.pcu/e.pcu_p)*e.pcu_w as decimal(10,5)),--pcu分数
-cast((1-a.livetime/e.livetime_p)*e.livetime_w as decimal(10,5)),--开播时长分数
+cast((a.pcu/e.pcu_p)*e.pcu_w as decimal(10,2)),--pcu分数
+cast((1-a.livetime/e.livetime_p)*e.livetime_w as decimal(10,2)),--开播时长分数
 
-cast((a.weight/e.weight_p)*e.weight_w as decimal(10,5)),--体重增量分数
-cast((a.fol/e.fol_p)*e.fol_w as decimal(10,5)),--订阅增量分数
+cast((a.weight/e.weight_p)*e.weight_w as decimal(10,2)),--体重增量分数
+cast((a.fol/e.fol_p)*e.fol_w as decimal(10,2)),--订阅增量分数
 
 
 --总分
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
 (a.weight/e.weight_p)*e.weight_w+
-(a.fol/e.fol_p)*e.fol_w as decimal(10,5)),
+(a.fol/e.fol_p)*e.fol_w as decimal(10,2)),
 
 row_number()over(
 partition by b.id
@@ -298,7 +298,7 @@ order by
 cast((a.pcu/e.pcu_p)*e.pcu_w+
 (1-a.livetime/e.livetime_p)*e.livetime_w+
 (a.weight/e.weight_p)*e.weight_w+
-(a.fol/e.fol_p)*e.fol_w as decimal(10,5)) desc
+(a.fol/e.fol_p)*e.fol_w as decimal(10,2)) desc
 --
 ) -nvl(g.comprehensive_rank,0), --名次变化
 a.room_content,
@@ -321,67 +321,126 @@ WHERE a.par_date = '${date}';
 
 #主播成长排名
 hive -e "
-insert overwrite table panda_competitor_result.anchor_growth_rank partition(par_date)
-select
+
+--成长中间表
+insert overwrite table panda_competitor_result.anchor_m_grow_rank partition(par_date)
+select 
+
+case when d.rid is null then c.rid else d.rid end,
+case when d.plat is null then c.plat else d.plat end,
+case when d.category is null then c.category else d.category end,
+
+
+case when d.grow_score is null then c.grow_score else d.grow_score end,
+case when d.grow_rank is null then c.grow_rank else d.grow_rank end,
+
+'${date}'
+ 
+from (
+select 
+a.plat,a.rid,a.category,
+cast(
+((a.pcu-nvl(b.new_pcu,0))/f.pcu_p)*f.pcu_w+
+(a.weight_changed/f.weight_p)*f.weight_w+
+(a.followers_changed/f.fol_p)*f.fol_w as decimal(10,2)) as grow_score,--总分
+
 row_number()over(
-partition by b.id
+partition by a.plat
 order by
 --
-cast(((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
-((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w+
-((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as decimal(10,5)) desc
+cast(
+((a.pcu-nvl(b.new_pcu,0))/f.pcu_p)*f.pcu_w+
+(a.weight_changed/f.weight_p)*f.weight_w+
+(a.followers_changed/f.fol_p)*f.fol_w as decimal(10,2)) desc
+) grow_rank,
+
+a.par_date
+from panda_competitor_result.anchor_day_changed_analyse_by_sameday a
+inner join(
+select * from panda_competitor.crawler_all_anchor_analyse where par_date='${date_sub}'
+) b on a.plat=b.plat and a.rid=b.rid and a.category=b.category
+left join
+(select * from panda_competitor_result.anchor_live_parameter where type=1) f
+where a.par_date='${date}' 
+) d
+full outer join
+(select * from panda_competitor_result.anchor_m_grow_rank where par_date='${date_sub}') c
+on d.plat=c.plat and d.rid=c.rid and d.category=c.category;
+"
+
+
+hive -e "
+
+--主播成长排名
+
+insert overwrite table panda_competitor_result.anchor_growth_rank partition(par_date)
+
+
+select 
+row_number()over(
+partition by a.plat
+order by
 --
-),--排序
-
-
-b.id,--平台id
+round(
+((a.pcu-nvl(b.new_pcu,0))/f.pcu_p)*f.pcu_w+
+(a.weight_changed/f.weight_p)*f.weight_w+
+(a.followers_changed/f.fol_p)*f.fol_w ,2) desc
+) grow_rank,--排名
+c.id,--平台id
 a.plat,--平台名称
 a.rid,--主播id
 a.name,--主播名称
-a.pcu-nvl(c.pcu,0),--pcu增值
-a.fol-nvl(c.followers,0),--订阅增值
-a.weight-nvl(c.weight,0),--体重增值
-((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w,--pcu增值分数
+(a.pcu-nvl(b.new_pcu,0)),--pcu增值
+a.followers_changed,--订阅增值
+a.weight_changed,--体重增值
+round(cast(((a.pcu-nvl(b.new_pcu,0))/f.pcu_p)*f.pcu_w as decimal(10,2)),2),--pcu增值分数
 
-
-case when a.pcu=(a.pcu-nvl(c.pcu,0)) then 1 else 0 end,--pcu增值状态
-
-
-
-cast(((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w as decimal(10,5)),--体重增量分数
-cast(((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as decimal(10,5)),--订阅增量分数
-
-cast(((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
-((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w+
-((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as decimal(10,5)),--总分
+case when a.pcu=(a.pcu-nvl(b.new_pcu,0)) then 1 else 0 end,--pcu增值状态
+round((a.weight_changed/f.weight_p)*f.weight_w,2),--体重增量分数
+round((a.followers_changed/f.fol_p)*f.fol_w,2),--订阅增量分数
+round(
+((a.pcu-nvl(b.new_pcu,0))/f.pcu_p)*f.pcu_w+
+(a.weight_changed/f.weight_p)*f.weight_w+
+(a.followers_changed/f.fol_p)*f.fol_w,2) as grow_score,--总分
 
 row_number()over(
-partition by b.id
+partition by a.plat
 order by
 --
-cast(((a.pcu-nvl(c.pcu,0))/e.pcu_p)*e.pcu_w+
-((a.weight-nvl(c.weight,0))/e.weight_p)*e.weight_w+
-((a.fol-nvl(c.followers,0))/e.fol_p)*e.fol_w as decimal(10,5)) desc
---
-)-nvl(f.grow_rank,0),--名次变化
-a.room_content,
-a.par_date
-FROM panda_competitor_result.crawler_anchor_day a
-  INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
-  LEFT JOIN panda_competitor_result.plat_anchor_rank c
-    ON c.par_date = '${date_sub}' AND a.plat = c.plat AND a.rid = c.rid
-  left join
-  (select * from panda_competitor_result.anchor_live_parameter where type=1) e
-  left join
-  (select * from panda_competitor_result.anchor_m_comprehensive_rank where par_date='${date_sub}') f
-on a.plat=f.plat and a.rid=f.rid
-WHERE a.par_date = '${date}';"
+round(
+((a.pcu-nvl(b.new_pcu,0))/f.pcu_p)*f.pcu_w+
+(a.weight_changed/f.weight_p)*f.weight_w+
+(a.followers_changed/f.fol_p)*f.fol_w ,2) desc
+)-nvl(e.grow_rank,0),
+g.title,
+a.category,
+'${date}'
+
+
+
+from panda_competitor_result.anchor_day_changed_analyse_by_sameday a
+inner join(
+select * from panda_competitor.crawler_all_anchor_analyse where par_date='${date_sub}'
+) b on a.plat=b.plat and a.rid=b.rid and a.category=b.category
+left join panda_competitor.crawler_plat c ON a.plat = c.name
+left join
+(select * from panda_competitor_result.anchor_live_parameter where type=1) f
+
+left join
+(select * from panda_competitor_result.anchor_m_grow_rank where par_date='${date_sub}') e
+on a.plat=e.plat and a.rid=e.rid and a.category=e.category
+left join
+(select * from panda_competitor.crawler_distinct_anchor where par_date='${date}') g
+on a.plat=g.plat and a.rid=g.rid and a.category=g.category
+where a.par_date='${date}' ;
+
+"
 
 #####生成excel
-#成长
+#综合
 /usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_comprehensive_rank par_date,rank,plat_id,plat,rid,name,puu,livetime,fol_up,weight_up,pcu_score,livetime_score,weight_score,fol_score,total_score,rank_change,room_content "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU,开播时长,订阅,体重,PCU分数,开播时长分数,体重增量分数,订阅增量分数,总分,名次变化,房间内容" /data/tmp/zhengbo/file/
-#增量
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_growth_rank par_date,rank,plat_id,plat,rid,name,pcu_up,fol_up,weight_up,pcu_score,pcu_type,weight_up_score,fol_up_score,total_score,rank_change,room_content "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU增值,订阅增量,体重增量,PCU增值分数,PCU增值状态,体重增量分数,订阅增量分数,总分,名次变化,房间内容" /data/tmp/zhengbo/file/
+#成长
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/export2excel.jar $date panda_competitor_result.anchor_growth_rank par_date,rank,plat_id,plat,rid,name,pcu_up,fol_up,weight_up,pcu_score,pcu_type,weight_up_score,fol_up_score,total_score,rank_change,room_content,category "日期,排序,平台ID,平台名称,主播ID,主播名称,PCU增值,订阅增量,体重增量,PCU增值分数,PCU增值状态,体重增量分数,订阅增量分数,总分,名次变化,房间内容,版区" /data/tmp/zhengbo/file/
 
 
 #发送邮件
@@ -425,7 +484,7 @@ order by
 cast(((a.followers_changed/d.fol)*d.fol_w+
 (c.valid_anchor/d.anchor)*d.anchor_w+
 (c.sum_anchor/d.live)*d.live_w
-) as decimal(10,5)) desc
+) as decimal(10,2)) desc
 --
  ),--排序
 
@@ -434,14 +493,14 @@ a.plat,--平台名称
 a.followers_changed,--总订阅增量
 c.valid_anchor,--有效主播数
 c.sum_anchor,--开播数
-cast((a.followers_changed/d.fol)*d.fol_w as decimal(10,5)),--总订阅增量分数
-cast((c.valid_anchor/d.anchor)*d.anchor_w as decimal(10,5)),--有效主播数分数
-cast((c.sum_anchor/d.live)*d.live_w as decimal(10,5)),--开播数分数
+cast((a.followers_changed/d.fol)*d.fol_w as decimal(10,2)),--总订阅增量分数
+cast((c.valid_anchor/d.anchor)*d.anchor_w as decimal(10,2)),--有效主播数分数
+cast((c.sum_anchor/d.live)*d.live_w as decimal(10,2)),--开播数分数
 
 cast(((a.followers_changed/d.fol)*d.fol_w+
 (c.valid_anchor/d.anchor)*d.anchor_w+
 (c.sum_anchor/d.live)*d.live_w
-) as decimal(10,5)),--总分
+) as decimal(10,2)),--总分
 a.par_date
 from panda_competitor_result.plat_day_changed_analyse_by_sameday a
 INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
@@ -477,7 +536,7 @@ order by
 cast(((a.followers_changed/d.fol)*d.fol_w+
 (c.valid_anchor/d.anchor)*d.anchor_w+
 (c.sum_anchor/d.live)*d.live_w
-) as decimal(10,5)) desc
+) as decimal(10,2)) desc
 --
  ),--排序
  
@@ -489,14 +548,14 @@ c.sum_anchor,--开播数
 a.followers_changed,--总订阅增量
 c.valid_anchor,--有效主播数
 
-cast((c.sum_anchor/d.live)*d.live_w as decimal(10,5)),--开播数分数
-cast((a.followers_changed/d.fol)*d.fol_w as decimal(10,5)),--总订阅增量分数
-cast((c.valid_anchor/d.anchor)*d.anchor_w as decimal(10,5)),--有效主播数分数
+cast((c.sum_anchor/d.live)*d.live_w as decimal(10,2)),--开播数分数
+cast((a.followers_changed/d.fol)*d.fol_w as decimal(10,2)),--总订阅增量分数
+cast((c.valid_anchor/d.anchor)*d.anchor_w as decimal(10,2)),--有效主播数分数
 
 cast(((a.followers_changed/d.fol)*d.fol_w+
 (c.valid_anchor/d.anchor)*d.anchor_w+
 (c.sum_anchor/d.live)*d.live_w
-) as decimal(10,5)),--总分
+) as decimal(10,2)),--总分
 a.par_date
 from panda_competitor_result.category_day_changed_analyse_by_sameday a
 INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name

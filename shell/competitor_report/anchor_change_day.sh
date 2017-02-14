@@ -216,22 +216,23 @@ where par_date='${date}') b
           ORDER BY pcu DESC) AS rw
       FROM panda_competitor.crawler_day_anchor_analyse
       WHERE par_date = '${date}') c
-
+       ON a.plat = c.plat AND a.rid = c.rid AND c.rw = 1
+   WHERE par_date = '${date}'
    GROUP BY a.par_date, a.plat, c.category, a.rid, b.name,b.room_content) aa
   LEFT JOIN
   (
-
-select 
-par_date,
-plat,
-rid,
-pcu,
-duration,
-rec_times,
-followers,
-weight
-from panda_competitor_result.plat_anchor_rank
-where  par_date= '${date_sub}' 
+    SELECT
+      a.par_date,
+      a.plat,
+      a.rid,
+      sum(new_pcu)       AS pcu,
+      sum(new_duration)  AS duration,
+      max(new_rec_times) AS rec_times,
+      max(new_followers) AS followers,
+      max(new_weight)    AS weight
+    FROM panda_competitor.crawler_all_anchor_analyse a
+    WHERE par_date = '${date_sub}'
+    GROUP BY par_date, a.plat, a.rid
   ) bb
     ON aa.plat = bb.plat AND aa.rid = bb.rid;
 "
