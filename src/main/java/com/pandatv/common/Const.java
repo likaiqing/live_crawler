@@ -72,4 +72,7 @@ public class Const {
     public static final String PANDA = "panda";
     public static final String DOUYUGIFTIDFINISHDETAIL = "斗鱼爬取结束(gitfId)";
     public static final String DOUYUANCHOR2FILE = "douyuanchor2file";
+    public static final String LONGZHUFINISHDETAIL = "龙珠爬取退出(detail)";
+    public static final String ZHANQIDETAILANCHOR = "zhanqidetailanchor";
+    public static final String ZHANQIFINISHDETAIL = "战旗抓取退出(detail)";
 }

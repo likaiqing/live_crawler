@@ -52,4 +52,4 @@ rm -rf $zip_dir/competitor_report_${date}.zip
 cd $zip_dir
 zip -m $zip_dir/competitor_report_${date}.zip ./competitor_report/*${date}.xlsx
 
-/usr/bin/java -jar $mailjar "竞品分析:$date" "报表见附件" $zip_dir/competitor_report_${date}.zip "fengwenbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv"
+/usr/bin/java -jar $mailjar "竞品分析:$date" "报表见附件" $zip_dir/competitor_report_${date}.zip "fengwenbo@panda.tv" "baimuhai@panda.tv,zhaolirong@panda.tv"

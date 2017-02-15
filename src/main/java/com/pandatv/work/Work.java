@@ -86,6 +86,11 @@ public class Work {
                 judgeParam(args, 3);
                 PandaAnchorProcessor.crawler(args);
                 break;
+            case Const.ZHANQIDETAILANCHOR://zhanqidetailanchor 20161111 15
+                judgeParam(args, 3);
+                logger.info("ZhanqiDetailAnchorProcessor.crawler start");
+                ZhanqiDetailAnchorProcessor.crawler(args);
+                break;
         }
     }
 

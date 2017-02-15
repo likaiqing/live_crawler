@@ -5,6 +5,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
+import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
 import net.minidev.json.JSONArray;
 import us.codecraft.webmagic.Page;
@@ -12,12 +13,16 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Created by likaiqing on 2016/11/14.
  */
 public class LongzhuAnchorProcessor extends PandaProcessor {
     private static String urlTmp = "http://api.plu.cn/tga/streams?max-results=18&sort-by=views&filter=0&game=0&callback=_callbacks_._36bxu1&start-index=";
     private static int pageCount = 18;
+    private static String detailJob = "longzhudetailanchor";
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     @Override
     public void process(Page page) {
@@ -49,8 +54,26 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
             anchor.setPlat(Const.LONGZHU);
             anchor.setGame(Const.GAMEALL);
             anchor.setUrl(curUrl);
+            DetailAnchor detailAnchor = new DetailAnchor();
+            detailAnchor.setRid(rid);
+            detailAnchor.setName(name);
+            detailAnchor.setTitle(title);
+            detailAnchor.setCategoryFir(category);
+            detailAnchor.setCategorySec(category);
+            detailAnchor.setViewerNum(popularitiyNum);
+            detailAnchor.setFollowerNum((Integer) JsonPath.read(room, "$.channel.followers"));
+            detailAnchor.setWeightNum((Integer) JsonPath.read(room, "$.channel.flowers"));
+            detailAnchor.setLastStartTime(getLastStartTime((Long) JsonPath.read(room, "$.channel.broadcast_begin")));//broadcast_begin
+            detailAnchor.setJob(detailJob);
+            detailAnchor.setUrl(curUrl);
+            detailAnchorObjs.add(detailAnchor);
             anchorObjs.add(anchor);
         }
+        page.setSkip(true);
+    }
+
+    private String getLastStartTime(long broadcastBegin) {
+        return format.format(broadcastBegin);
     }
 
     @Override
@@ -71,6 +94,12 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
         for (Anchor anchor : anchorObjs) {
             anchors.add(anchor.toString());
         }
-        CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISH, anchors);
+//        CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISH, anchors);
+        job = detailJob;
+        for (DetailAnchor detailAnchor : detailAnchorObjs) {
+            detailAnchors.add(detailAnchor.toString());
+        }
+        String hiveDetailPaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
+        CommonTools.writeAndMail(hiveDetailPaht, Const.LONGZHUFINISHDETAIL, detailAnchors);
     }
 }
