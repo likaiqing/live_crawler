@@ -75,4 +75,6 @@ public class Const {
     public static final String LONGZHUFINISHDETAIL = "龙珠爬取退出(detail)";
     public static final String ZHANQIDETAILANCHOR = "zhanqidetailanchor";
     public static final String ZHANQIFINISHDETAIL = "战旗抓取退出(detail)";
+    public static final String QUANMINDETAILANCHOR = "quanmindetailanchor";
+    public static final String QUANMINFINISHDETAIL = "全民抓取退出(detail)";
 }

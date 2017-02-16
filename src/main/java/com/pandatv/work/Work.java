@@ -91,6 +91,11 @@ public class Work {
                 logger.info("ZhanqiDetailAnchorProcessor.crawler start");
                 ZhanqiDetailAnchorProcessor.crawler(args);
                 break;
+            case Const.QUANMINDETAILANCHOR://quanmindetailanchor 20161111 15
+                judgeParam(args, 3);
+                logger.info("QuanminDetailAnchorProcessor.crawler start");
+                QuanminDetailAnchorProcessor.crawler(args);
+                break;
         }
     }
 
