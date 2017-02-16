@@ -46,9 +46,9 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 //                    page.setSkip(true);
 //                    return;
 //                }
-                if (all.size() > 0) {
+                int newPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
+                if (all.size() > 0 || newPage<=1) {
                     page.putField("json", page.getJson().toString());
-                    int newPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
                     if (newPage < 800) {
                         String newUrl = this.tmpUrl + (newPage);
                         page.addTargetRequest(newUrl);

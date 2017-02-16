@@ -96,6 +96,11 @@ public class Work {
                 logger.info("QuanminDetailAnchorProcessor.crawler start");
                 QuanminDetailAnchorProcessor.crawler(args);
                 break;
+            case Const.CHUSHOUDETAILANCHOR://chushouanchor 20161111 15
+                judgeParam(args, 3);
+                logger.info("ChushouDetailAnchorProcessor.crawler start");
+                ChushouDetailAnchorProcessor.crawler(args);
+                break;
         }
     }
 
