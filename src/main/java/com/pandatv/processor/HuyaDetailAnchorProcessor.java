@@ -49,7 +49,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 if (all.size() > 0) {
                     page.putField("json", page.getJson().toString());
                     int newPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
-                    if (newPage<800){
+                    if (newPage < 800) {
                         String newUrl = this.tmpUrl + (newPage);
                         page.addTargetRequest(newUrl);
                     }
@@ -161,6 +161,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         for (DetailAnchor detailAnchor : detailAnchorObjs) {
             detailAnchors.add(detailAnchor.toString());
         }
+        logger.info("时间:" + date + " " + hour+"");
         CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);
     }
 }

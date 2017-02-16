@@ -28,7 +28,7 @@ public class CommonTools {
         if (StringUtils.isEmpty(str)){
             return "";
         }
-        byte[] by=str.getBytes();
+        byte[] by=str.trim().getBytes();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int j=0;
         for(int i=0;i<by.length;i++){

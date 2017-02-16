@@ -36,7 +36,7 @@ public class DetailAnchor {
     }
 
     public String getRid() {
-        return CommonTools.getFormatStr(rid.trim());
+        return CommonTools.getFormatStr(rid);
     }
 
     public void setRid(String rid) {
@@ -44,7 +44,7 @@ public class DetailAnchor {
     }
 
     public String getName() {
-        return CommonTools.getFormatStr(name.trim());
+        return CommonTools.getFormatStr(name);
     }
 
     public void setName(String name) {
@@ -52,7 +52,7 @@ public class DetailAnchor {
     }
 
     public String getTitle() {
-        return CommonTools.getFormatStr(title.trim());
+        return CommonTools.getFormatStr(title);
     }
 
     public void setTitle(String title) {
