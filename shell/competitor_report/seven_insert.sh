@@ -161,7 +161,7 @@ SELECT
   a.fol,
   d.fol_changed,
   d.weight_changed,
-  a.livetime,
+  round(a.rectimes*15/60,2) ,
   e.url,
   a.par_date
 FROM panda_competitor_result.crawler_anchor_day a
