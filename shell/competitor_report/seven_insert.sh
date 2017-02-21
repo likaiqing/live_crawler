@@ -149,30 +149,6 @@ WHERE a.par_date = '${date}'
 "
 
 
-#推荐味日表
-hive -e "
-insert overwrite table panda_competitor_result.indexrec_day_report partition(par_date)
-SELECT
-  b.id,
-  a.plat,
-  a.rid,
-  a.name,
-  a.pcu,
-  a.fol,
-  d.fol_changed,
-  d.weight_changed,
-  round(a.rectimes*15/60,2) ,
-  e.url,
-  a.par_date
-FROM panda_competitor_result.crawler_anchor_day a
-  INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
-  INNER JOIN panda_competitor_result.crawler_anchor_change_day d
-    ON d.par_date = '${date}' AND a.plat = d.plat AND a.rid = d.rid
-  LEFT JOIN panda_competitor.crawler_distinct_anchor e
-    ON e.par_date = '${date}' AND a.rid = e.rid AND a.plat = e.plat AND a.category = e.category
-WHERE a.par_date = '${date}'
-      AND a.rectimes > 0;
-"
 
 #################################################################################################
 #2017-01-18新增
@@ -598,3 +574,43 @@ zip -m /data/tmp/zhengbo/file/rank_${date} /data/tmp/zhengbo/file/anchor_compreh
 
 ###发送邮件
 /usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "排名相关" "内容见附件" /data/tmp/zhengbo/file/rank_${date}.zip "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+
+
+
+
+##########################################################################################################################
+##2017-02-21 推荐位修改
+
+
+#推荐位日表
+hive -e "
+insert overwrite table panda_competitor_result.indexrec_day_report partition(par_date)
+SELECT
+  b.id,
+  a.plat,
+  a.rid,
+  a.name,
+  a.pcu,
+  a.fol,
+  d.fol_changed,
+  d.weight_changed,
+  round(a.rectimes*15/60,2) ,
+  e.url,
+  e.category,
+  e.title,
+  f.total_score,
+  g.total_score,
+  a.par_date
+FROM panda_competitor_result.crawler_anchor_day a
+  INNER JOIN panda_competitor.crawler_plat b ON a.plat = b.name
+  INNER JOIN panda_competitor_result.crawler_anchor_change_day d
+    ON d.par_date = '${date}' AND a.plat = d.plat AND a.rid = d.rid
+  LEFT JOIN panda_competitor.crawler_distinct_anchor e
+    ON e.par_date = '${date}' AND a.rid = e.rid AND a.plat = e.plat AND a.category = e.category
+  left join 
+  (select plat_id,rid,total_score from panda_competitor_result.anchor_comprehensive_rank where par_date='${date}') f on b.id=f.plat_id and a.rid=f.rid
+  left join
+  (select plat_id,rid,total_score from panda_competitor_result.anchor_growth_rank where par_date='${date}') g on b.id=g.plat_id and a.rid=g.rid
+WHERE a.par_date = '${date}'
+      AND a.rectimes > 0;
+"

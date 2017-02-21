@@ -132,6 +132,6 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
         for (Map.Entry<String, DetailAnchor> entry : map.entrySet()) {
             detailAnchors.add(entry.getValue().toString());
         }
-        CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISH, detailAnchors);
+        CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISHDETAIL, detailAnchors);
     }
 }

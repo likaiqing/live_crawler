@@ -101,6 +101,11 @@ public class Work {
                 logger.info("ChushouDetailAnchorProcessor.crawler start");
                 ChushouDetailAnchorProcessor.crawler(args);
                 break;
+            case Const.PANDADETAILANCHOR://pandaanchor爬取
+                logger.info("PandaAnchorProcessor.crawler start");
+                judgeParam(args, 3);
+                PandaDetailAnchorProcessor.crawler(args);
+                break;
         }
     }
 

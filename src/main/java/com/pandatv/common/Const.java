@@ -78,4 +78,7 @@ public class Const {
     public static final String QUANMINDETAILANCHOR = "quanmindetailanchor";
     public static final String QUANMINFINISHDETAIL = "全民抓取退出(detail)";
     public static final String CHUSHOUDETAILANCHOR = "chushoudetailanchor";
+    public static final String PANDADETAILANCHOR = "pandadetailanchor";
+    public static final String CHUSHOUFINISHDETAIL = "触手抓取退出(detail)";
+    public static final String PANDAANCHORFINISHDETAIL = "熊猫抓取退出(detail)";
 }
