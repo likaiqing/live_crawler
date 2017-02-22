@@ -8,6 +8,7 @@ import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
 import net.minidev.json.JSONArray;
 import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
@@ -49,14 +50,17 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
                         detailAnchor.setJob(job);
                         detailAnchor.setUrl(curUrl);
                         map.put(rid, detailAnchor);
-                        page.addTargetRequest(detailUrlTmp + rid);
-                        page.addTargetRequest(detailJsonTmp + rid);
+                        page.addTargetRequest(new Request(detailUrlTmp + rid).putExtra("rid", rid));
                     }
                 }
             } else if (curUrl.startsWith(detailUrlTmp)) {//设置体重window._config_roominfo bamboos
+                String rid = page.getRequest().getExtra("rid").toString();
+                DetailAnchor detailAnchor = map.get(rid);
 
+                page.addTargetRequest(new Request(detailJsonTmp + rid).putExtra("rid", rid));
             } else if (curUrl.startsWith(detailJsonTmp)) {//获取订阅数
-
+                String rid = page.getRequest().getExtra("rid").toString();
+                DetailAnchor detailAnchor = map.get(rid);
             }
             page.setSkip(true);
         } catch (Exception e) {

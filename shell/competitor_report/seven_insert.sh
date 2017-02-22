@@ -594,7 +594,7 @@ SELECT
   a.fol,
   d.fol_changed,
   d.weight_changed,
-  round(a.rectimes*15/60,2) ,
+  round(a.rectimes*3/60,2) ,
   e.url,
   e.category,
   e.title,
