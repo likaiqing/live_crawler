@@ -4,6 +4,8 @@ date=$1
 date=${date:=`date -d 'yesterday' +%Y%m%d`}
 
 cd `dirname $0`
+sh $(dirname $0)/crawler_counts.sh $date
+echo "crawler_counts.sh $date down"
 sh $(dirname $0)/../crawler/competitor_distinct.sh $date
 echo "crawler_distinct_anchor.sh $date down"
 sh $(dirname $0)/../crawler_ana/crawler_distinct_anchor.sh $date

@@ -46,6 +46,8 @@ exportdir=/home/likaiqing/shell/crawler_ana/competitor_report/
 #平台当天变化量
 /usr/bin/java -jar $export2exceljar $date panda_competitor_result.plat_day_changed_analyse_by_sameday par_date,plat,pcu,last_followers,last_weight,followers_changed,weight_changed "日期,平台名称,PCU,订阅数,体重,订阅增长,体重增长" /home/likaiqing/shell/crawler_ana/competitor_report/
 
+#各个抓取任务每天抓取次数
+/usr/bin/java -jar $export2exceljar $date panda_competitor_result.crawler_counts day,task,task_cnt "日期,抓取任务,次数" /home/likaiqing/shell/crawler_ana/competitor_report/
 
 zip_dir=/home/likaiqing/shell/crawler_ana
 rm -rf $zip_dir/competitor_report_${date}.zip
