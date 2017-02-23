@@ -7,6 +7,10 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
 import net.minidev.json.JSONArray;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -15,6 +19,7 @@ import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by likaiqing on 2016/12/14.
@@ -23,17 +28,18 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
     private static final Map<String, DetailAnchor> map = new HashMap<>();
     private static final String detailUrlTmp = "http://www.panda.tv/";
     private static final String detailJsonTmp = "http://www.panda.tv/room_followinfo?roomid=";
-
+    private static final Logger logger = LoggerFactory.getLogger(HuyaDetailAnchorProcessor.class);
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
+        logger.info("process url:{}", curUrl);
         try {
             if (curUrl.startsWith("http://www.panda.tv/live_lists?status=2&order=person_num&pagenum=120&pageno=")) {
                 JSONArray items = JsonPath.read(page.getJson().get(), "$.data.items");
                 if (items.size() > 0) {
                     int equalIndex = curUrl.lastIndexOf("=");
                     int curPage = Integer.parseInt(curUrl.substring(equalIndex + 1));
-                    page.addTargetRequest(curUrl.substring(0, equalIndex) + "=" + (curPage + 1));
+//                    page.addTargetRequest(curUrl.substring(0, equalIndex) + "=" + (curPage + 1));
                     for (Object obj : items) {
                         String rid = JsonPath.read(obj, "$.id");
                         String name = JsonPath.read(obj, "$.userinfo.nickName");
@@ -53,14 +59,31 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
                         page.addTargetRequest(new Request(detailUrlTmp + rid).putExtra("rid", rid));
                     }
                 }
-            } else if (curUrl.startsWith(detailUrlTmp)) {//设置体重window._config_roominfo bamboos
-                String rid = page.getRequest().getExtra("rid").toString();
-                DetailAnchor detailAnchor = map.get(rid);
-
-                page.addTargetRequest(new Request(detailJsonTmp + rid).putExtra("rid", rid));
             } else if (curUrl.startsWith(detailJsonTmp)) {//获取订阅数
                 String rid = page.getRequest().getExtra("rid").toString();
                 DetailAnchor detailAnchor = map.get(rid);
+                int follow = JsonPath.read(page.getJson().toString(), "$.data.fans");
+                detailAnchor.setFollowerNum(follow);
+
+            } else if (curUrl.startsWith(detailUrlTmp)) {//设置体重window._config_roominfo bamboos
+                String rid = page.getRequest().getExtra("rid").toString();
+                DetailAnchor detailAnchor = map.get(rid);
+//                Matcher matcher = weightPattern.matcher(page.getHtml().get());
+//                if (matcher.find()) {
+//                    String weight = matcher.group(1);
+//                    detailAnchor.setWeightNum(Long.parseLong(weight));
+//                }
+                Elements scripts = page.getHtml().getDocument().getElementsByTag("script");
+                for (Element script : scripts) {
+                    if (script.toString().contains("window._config_roominfo")) {
+                        String scrStr = script.toString();
+                        int bamStart = scrStr.indexOf("\"bamboos\":\"") + 11;
+                        int bamEnd = scrStr.indexOf("\"}", bamStart);
+                        String weightStr = scrStr.substring(bamStart, bamEnd);
+                        detailAnchor.setWeightNum(Long.parseLong(weightStr));
+                    }
+                }
+                page.addTargetRequest(new Request(detailJsonTmp + rid).putExtra("rid", rid));
             }
             page.setSkip(true);
         } catch (Exception e) {
@@ -82,7 +105,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
-        Spider.create(new PandaDetailAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new PandaDetailAnchorProcessor()).thread(10).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (Map.Entry<String, DetailAnchor> detailAnchor : map.entrySet()) {
             detailAnchors.add(detailAnchor.toString());
         }
