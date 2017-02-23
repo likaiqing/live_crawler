@@ -43,7 +43,7 @@ public class Const {
     public static final String HUYAEXIT = "虎牙process异常过多退出";
     public static final int EXTOTAL = 500;
     public static final int PROXYRETRY = 1000;
-    public static final int CYCLERETRYTIMES = 15;
+    public static final int CYCLERETRYTIMES = 5;
     public static final String DOUYUFINISH = "斗鱼爬取退出";
     public static final String DOUYUFINISHDETAIL = "斗鱼爬取退出(detail)";
     public static final String HUYAFINISH = "虎牙爬取退出";
@@ -81,4 +81,5 @@ public class Const {
     public static final String PANDADETAILANCHOR = "pandadetailanchor";
     public static final String CHUSHOUFINISHDETAIL = "触手抓取退出(detail)";
     public static final String PANDAANCHORFINISHDETAIL = "熊猫抓取退出(detail)";
+    public static final String PANDAINDEXREC = "pandaindexrec";
 }

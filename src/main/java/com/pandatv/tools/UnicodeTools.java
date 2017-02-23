@@ -1,5 +1,7 @@
 package com.pandatv.tools;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class UnicodeTools {
     public static String unicodeToString(String str) {
-
+        if (StringUtils.isEmpty(str)) return "";
         Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
         Matcher matcher = pattern.matcher(str);
         char ch;

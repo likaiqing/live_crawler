@@ -11,7 +11,9 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by likaiqing on 2016/11/7.
@@ -31,11 +33,12 @@ public abstract class PandaProcessor implements PageProcessor {
     public static String hour;
     public static long s = System.currentTimeMillis();
     public static HiveJDBCConnect hive = new HiveJDBCConnect();
-    public static String mailHours = "01,04,09,10,14,16,22";
-    public static String douyuGiftHours = "04,10,16,22";
+    public static String mailHours = "02,09,15,22";
+    public static String douyuGiftHours = "02,06,09,12,15,18,22";
 
     private static String randomStr = RandomStringUtils.random(10, new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});
     private static String randomTime = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
+    public static String mailMinuteStr = new SimpleDateFormat("mm").format(new Date());
 
     protected Site site = Site.me()
             .setSleepTime(10)
@@ -51,6 +54,6 @@ public abstract class PandaProcessor implements PageProcessor {
             .addHeader("Proxy-Authorization", "Basic " + (new BASE64Encoder()).encode((Const.GENERATORKEY + ":" + Const.GENERATORPASS).getBytes()));
 
     public static String getRandomStr() {
-        return randomStr + "-" + randomTime;
+        return randomTime + "-" + randomStr;
     }
 }

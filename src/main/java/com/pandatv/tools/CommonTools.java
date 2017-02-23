@@ -3,7 +3,6 @@ package com.pandatv.tools;
 import com.google.common.base.Joiner;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
-import com.pandatv.pojo.Anchor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
 import org.slf4j.Logger;
@@ -24,15 +23,16 @@ import java.util.*;
  */
 public class CommonTools {
     private static final Logger logger = LoggerFactory.getLogger(CommonTools.class);
-    public static String getFormatStr(String str){
-        if (StringUtils.isEmpty(str)){
+
+    public static String getFormatStr(String str) {
+        if (StringUtils.isEmpty(str)) {
             return "";
         }
-        byte[] by=str.trim().getBytes();
+        byte[] by = str.trim().getBytes();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int j=0;
-        for(int i=0;i<by.length;i++){
-            if(by[i]!=1){
+        int j = 0;
+        for (int i = 0; i < by.length; i++) {
+            if (by[i] != 1) {
                 out.write(by[i]);
                 j++;
             }
@@ -114,9 +114,9 @@ public class CommonTools {
         } else if (weightNum.endsWith("t")) {
             return (long) (Double.parseDouble(weightNum.replace("t", "")) * 1000000);
         } else {
-            try{
+            try {
                 return (long) Double.parseDouble(weightNum);
-            }catch (Exception e){
+            } catch (Exception e) {
                 return 0;
             }
         }
@@ -150,8 +150,8 @@ public class CommonTools {
 
 // 拼装请求头Proxy-Authorization的值，这里使用 guava 进行map的拼接
         String authHeader = "MYH-AUTH-MD5 " + Joiner.on('&').withKeyValueSeparator("=").join(paramMap);
-        site.addHeader("Proxy-Authorization",authHeader);
-        site.setHttpProxy(new HttpHost(Const.MAYIHOST,Const.MAYIPORT));
+        site.addHeader("Proxy-Authorization", authHeader);
+        site.setHttpProxy(new HttpHost(Const.MAYIHOST, Const.MAYIPORT));
         return site;
     }
 
@@ -160,22 +160,24 @@ public class CommonTools {
     }
 
     public static Site getAbuyunSite(Site site) {
-        site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST,Const.ABUYUNPORT));
+        site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
 //        Authenticator.setDefault(new ProxyAuthenticator("H953ANZ8J6HW026D", "4FF963A93342BB18"));
-        site.addHeader("Proxy-Authorization","Basic "+ (new BASE64Encoder()).encode((Const.GENERATORKEY+":"+Const.GENERATORPASS).getBytes()));//PandaHttpClientGenerator
-        site.addHeader("Proxy-Switch-Ip","yes");
+        site.addHeader("Proxy-Authorization", "Basic " + (new BASE64Encoder()).encode((Const.GENERATORKEY + ":" + Const.GENERATORPASS).getBytes()));//PandaHttpClientGenerator
+        site.addHeader("Proxy-Switch-Ip", "yes");
         return site;
     }
 
     public static void writeAndMail(String hivePaht, String douyufinish, Set<String> list) {
+        int mailMinute = 0;
         try {
             if (list.size() > 0) {
                 PandaProcessor.hive.write2(hivePaht, list, PandaProcessor.job, PandaProcessor.curMinute);
             }
+            mailMinute = Integer.parseInt(PandaProcessor.mailMinuteStr) / 10;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (PandaProcessor.mailHours.contains(PandaProcessor.hour)) {
+        if (PandaProcessor.mailHours.contains(PandaProcessor.hour) && (mailMinute == 0 || mailMinute == 5)) {
             MailTools.sendTaskMail(douyufinish + PandaProcessor.date + PandaProcessor.hour, PandaProcessor.from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - PandaProcessor.s) + "毫秒;", list.size(), PandaProcessor.timeOutUrl, PandaProcessor.failedUrl);
         }
     }
