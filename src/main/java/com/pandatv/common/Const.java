@@ -83,4 +83,5 @@ public class Const {
     public static final String PANDAANCHORFINISHDETAIL = "熊猫抓取退出(detail)";
     public static final String PANDAINDEXREC = "pandaindexrec";
     public static final String ZHANQIINDEXREC = "zhanqiindexrec";
+    public static final String LONGZHUINDEXREC = "longzhuindexrec";
 }

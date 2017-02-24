@@ -37,11 +37,13 @@ public class IndexRecProcessor extends PandaProcessor {
     private static String huyaIndex;
     private static String pandaIndex;
     private static String zhanqiIndex;
+    private static String longzhuIndex;
     private static int exCnt;
     private static final Map<String, IndexRec> map = new HashMap<>();
     private static final String pandaDetailPrefex = "http://www.panda.tv/";
     private static final String pandaFollowJsonPrefex = "http://www.panda.tv/room_followinfo?roomid=";
     private static final String pandaV2DetailJsonPrefex = "http://www.panda.tv/api_room_v2?roomid=";
+    private static final String longzhuDetailJsonPrefex = "http://roomapicdn.plu.cn/room/roomstatus?roomid=";
     private static final Logger logger = LoggerFactory.getLogger(IndexRecProcessor.class);
 
     @Override
@@ -57,6 +59,10 @@ public class IndexRecProcessor extends PandaProcessor {
                 executePandaIndex(page);
             } else if (curUrl.equals(zhanqiIndex)) {
                 executeZhanqiIndex(page);
+            } else if (curUrl.equals(longzhuIndex)) {
+                executeLongzhuIndex(page);
+            } else if (curUrl.startsWith(longzhuDetailJsonPrefex)) {
+                executeLongzhuDetail(page, curUrl);
             } else if (curUrl.startsWith(zhanqiIndex)) {
                 executeZhanqiDetail(page, curUrl);
             } else if (curUrl.startsWith(pandaFollowJsonPrefex)) {
@@ -72,6 +78,7 @@ public class IndexRecProcessor extends PandaProcessor {
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
+            logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
                 MailTools.sendAlarmmail("斗鱼首页推荐", "url: " + curUrl);
@@ -80,6 +87,39 @@ public class IndexRecProcessor extends PandaProcessor {
 
         }
         page.setSkip(true);
+    }
+
+    private void executeLongzhuDetail(Page page, String curUrl) {
+        String rid = page.getRequest().getExtra("rid").toString();
+        String name = page.getRequest().getExtra("name").toString();
+        String location = page.getRequest().getExtra("location").toString();
+        String json = page.getJson().toString();
+        String title = JsonPath.read(json, "$.Broadcast.Title").toString();
+        String category = JsonPath.read(json, "$.Broadcast.GameName").toString();
+        int online = JsonPath.read(json, "$.OnlineCount");
+        int flowerCount = JsonPath.read(json, "$.FlowerCount");
+        int follow = JsonPath.read(json, "$.RoomSubscribeCount");
+        IndexRec indexRec = new IndexRec();
+        indexRec.setRid(rid);
+        indexRec.setName(name);
+        indexRec.setTitle(title);
+        indexRec.setLocation(location);
+        indexRec.setJob(Const.LONGZHUINDEXREC);
+        indexRec.setViewerNum(online);
+        indexRec.setFollowerNum(follow);
+        indexRec.setWeightNum(flowerCount);
+        indexRec.setUrl(curUrl);
+        indexRec.setCategorySec(category);
+        detailAnchors.add(indexRec.toString());
+    }
+
+    private void executeLongzhuIndex(Page page) {
+        List<String> rids = page.getHtml().xpath("//div[@class='side']/ul/li/@data-domain").all();
+        List<String> detailJsons = page.getHtml().xpath("//div[@class='side']/ul/li/@data-roomid").all();
+        List<String> names = page.getHtml().xpath("//div[@class='side']/ul/li/@data-user").all();
+        for (int i = 0; i < rids.size(); i++) {
+            page.addTargetRequest(new Request(longzhuDetailJsonPrefex + detailJsons.get(i)).putExtra("rid", rids.get(i)).putExtra("name", names.get(i)).putExtra("location", i + 1));//url的标示作为rid
+        }
     }
 
     private void executeZhanqiDetail(Page page, String curUrl) {
@@ -325,8 +365,9 @@ public class IndexRecProcessor extends PandaProcessor {
         huyaIndex = "http://www.huya.com/";
         pandaIndex = "http://www.panda.tv/";
         zhanqiIndex = "https://www.zhanqi.tv/";
-        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex
-        Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        longzhuIndex = "http://www.longzhu.com/";
+        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex, zhanqiIndex
+        Spider.create(new IndexRecProcessor()).thread(2).addUrl(longzhuIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
             detailAnchors.add(entry.getValue().toString());
         }

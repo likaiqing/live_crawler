@@ -20,12 +20,12 @@ import java.text.SimpleDateFormat;
 /**
  * Created by likaiqing on 2016/11/14.
  */
-public class LongzhuAnchorProcessor extends PandaProcessor {
+public class LongzhuDetailAnchorProcessor extends PandaProcessor {
     private static String urlTmp = "http://api.plu.cn/tga/streams?max-results=18&sort-by=views&filter=0&game=0&callback=_callbacks_._36bxu1&start-index=";
     private static int pageCount = 18;
     private static int index = 0;
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    private static final Logger logger = LoggerFactory.getLogger(LongzhuAnchorProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(LongzhuDetailAnchorProcessor.class);
     private static final String firUrl = "http://api.plu.cn/tga/streams?max-results=18&sort-by=views&filter=0&game=0&callback=_callbacks_._36bxu1&start-index=0";
 
     @Override
@@ -45,7 +45,6 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
             } else {
                 JSONArray items = JsonPath.read(json, "$.data.items");
                 for (int i = 0; i < items.size(); i++) {
-                    Anchor anchor = new Anchor();
                     String room = items.get(i).toString();
                     String rid = JsonPath.read(room, "$.channel.domain");
                     String name = JsonPath.read(room, "$.channel.name");
@@ -53,17 +52,19 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
                     String category = JsonPath.read(room, "$.game[0].name");
                     String popularitiyStr = JsonPath.read(room, "$.viewers");
                     int popularitiyNum = Integer.parseInt(popularitiyStr);
-                    anchor.setRid(rid);
-                    anchor.setName(name);
-                    anchor.setTitle(title);
-                    anchor.setCategory(category);
-                    anchor.setPopularityStr(popularitiyStr);
-                    anchor.setPopularityNum(popularitiyNum);
-                    anchor.setJob(job);
-                    anchor.setPlat(Const.LONGZHU);
-                    anchor.setGame(Const.GAMEALL);
-                    anchor.setUrl(curUrl);
-                    anchorObjs.add(anchor);
+                    DetailAnchor detailAnchor = new DetailAnchor();
+                    detailAnchor.setRid(rid);
+                    detailAnchor.setName(name);
+                    detailAnchor.setTitle(title);
+                    detailAnchor.setCategoryFir(category);
+                    detailAnchor.setCategorySec(category);
+                    detailAnchor.setViewerNum(popularitiyNum);
+                    detailAnchor.setFollowerNum((Integer) JsonPath.read(room, "$.channel.followers"));
+                    detailAnchor.setWeightNum((Integer) JsonPath.read(room, "$.channel.flowers"));
+                    detailAnchor.setLastStartTime(getLastStartTime((Long) JsonPath.read(room, "$.channel.broadcast_begin")));//broadcast_begin
+                    detailAnchor.setJob(job);
+                    detailAnchor.setUrl(curUrl);
+                    detailAnchorObjs.add(detailAnchor);
                 }
             }
             page.setSkip(true);
@@ -89,11 +90,11 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
         if (args.length == 4 && args[3].contains(",")) {
             mailHours = args[3];
         }
-        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
-        Spider.create(new LongzhuAnchorProcessor()).thread(4).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        for (Anchor anchor : anchorObjs) {
-            anchors.add(anchor.toString());
+        String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
+        Spider.create(new LongzhuDetailAnchorProcessor()).thread(4).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        for (DetailAnchor detailAnchor : detailAnchorObjs) {
+            detailAnchors.add(detailAnchor.toString());
         }
-        CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISH, anchors);
+        CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISHDETAIL, detailAnchors);
     }
 }
