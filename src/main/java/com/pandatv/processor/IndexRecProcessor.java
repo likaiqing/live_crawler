@@ -95,7 +95,6 @@ public class IndexRecProcessor extends PandaProcessor {
                 String gameName = JsonPath.read(json, "$.gameName").toString();
                 String onlineStr = JsonPath.read(json, "$.online").toString();
                 int onlineNum = Integer.parseInt(onlineStr);
-                String liveTime = JsonPath.read(json, "$.liveTime").toString();
                 int follows = Integer.parseInt(JsonPath.read(json, "$.follows").toString());
                 long fight = Long.parseLong(JsonPath.read(json, "$.anchorAttr.hots.fight").toString());//经验值
                 indexRec.setLocation(location);
