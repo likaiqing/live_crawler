@@ -99,7 +99,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+        return this.site.setHttpProxy(null);
     }
 
     public static void crawler(String[] args) {

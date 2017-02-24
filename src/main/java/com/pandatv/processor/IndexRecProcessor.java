@@ -36,6 +36,7 @@ public class IndexRecProcessor extends PandaProcessor {
     private static String douyuIndex;
     private static String huyaIndex;
     private static String pandaIndex;
+    private static String zhanqiIndex;
     private static int exCnt;
     private static final Map<String, IndexRec> map = new HashMap<>();
     private static final String pandaDetailPrefex = "http://www.panda.tv/";
@@ -54,6 +55,10 @@ public class IndexRecProcessor extends PandaProcessor {
                 executeHuyaIndex(page);
             } else if (curUrl.equals(pandaIndex)) {
                 executePandaIndex(page);
+            } else if (curUrl.equals(zhanqiIndex)) {
+                executeZhanqiIndex(page);
+            } else if (curUrl.startsWith(zhanqiIndex)) {
+                executeZhanqiDetail(page, curUrl);
             } else if (curUrl.startsWith(pandaFollowJsonPrefex)) {
                 executePandaFollow(page, curUrl);
             } else if (curUrl.startsWith(pandaV2DetailJsonPrefex)) {
@@ -75,6 +80,52 @@ public class IndexRecProcessor extends PandaProcessor {
 
         }
         page.setSkip(true);
+    }
+
+    private void executeZhanqiDetail(Page page, String curUrl) {
+        List<String> allScript = page.getHtml().xpath("//script").all();
+        IndexRec indexRec = new IndexRec();
+        String location = page.getRequest().getExtra("location").toString();
+        for (String script : allScript) {
+            if (script.contains("window.oPageConfig.oRoom")) {
+                String json = script.substring(script.indexOf("{"), script.lastIndexOf("}") + 1);
+                String rid = JsonPath.read(json, "$.url").toString().replace("/", "");
+                String name = JsonPath.read(json, "$.nickname").toString();
+                String title = JsonPath.read(json, "$.title").toString();
+                String gameName = JsonPath.read(json, "$.gameName").toString();
+                String onlineStr = JsonPath.read(json, "$.online").toString();
+                int onlineNum = Integer.parseInt(onlineStr);
+                String liveTime = JsonPath.read(json, "$.liveTime").toString();
+                int follows = Integer.parseInt(JsonPath.read(json, "$.follows").toString());
+                long fight = Long.parseLong(JsonPath.read(json, "$.anchorAttr.hots.fight").toString());//经验值
+                indexRec.setLocation(location);
+                indexRec.setRid(rid);
+                indexRec.setName(name);
+                indexRec.setTitle(title);
+                indexRec.setJob(Const.ZHANQIINDEXREC);
+                indexRec.setUrl(curUrl);
+                indexRec.setCategorySec(gameName);
+                indexRec.setFollowerNum(follows);
+                indexRec.setViewerNum(onlineNum);
+                indexRec.setWeightNum(fight);
+                detailAnchors.add(indexRec.toString());
+            }
+        }
+    }
+
+    private void executeZhanqiIndex(Page page) {
+        Elements scripts = page.getHtml().getDocument().getElementsByTag("script");
+        for (Element script : scripts) {
+            if (script.toString().contains("window.oPageConfig.aVideos")) {
+                String recScript = script.toString();
+                String recJson = recScript.substring(recScript.indexOf("[{\""), recScript.indexOf("}];") + 2);
+                JSONArray recs = JsonPath.read(recJson, "$.");
+                for (int i = 0; i < recs.size(); i++) {
+                    String detailUrl = JsonPath.read(recs.get(i).toString(), "$.flashvars.LiveUrl").toString();
+                    page.addTargetRequest(new Request(detailUrl).putExtra("location", i + 1));
+                }
+            }
+        }
     }
 
     private void executePandaV2Json(Page page, String curUrl) {
@@ -147,7 +198,7 @@ public class IndexRecProcessor extends PandaProcessor {
             indexRec.setRid(rid);
             indexRec.setLocation((i + 1) + "");
             indexRec.setJob(Const.PANDAINDEXREC);
-            map.put(rid, indexRec);
+            map.put(rid + Const.PANDAINDEXREC, indexRec);
             page.addTargetRequest(new Request(pandaDetailPrefex + rid).putExtra("rid", rid));
         }
     }
@@ -274,8 +325,9 @@ public class IndexRecProcessor extends PandaProcessor {
         douyuIndex = "https://www.douyu.com/";
         huyaIndex = "http://www.huya.com/";
         pandaIndex = "http://www.panda.tv/";
-        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;
-        Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        zhanqiIndex = "https://www.zhanqi.tv/";
+        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex
+        Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
             detailAnchors.add(entry.getValue().toString());
         }
