@@ -12,3 +12,5 @@ for sub_dir in competitor_shell
 do
     rsync -auvz $origin_dir/pd77/$sub_dir/ 10.110.20.77:$remote_dir/crawler_ana/$sub_dir/
 done
+
+rsync -auvz $origin_dir/pd77/crawler/ 10.110.20.77:$remote_dir/

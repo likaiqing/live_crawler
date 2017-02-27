@@ -36,6 +36,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
+        logger.info("url:" + curUrl);
         try {
             if (curUrl.startsWith(urlTmp)) {
                 String json = page.getJson().toString();
@@ -128,7 +129,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
-        Spider.create(new ChushouDetailAnchorProcessor()).thread(5).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new ChushouDetailAnchorProcessor()).thread(3).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (Map.Entry<String, DetailAnchor> entry : map.entrySet()) {
             detailAnchors.add(entry.getValue().toString());
         }

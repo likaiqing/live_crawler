@@ -105,7 +105,7 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         String dateStr = format.format(new Date());
-        Spider.create(new QuanminDetailAnchorProcessor()).thread(10).addUrl(firUrl + dateStr).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new QuanminDetailAnchorProcessor()).thread(2).addUrl(firUrl + dateStr).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (DetailAnchor detailAnchor : detailAnchorObjs) {
             detailAnchors.add(detailAnchor.toString());
         }

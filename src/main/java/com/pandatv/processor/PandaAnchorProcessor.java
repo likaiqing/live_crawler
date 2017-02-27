@@ -7,6 +7,8 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
 import net.minidev.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -16,9 +18,11 @@ import us.codecraft.webmagic.pipeline.ConsolePipeline;
  * Created by likaiqing on 2016/12/14.
  */
 public class PandaAnchorProcessor extends PandaProcessor {
+    private static final Logger logger = LoggerFactory.getLogger(PandaAnchorProcessor.class);
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
+        logger.info("process url:{}", curUrl);
         try {
             JSONArray items = JsonPath.read(page.getJson().get(), "$.data.items");
             if (items.size() > 0) {
@@ -54,7 +58,7 @@ public class PandaAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+        return this.site.setHttpProxy(null);
     }
 
     public static void crawler(String[] args) {

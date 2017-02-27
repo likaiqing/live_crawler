@@ -573,7 +573,7 @@ where a.par_date='${date}';
 zip -m /data/tmp/zhengbo/file/rank_${date} /data/tmp/zhengbo/file/anchor_comprehensive_rank${date}.xlsx /data/tmp/zhengbo/file/anchor_growth_rank${date}.xlsx /data/tmp/zhengbo/file/plat_comprehensive_rank${date}.xlsx /data/tmp/zhengbo/file/category_comprehensive_rank${date}.xlsx
 
 ###发送邮件
-/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "排名相关" "内容见附件" /data/tmp/zhengbo/file/rank_${date}.zip "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,likaiqing@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "排名相关" "内容见附件" /data/tmp/zhengbo/file/rank_${date}.zip "zhengbo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,wangshuo@panda.tv,zhaolirong@panda.tv,fengwenbo@panda.tv"
 
 
 
