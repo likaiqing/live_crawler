@@ -106,6 +106,11 @@ public class Work {
                 judgeParam(args, 3);
                 PandaDetailAnchorProcessor.crawler(args);
                 break;
+            case Const.LONGZHUDETAILANCHOR://pandaanchor爬取
+                logger.info("PandaAnchorProcessor.crawler start");
+                judgeParam(args, 3);
+                LongzhuDetailAnchorProcessor.crawler(args);
+                break;
         }
     }
 

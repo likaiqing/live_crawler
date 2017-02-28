@@ -9,6 +9,7 @@ import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.MailTools;
 import com.pandatv.tools.UnicodeTools;
 import net.minidev.json.JSONArray;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -21,10 +22,10 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by likaiqing on 2016/11/29.
@@ -38,6 +39,8 @@ public class IndexRecProcessor extends PandaProcessor {
     private static String pandaIndex;
     private static String zhanqiIndex;
     private static String longzhuIndex;
+    private static String quanminIndex;
+    private static String chushouindex;
     private static int exCnt;
     private static final Map<String, IndexRec> map = new HashMap<>();
     private static final String pandaDetailPrefex = "http://www.panda.tv/";
@@ -45,6 +48,13 @@ public class IndexRecProcessor extends PandaProcessor {
     private static final String pandaV2DetailJsonPrefex = "http://www.panda.tv/api_room_v2?roomid=";
     private static final String longzhuDetailJsonPrefex = "http://roomapicdn.plu.cn/room/roomstatus?roomid=";
     private static final Logger logger = LoggerFactory.getLogger(IndexRecProcessor.class);
+    private static final String quanminDetailUrlPre = "http://www.quanmin.tv/json/rooms/";
+    private static final String quanminDetailUrlSuf = "/noinfo4.json";
+    private static final String chushouDetailUrlPre = "https://chushou.tv/room/";
+    private static final String chushouDetailUrlSuf = ".htm";
+    private static String chushouPointUrlTmpPre = "https://chushou.tv/play-help/bang-guide-info.htm?roomId=";
+    private static String chushouPointUrlTmpSuf = "&_=";//13位时间戳
+    private static final SimpleDateFormat chushouFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     @Override
     public void process(Page page) {
@@ -61,6 +71,16 @@ public class IndexRecProcessor extends PandaProcessor {
                 executeZhanqiIndex(page);
             } else if (curUrl.equals(longzhuIndex)) {
                 executeLongzhuIndex(page);
+            } else if (curUrl.startsWith("http://www.quanmin.tv/json/page/pc-index/info2.json")) {
+                executeQuanminIndex(page);
+            } else if (curUrl.equals(chushouindex)) {
+                executeChushouIndex(page);
+            } else if (curUrl.startsWith(chushouDetailUrlPre)) {
+                executeChushouDetail(page, curUrl);
+            } else if (curUrl.startsWith(chushouPointUrlTmpPre)) {
+                executeChushouPoint(page, curUrl);
+            } else if (curUrl.startsWith(quanminDetailUrlPre) && curUrl.endsWith(quanminDetailUrlSuf)) {
+                executeQuanminDetail(page, curUrl);
             } else if (curUrl.startsWith(longzhuDetailJsonPrefex)) {
                 executeLongzhuDetail(page, curUrl);
             } else if (curUrl.startsWith(zhanqiIndex)) {
@@ -87,6 +107,91 @@ public class IndexRecProcessor extends PandaProcessor {
 
         }
         page.setSkip(true);
+    }
+
+    private void executeChushouPoint(Page page, String curUrl) {
+        String json = page.getJson().toString();
+        Integer point = JsonPath.read(json, "$.data.current.point");
+        Long lastDate = JsonPath.read(json, "$.data.last.date");
+        String rid = page.getRequest().getExtra("rid").toString();
+        IndexRec indexRec = map.get(rid);
+        indexRec.setWeightNum(null == point ? 0 : point);
+        indexRec.setLastStartTime(null == lastDate ? null : chushouFormat.format(lastDate / 1000));
+    }
+
+    private void executeChushouDetail(Page page, String curUrl) {
+        String rid = page.getRequest().getExtra("rid").toString();
+        IndexRec indexRec = map.get(rid);
+        Html html = page.getHtml();
+        String title = StringEscapeUtils.unescapeHtml(html.xpath("//p[@class='zb_player_gamedesc']/@title").get());
+        String name = StringEscapeUtils.unescapeHtml(html.xpath("//span[@id='sp1']/@title").get());
+        String category = StringEscapeUtils.unescapeHtml(html.xpath("//a[@id='sp2']/@title").get());
+        String online = StringEscapeUtils.unescapeHtml(html.xpath("//span[@class='onlineCount']/text()").get());
+        String follow = StringEscapeUtils.unescapeHtml(html.xpath("//div[@class='zb_attention_left']/@data-subscribercount").get());
+        indexRec.setName(name);
+        indexRec.setTitle(title);
+        indexRec.setViewerNum(Integer.parseInt(online));
+        indexRec.setFollowerNum(Integer.parseInt(follow));
+        indexRec.setCategorySec(category);
+        indexRec.setUrl(curUrl);
+    }
+
+    private void executeChushouIndex(Page page) {
+        List<String> scripts = page.getHtml().xpath("//script").all();
+        for (int i = 0; i < scripts.size(); i++) {
+            String script = scripts.get(i);
+            if (script.contains("statserver")) {
+                Pattern compile = Pattern.compile("poster\\['targetKey'\\]=\"\\d+\";");
+                Matcher matcher = compile.matcher(script);
+                int index = 0;
+                while (matcher.find()) {
+                    String targetStr = matcher.group(0);
+                    String targetKey = targetStr.substring(targetStr.indexOf("=") + 2, targetStr.lastIndexOf("\";"));
+                    page.addTargetRequest(new Request(chushouDetailUrlPre + targetKey + chushouDetailUrlSuf).putExtra("rid", targetKey));
+                    page.addTargetRequest(new Request(chushouPointUrlTmpPre + targetKey + chushouPointUrlTmpSuf + new Date().getTime()).putExtra("rid", targetKey));
+                    page.addTargetRequest("");
+                    IndexRec indexRec = new IndexRec();
+                    indexRec.setRid(targetKey);
+                    indexRec.setLocation((++index) + "");
+                    indexRec.setJob(Const.CHUSHOUINDEXREC);
+                    map.put(targetKey, indexRec);
+                }
+            }
+        }
+    }
+
+    private void executeQuanminDetail(Page page, String curUrl) {
+        String location = page.getRequest().getExtra("location").toString();
+        String json = page.getJson().toString();
+        int rid = JsonPath.read(json, "$.uid");
+        String name = JsonPath.read(json, "$.nick");
+        String title = JsonPath.read(json, "$.title");
+        String category = JsonPath.read(json, "$.category_name");
+        int online = JsonPath.read(json, "$.view");
+        int follow = JsonPath.read(json, "$.follow");
+        int weight = JsonPath.read(json, "$.weight");//统计的时候需要除以100
+        String lastStartTime = JsonPath.read(json, "$.play_at");//substring(0,16)
+        IndexRec indexRec = new IndexRec();
+        indexRec.setRid(rid + "");
+        indexRec.setName(name);
+        indexRec.setTitle(title);
+        indexRec.setCategorySec(category);
+        indexRec.setViewerNum(online);
+        indexRec.setFollowerNum(follow);
+        indexRec.setWeightNum((int) (weight / 100));
+        indexRec.setLastStartTime(lastStartTime.substring(0, 16));
+        indexRec.setJob(Const.QUANMININDEXREC);
+        indexRec.setUrl(curUrl);
+        indexRec.setLocation(location);
+        detailAnchors.add(indexRec.toString());
+    }
+
+    private void executeQuanminIndex(Page page) {
+        JSONArray livelist = JsonPath.read(page.getJson().toString(), "$.backpic.livelist");
+        for (int i = 0; i < livelist.size(); i++) {
+            Integer room = JsonPath.read(livelist.get(i), "$.room");
+            page.addTargetRequest(new Request(quanminDetailUrlPre + room + quanminDetailUrlSuf).putExtra("location", i + 1));
+        }
     }
 
     private void executeLongzhuDetail(Page page, String curUrl) {
@@ -366,8 +471,11 @@ public class IndexRecProcessor extends PandaProcessor {
         pandaIndex = "http://www.panda.tv/";
         zhanqiIndex = "https://www.zhanqi.tv/";
         longzhuIndex = "http://www.longzhu.com/";
-        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex, zhanqiIndex
-        Spider.create(new IndexRecProcessor()).thread(2).addUrl(longzhuIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        String quanminDf = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+        quanminIndex = "http://www.quanmin.tv/json/page/pc-index/info2.json?_t=" + quanminDf;
+        chushouindex = "https://chushou.tv/";
+        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//
+        Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
             detailAnchors.add(entry.getValue().toString());
         }

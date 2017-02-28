@@ -84,4 +84,7 @@ public class Const {
     public static final String PANDAINDEXREC = "pandaindexrec";
     public static final String ZHANQIINDEXREC = "zhanqiindexrec";
     public static final String LONGZHUINDEXREC = "longzhuindexrec";
+    public static final String LONGZHUDETAILANCHOR = "longzhudetailanchor";
+    public static final String QUANMININDEXREC = "quanmindexrec";
+    public static final String CHUSHOUINDEXREC = "chushouindexrec";
 }
