@@ -6,6 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
     private static final Map<String, DetailAnchor> map = new HashMap<>();
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final Logger logger = LoggerFactory.getLogger(ChushouDetailAnchorProcessor.class);
-
+    private static int exCnt;
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
@@ -109,8 +110,13 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
                 page.addTargetRequest(new Request(pointUrlTmpPre + rid + pointUrlTmpSuf + new Date().getTime()).putExtra("rid", rid));
             }
         } catch (Exception e) {
+            failedUrl.append(curUrl + ";  ");
+            logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();
-            logger.error("chushoudetailanchorprocess error,cururl:" + curUrl);
+            if (exCnt++ > Const.EXTOTAL) {
+                MailTools.sendAlarmmail("斗鱼首页推荐", "url: " + curUrl);
+                System.exit(1);
+            }
         }
 
     }

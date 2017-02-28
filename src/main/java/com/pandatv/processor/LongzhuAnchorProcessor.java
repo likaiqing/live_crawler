@@ -7,6 +7,7 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,11 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final Logger logger = LoggerFactory.getLogger(LongzhuAnchorProcessor.class);
     private static final String firUrl = "http://api.plu.cn/tga/streams?max-results=18&sort-by=views&filter=0&game=0&callback=_callbacks_._36bxu1&start-index=0";
-
+    private static int exCnt;
     @Override
     public void process(Page page) {
+        String curUrl = page.getUrl().get();
         try {
-            String curUrl = page.getUrl().get();
             logger.info("process url:{}", curUrl);
             String json = page.getJson().toString();
             json = json.substring(20, json.lastIndexOf(")"));
@@ -68,8 +69,13 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
             }
             page.setSkip(true);
         } catch (Exception e) {
+            failedUrl.append(curUrl + ";  ");
+            logger.info("process exception,url:{},html:{}" + curUrl, page.getHtml());
             e.printStackTrace();
-            return;
+            if (exCnt++ > Const.EXTOTAL) {
+                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
+                System.exit(1);
+            }
         }
     }
 

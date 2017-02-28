@@ -6,6 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -29,7 +30,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
     private static final String followJsonPrefex = "http://www.panda.tv/room_followinfo?roomid=";
     private static final String v2DetailJsonPrefex = "http://www.panda.tv/api_room_v2?roomid=";
     private static final Logger logger = LoggerFactory.getLogger(HuyaDetailAnchorProcessor.class);
-
+    private static int exCnt;
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
@@ -93,7 +94,13 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
             }
             page.setSkip(true);
         } catch (Exception e) {
+            failedUrl.append(curUrl + ";  ");
+            logger.info("process exception,url:{},html:{}" + curUrl, page.getHtml());
             e.printStackTrace();
+            if (exCnt++ > Const.EXTOTAL) {
+                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
+                System.exit(1);
+            }
         }
     }
 

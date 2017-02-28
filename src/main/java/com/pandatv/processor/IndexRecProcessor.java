@@ -114,14 +114,14 @@ public class IndexRecProcessor extends PandaProcessor {
         Integer point = JsonPath.read(json, "$.data.current.point");
         Long lastDate = JsonPath.read(json, "$.data.last.date");
         String rid = page.getRequest().getExtra("rid").toString();
-        IndexRec indexRec = map.get(rid);
+        IndexRec indexRec = map.get(rid + Const.CHUSHOUINDEXREC);
         indexRec.setWeightNum(null == point ? 0 : point);
         indexRec.setLastStartTime(null == lastDate ? null : chushouFormat.format(lastDate / 1000));
     }
 
     private void executeChushouDetail(Page page, String curUrl) {
         String rid = page.getRequest().getExtra("rid").toString();
-        IndexRec indexRec = map.get(rid);
+        IndexRec indexRec = map.get(rid + Const.CHUSHOUINDEXREC);
         Html html = page.getHtml();
         String title = StringEscapeUtils.unescapeHtml(html.xpath("//p[@class='zb_player_gamedesc']/@title").get());
         String name = StringEscapeUtils.unescapeHtml(html.xpath("//span[@id='sp1']/@title").get());
@@ -154,7 +154,7 @@ public class IndexRecProcessor extends PandaProcessor {
                     indexRec.setRid(targetKey);
                     indexRec.setLocation((++index) + "");
                     indexRec.setJob(Const.CHUSHOUINDEXREC);
-                    map.put(targetKey, indexRec);
+                    map.put(targetKey + Const.CHUSHOUINDEXREC, indexRec);
                 }
             }
         }
@@ -274,7 +274,7 @@ public class IndexRecProcessor extends PandaProcessor {
 
     private void executePandaV2Json(Page page, String curUrl) {
         String rid = page.getRequest().getExtra("rid").toString();
-        IndexRec indexRec = map.get(rid);
+        IndexRec indexRec = map.get(rid + Const.PANDAINDEXREC);
         String detailJson = page.getJson().get();
         String name = JsonPath.read(detailJson, "$.data.hostinfo.name").toString();
         String weightStr = JsonPath.read(detailJson, "$.data.hostinfo.bamboos").toString();
@@ -291,7 +291,7 @@ public class IndexRecProcessor extends PandaProcessor {
 
     private void executePandaFollow(Page page, String curUrl) {
         String rid = page.getRequest().getExtra("rid").toString();
-        IndexRec indexRec = map.get(rid);
+        IndexRec indexRec = map.get(rid + Const.PANDAINDEXREC);
         int follows = JsonPath.read(page.getJson().toString(), "$.data.fans");
         indexRec.setFollowerNum(follows);
     }
@@ -300,7 +300,7 @@ public class IndexRecProcessor extends PandaProcessor {
         Elements scripts = page.getHtml().getDocument().getElementsByTag("script");
         boolean has = false;
         String rid = page.getRequest().getExtra("rid").toString();
-        IndexRec indexRec = map.get(rid);
+        IndexRec indexRec = map.get(rid + Const.PANDAINDEXREC);
         for (Element script : scripts) {
             if (script.toString().contains("window._config_roominfo")) {
                 has = true;
@@ -474,8 +474,8 @@ public class IndexRecProcessor extends PandaProcessor {
         String quanminDf = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
         quanminIndex = "http://www.quanmin.tv/json/page/pc-index/info2.json?_t=" + quanminDf;
         chushouindex = "https://chushou.tv/";
-        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//
-        Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex
+        Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
             detailAnchors.add(entry.getValue().toString());
         }

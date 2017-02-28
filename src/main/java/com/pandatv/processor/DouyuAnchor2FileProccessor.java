@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class DouyuAnchor2FileProccessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(DouyuAnchor2FileProccessor.class);
-
+    private static int exCnt;
     public static void crawler(String[] args) {
         String destFile = args[1];
         String firstUrl = "https://www.douyu.com/directory/all";

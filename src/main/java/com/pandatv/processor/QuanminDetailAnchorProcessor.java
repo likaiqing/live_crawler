@@ -7,6 +7,7 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
     private static final String detailUrlPre = "http://www.quanmin.tv/json/rooms/";
     private static final String detailUrlSuf = "/noinfo4.json";
     private static final Logger logger = LoggerFactory.getLogger(QuanminDetailAnchorProcessor.class);
-
+    private static int exCnt;
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
@@ -85,8 +86,13 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
                 detailAnchorObjs.add(detailAnchor);
             }
         } catch (Exception e) {
+            failedUrl.append(curUrl + ";  ");
+            logger.info("process exception,url:{},html:{}" + curUrl, page.getHtml());
             e.printStackTrace();
-            logger.error("quanmindetailanchor error,cururl:" + curUrl);
+            if (exCnt++ > Const.EXTOTAL) {
+                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
+                System.exit(1);
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -25,38 +26,49 @@ public class HuyaAnchorProcessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(HuyaAnchorProcessor.class);
 //    private static String url = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=";
     private static String url = "http://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=";
-
+    private static int exCnt;
     @Override
     public void process(Page page) {
         String url = page.getUrl().toString();
-        logger.info("process url:{}", url);
-        List<String> all = page.getJson().jsonPath("$.data.datas").all();
-        if (all.size() > 0) {
-            String newUrl = this.url + (Integer.parseInt(url.substring(url.lastIndexOf('=') + 1)) + 1);
-            page.addTargetRequest(newUrl);
-            JSONArray list = JsonPath.read(page.getJson().get(), "$.data.datas");
-            for (int i = 0; i < list.size(); i++) {
-                String jsonStr = list.get(i).toString();
-                String rid = JsonPath.read(jsonStr, "$.privateHost");
-                String name = JsonPath.read(jsonStr, "$.nick");
-                String title = JsonPath.read(jsonStr, "$.introduction");
-                String category = JsonPath.read(jsonStr, "$.gameFullName");
-                String popularityStr = JsonPath.read(jsonStr, "$.totalCount");
-                int popularityNum = Integer.parseInt(popularityStr);
-                Anchor anchor = new Anchor();
-                anchor.setRid(rid);
-                anchor.setName(name);
-                anchor.setTitle(title);
-                anchor.setCategory(category);
-                anchor.setPopularityStr(popularityStr);
-                anchor.setPopularityNum(popularityNum);
-                anchor.setJob(job);
-                anchor.setPlat(Const.HUYA);
-                anchor.setGame(Const.GAMEALL);
-                anchor.setUrl(url);
-                anchorObjs.add(anchor);
+        try {
+            logger.info("process url:{}", url);
+            List<String> all = page.getJson().jsonPath("$.data.datas").all();
+            if (all.size() > 0) {
+                String newUrl = this.url + (Integer.parseInt(url.substring(url.lastIndexOf('=') + 1)) + 1);
+                page.addTargetRequest(newUrl);
+                JSONArray list = JsonPath.read(page.getJson().get(), "$.data.datas");
+                for (int i = 0; i < list.size(); i++) {
+                    String jsonStr = list.get(i).toString();
+                    String rid = JsonPath.read(jsonStr, "$.privateHost");
+                    String name = JsonPath.read(jsonStr, "$.nick");
+                    String title = JsonPath.read(jsonStr, "$.introduction");
+                    String category = JsonPath.read(jsonStr, "$.gameFullName");
+                    String popularityStr = JsonPath.read(jsonStr, "$.totalCount");
+                    int popularityNum = Integer.parseInt(popularityStr);
+                    Anchor anchor = new Anchor();
+                    anchor.setRid(rid);
+                    anchor.setName(name);
+                    anchor.setTitle(title);
+                    anchor.setCategory(category);
+                    anchor.setPopularityStr(popularityStr);
+                    anchor.setPopularityNum(popularityNum);
+                    anchor.setJob(job);
+                    anchor.setPlat(Const.HUYA);
+                    anchor.setGame(Const.GAMEALL);
+                    anchor.setUrl(url);
+                    anchorObjs.add(anchor);
+                }
+            }
+        }catch (Exception e){
+            failedUrl.append(url + ";  ");
+            logger.info("process exception,url:{},html:{}" + url, page.getHtml());
+            e.printStackTrace();
+            if (exCnt++ > Const.EXTOTAL) {
+                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + url);
+                System.exit(1);
             }
         }
+
     }
 
     @Override

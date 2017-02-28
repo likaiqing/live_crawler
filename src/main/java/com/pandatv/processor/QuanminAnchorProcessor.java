@@ -6,8 +6,11 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -26,33 +29,45 @@ public class QuanminAnchorProcessor extends PandaProcessor {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
     private static String urlTmp = "http://www.quanmin.tv/json/play/list_";
     private static final String urlJsonT = ".json?_t=";
-
+    private static final Logger logger = LoggerFactory.getLogger(QuanminAnchorProcessor.class);
+    private static int exCnt;
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
-        String json = page.getJson().toString();
-        if (StringUtils.isEmpty(json)){
-            return;
-        }
-        int pageCount = JsonPath.read(json, "$.pageCount");
-        if (curUrl.startsWith("http://www.quanmin.tv/json/play/list.json?_t=")) {
-            if (pageCount > 1) {
-                String addUrl = urlTmp + 2 + urlJsonT + format.format(new Date());
-                page.addTargetRequest(addUrl);
-                addAnchors(anchorObjs, json, curUrl);
-            } else {
-                page.setSkip(true);
+        try {
+            String json = page.getJson().toString();
+            if (StringUtils.isEmpty(json)){
+                return;
             }
-        } else {
-            int curPage = Integer.parseInt(curUrl.substring(curUrl.indexOf("list_") + 5, curUrl.indexOf(".json")));
-            if (curPage < pageCount) {
-                String addUrl = urlTmp + (curPage + 1) + urlJsonT + format.format(new Date());
-                page.addTargetRequest(addUrl);
-                addAnchors(anchorObjs, json, curUrl);
+            int pageCount = JsonPath.read(json, "$.pageCount");
+            if (curUrl.startsWith("http://www.quanmin.tv/json/play/list.json?_t=")) {
+                if (pageCount > 1) {
+                    String addUrl = urlTmp + 2 + urlJsonT + format.format(new Date());
+                    page.addTargetRequest(addUrl);
+                    addAnchors(anchorObjs, json, curUrl);
+                } else {
+                    page.setSkip(true);
+                }
             } else {
-                page.setSkip(true);
+                int curPage = Integer.parseInt(curUrl.substring(curUrl.indexOf("list_") + 5, curUrl.indexOf(".json")));
+                if (curPage < pageCount) {
+                    String addUrl = urlTmp + (curPage + 1) + urlJsonT + format.format(new Date());
+                    page.addTargetRequest(addUrl);
+                    addAnchors(anchorObjs, json, curUrl);
+                } else {
+                    page.setSkip(true);
+                }
+            }
+        }catch (Exception e){
+            failedUrl.append(curUrl + ";  ");
+            logger.info("process exception,url:{},html:{}" + curUrl, page.getHtml());
+            e.printStackTrace();
+            if (exCnt++ > Const.EXTOTAL) {
+                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
+                System.exit(1);
             }
         }
+
     }
 
     private void addAnchors(Set<Anchor> anchors, String json, String curUrl) {

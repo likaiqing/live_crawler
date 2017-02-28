@@ -6,6 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
     private static final String domain = "https://www.zhanqi.tv";
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final Logger logger = LoggerFactory.getLogger(ZhanqiDetailAnchorProcessor.class);
-
+    private static int exCnt;
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
@@ -78,9 +79,13 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
             }
             page.setSkip(true);
         } catch (Exception e) {
+            failedUrl.append(curUrl + ";  ");
+            logger.info("process exception,url:{},html:{}" + curUrl, page.getHtml());
             e.printStackTrace();
-            logger.info("error url:" + curUrl);
-
+            if (exCnt++ > Const.EXTOTAL) {
+                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
+                System.exit(1);
+            }
         }
     }
 
