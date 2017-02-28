@@ -28,6 +28,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
+        logger.info("process url:{}", curUrl);
         try {
             Html html = page.getHtml();
             if (curUrl.equals("https://www.douyu.com/directory")) {

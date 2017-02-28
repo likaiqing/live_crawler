@@ -31,6 +31,7 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
+        logger.info("process url:{}", curUrl);
         try {
             int curPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf("/") + 1, curUrl.lastIndexOf(".json")));
             String json = page.getJson().toString();

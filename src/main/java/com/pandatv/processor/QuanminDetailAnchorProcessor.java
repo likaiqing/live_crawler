@@ -36,6 +36,7 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
+        logger.info("process url:{}", curUrl);
         try {
             String json = page.getJson().toString();
             if (StringUtils.isEmpty(json)) {

@@ -29,6 +29,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
+        logger.info("process url:{}", curUrl);
         try {
             if (!curUrl.equals("http://chushou.tv/live/list.htm")) {
                 String json = page.getJson().toString();
