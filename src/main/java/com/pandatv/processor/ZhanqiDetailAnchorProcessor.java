@@ -1,5 +1,6 @@
 package com.pandatv.processor;
 
+import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
@@ -30,6 +31,7 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final Logger logger = LoggerFactory.getLogger(ZhanqiDetailAnchorProcessor.class);
     private static int exCnt;
+
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
@@ -55,14 +57,28 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
                     if (script.contains("window.oPageConfig.oRoom")) {
                         String json = script.substring(script.indexOf("{"), script.lastIndexOf("}") + 1);
                         String rid = page.getRequest().getExtra("rid").toString();
-                        String name = JsonPath.read(json, "$.nickname").toString();
+                        String name = "";
+                        try {
+                            name = JsonPath.read(json, "$.nickname").toString();
+                        }catch (InvalidJsonException e){
+                            e.printStackTrace();
+                            json = json.replace("\"","");
+                            name = JsonPath.read(json, "$.nickname").toString();
+                        }
                         String title = JsonPath.read(json, "$.title").toString();
                         String gameName = JsonPath.read(json, "$.gameName").toString();
                         String onlineStr = JsonPath.read(json, "$.online").toString();
                         int onlineNum = Integer.parseInt(onlineStr);
                         String liveTime = JsonPath.read(json, "$.liveTime").toString();
-                        String lastStartTime = getLastStartTime(Long.parseLong(liveTime) * 1000);
-                        int follows = Integer.parseInt(JsonPath.read(json, "$.follows").toString());
+                        String lastStartTime = "";
+                        int follows = 0;
+                        try {
+                            lastStartTime = getLastStartTime(Long.parseLong(liveTime) * 1000);
+                            follows = Integer.parseInt(JsonPath.read(json, "$.follows").toString());
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            logger.error("NumberFormatException url:{})", curUrl);
+                        }
                         long fight = Long.parseLong(JsonPath.read(json, "$.anchorAttr.hots.fight").toString());//经验值
                         detailAnchor.setRid(rid);
                         detailAnchor.setName(name);
@@ -81,7 +97,7 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
             page.setSkip(true);
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
-            logger.info("process exception,url:{},html:{}" + curUrl, page.getHtml());
+            logger.info("process exception,url:{}", curUrl);
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
                 MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);

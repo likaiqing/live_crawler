@@ -61,7 +61,7 @@ public class QuanminAnchorProcessor extends PandaProcessor {
             }
         }catch (Exception e){
             failedUrl.append(curUrl + ";  ");
-            logger.info("process exception,url:{},html:{}" + curUrl, page.getHtml());
+            logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
                 MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);

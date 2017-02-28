@@ -61,7 +61,7 @@ public class HuyaAnchorProcessor extends PandaProcessor {
             }
         }catch (Exception e){
             failedUrl.append(url + ";  ");
-            logger.info("process exception,url:{},html:{}" + url, page.getHtml());
+            logger.info("process exception,url:{}" + url);
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
                 MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + url);
