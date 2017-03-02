@@ -125,7 +125,7 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
-        Spider.create(new ZhanqiDetailAnchorProcessor()).thread(5).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new ZhanqiDetailAnchorProcessor()).thread(1).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (DetailAnchor detailAnchor : detailAnchorObjs) {
             detailAnchors.add(detailAnchor.toString());
         }

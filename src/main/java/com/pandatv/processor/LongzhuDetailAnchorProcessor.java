@@ -97,7 +97,7 @@ public class LongzhuDetailAnchorProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
-        Spider.create(new LongzhuDetailAnchorProcessor()).thread(4).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new LongzhuDetailAnchorProcessor()).thread(1).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (DetailAnchor detailAnchor : detailAnchorObjs) {
             detailAnchors.add(detailAnchor.toString());
         }

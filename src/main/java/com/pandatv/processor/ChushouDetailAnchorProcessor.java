@@ -135,7 +135,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
-        Spider.create(new ChushouDetailAnchorProcessor()).thread(3).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new ChushouDetailAnchorProcessor()).thread(2).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (Map.Entry<String, DetailAnchor> entry : map.entrySet()) {
             detailAnchors.add(entry.getValue().toString());
         }

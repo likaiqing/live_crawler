@@ -475,7 +475,7 @@ public class IndexRecProcessor extends PandaProcessor {
         quanminIndex = "http://www.quanmin.tv/json/page/pc-index/info2.json?_t=" + quanminDf;
         chushouindex = "https://chushou.tv/";
         String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex
-        Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
             detailAnchors.add(entry.getValue().toString());
         }
