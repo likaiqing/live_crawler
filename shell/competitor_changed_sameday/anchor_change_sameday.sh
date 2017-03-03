@@ -50,7 +50,7 @@ FROM
                 ORDER BY create_time) r_asc
             FROM
               panda_competitor.crawler_detail_anchor
-            WHERE par_date = '$date' AND (task = 'douyudetailanchor' OR task = 'huyadetailanchor')
+            WHERE par_date = '$date' AND  task rlike '.*detailanchor'
           ) r_asc
         WHERE r_asc = 1
       ) r_asc
@@ -75,7 +75,7 @@ FROM
                 ORDER BY create_time DESC) r_asc
             FROM
               panda_competitor.crawler_detail_anchor
-            WHERE par_date = '$date' AND (task = 'douyudetailanchor' OR task = 'huyadetailanchor')
+            WHERE par_date = '$date' AND  task rlike '.*detailanchor'
           ) r_asc
         WHERE r_asc = 1
       ) r_desc
@@ -90,7 +90,7 @@ FROM
       max(online_num) pcu
     FROM
       panda_competitor.crawler_detail_anchor
-    WHERE par_date = '$date' AND (task = 'douyudetailanchor' OR task = 'huyadetailanchor')
+    WHERE par_date = '$date' AND task rlike '.*detailanchor'
     GROUP BY rid,split(task,'detail')[0] ,category_sec
   ) pcu
     ON change.rid = pcu.rid AND change.plat = pcu.plat AND change.category = pcu.category
