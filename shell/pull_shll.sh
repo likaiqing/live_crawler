@@ -9,9 +9,7 @@ do
     rsync -auvz 10.110.16.33:$remote_dir/$sub_dir/*.sh $origin_dir/$sub_dir/
 done
 
-for sub_dir in competitor_shell
+for sub_dir in crawler_ana/competitor_shell crawler
 do
-    rsync -auvz 10.110.20.77:$remote_dir/crawler_ana/$sub_dir/*.sh $origin_dir/pd77/$sub_dir/
+    rsync -auvz 10.110.20.77:$remote_dir/$sub_dir/*.sh $origin_dir/pd77/$sub_dir/
 done
-
-rsync -auvz 10.110.20.77:$remote_dir/*.sh $origin_dir/pd77/crawler
