@@ -11,7 +11,7 @@ insert overwrite table panda_competitor.crawler_day_plat_analyse partition(par_d
 SELECT
   ana.plat,
   ana.max_pcu,
-  ana.live_times,
+  t1.live_times,
   ana.duraion,
   ana.weight,
   ana.followers,
@@ -236,5 +236,18 @@ FROM
     WHERE cate2.plat_name IS NULL
     group by cate1.plat_name
   )reduce_cates
-    ON ana.plat = reduce_cates.plat_name;
+    ON ana.plat = reduce_cates.plat_name
+
+-- 20170302修改直播次数口径
+ left join
+(
+select plat,count(distinct rid) as live_times
+FROM panda_competitor.crawler_anchor
+WHERE par_date='$date'
+AND task LIKE '%anchor' 
+AND category != ''
+group by plat
+) t1 on ana.plat=t1.plat 
+  
+  ;
 "

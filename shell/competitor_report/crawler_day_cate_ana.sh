@@ -12,7 +12,7 @@ SELECT
   cate1.plat,
   cate1.category,
   coalesce(t.max_pcu, 0)           max_pcu,
-  coalesce(t.live_times, 0)        live_times,
+  coalesce(t1.live_times, 0)        live_times,
   coalesce(t.duration, 0.0)        duraion,
   coalesce(t.weight, 0)            weight,
   coalesce(t.followers, 0)         followers,
@@ -231,5 +231,17 @@ FROM
         ON dis1.plat = dis2.plat AND dis1.rid = dis2.rid
     GROUP BY dis1.plat, dis1.category
   ) anchors
-    ON cate1.plat = anchors.plat AND cate1.category = anchors.category;
-    "
+    ON cate1.plat = anchors.plat AND cate1.category = anchors.category
+--20170302修改直播次数口径
+left join
+(
+select plat,category,count(distinct rid) as live_times
+FROM panda_competitor.crawler_anchor
+WHERE par_date='$date'
+AND task LIKE '%anchor' 
+AND category != ''
+group by plat,category
+) t1 on cate1.plat=t1.plat  and cate1.category=t1.category
+  
+  ;
+"

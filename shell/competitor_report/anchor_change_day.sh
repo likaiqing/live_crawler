@@ -284,3 +284,21 @@ select * from panda_competitor_result.plat_anchor_rank where par_date='${date_su
 ) c
 on b.plat=c.plat and c.rid=b.rid 
 ;"
+
+
+
+
+
+sh /home/likaiqing/shell/competitor_report/panda_competitor/anchor_user_gift_barrage.sh ${date}
+sh /home/likaiqing/shell/competitor_report/panda_competitor/category_gift_barrage.sh ${date}
+sh /home/likaiqing/shell/competitor_report/panda_competitor/plat_gift_barrage.sh ${date}
+
+
+
+
+zip -m /data/tmp/zhengbo/file/barrage_gift${date} /data/tmp/zhengbo/file/anchor_barrage_rank${date}.xlsx /data/tmp/zhengbo/file/user_barrage_rank${date}.xlsx /data/tmp/zhengbo/file/plat_barrage_gift_summary${date}.xlsx /data/tmp/zhengbo/file/plat_barrage_minute${date}.xlsx /data/tmp/zhengbo/file/plat_barrage_summary${date}.xlsx /data/tmp/zhengbo/file/plat_gift_minute${date}.xlsx /data/tmp/zhengbo/file/plat_gift_summary${date}.xlsx /data/tmp/zhengbo/file/plat_gift_type_summary${date}.xlsx /data/tmp/zhengbo/file/category_barrage_summary${date}.xlsx /data/tmp/zhengbo/file/category_gift_summary${date}.xlsx /data/tmp/zhengbo/file/category_gift_type_summary${date}.xlsx
+
+#/data/tmp/zhengbo/file/user_gift_date${date}.xlsx /data/tmp/zhengbo/file/anchor_gift_date${date}.xlsx /data/tmp/zhengbo/file/anchor_barrage_minute${date}.xlsx 
+
+/usr/local/jdk1.8.0_60/bin/java -jar /home/likaiqing/hive-tool/send_mail.jar "弹幕礼物相关" "内容见附件" /data/tmp/zhengbo/file/barrage_gift${date}.zip "zhaolirong@panda.tv,wangshuo@panda.tv" "baimuhai@panda.tv,lushenggang@panda.tv,likaiqing@panda.tv,zhengbo@panda.tv,fengwenbo@panda.tv"
+

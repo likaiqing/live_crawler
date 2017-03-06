@@ -614,3 +614,8 @@ FROM panda_competitor_result.crawler_anchor_day a
 WHERE a.par_date = '${date}'
       AND a.rectimes > 0;
 "
+
+
+
+
+
