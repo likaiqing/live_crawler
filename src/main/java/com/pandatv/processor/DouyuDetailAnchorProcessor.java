@@ -97,40 +97,40 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setLastStartTime(lastStartTime);
                 detailAnchor.setJob(job);
                 detailAnchorObjs.add(detailAnchor);
-                if (douyuGiftHours.contains(hour)) {
-                    JSONArray gifts = JsonPath.read(json, "$.data.gift");
-                    for (int i = 0; i < gifts.size(); i++) {
-                        String gift = gifts.get(i).toString();
-                        String gId = JsonPath.read(gift, "$.id");
-                        String gName = JsonPath.read(gift, "$.name");
-                        String gType = JsonPath.read(gift, "$.type");
-                        double gPrice = 0.0;
-                        try {
-                            int priceInt = JsonPath.read(gift, "$.pc");
-                            gPrice = (double) priceInt;
-                        } catch (ClassCastException e) {
-                            gPrice = JsonPath.read(gift, "$.pc");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        int gExp = JsonPath.read(gift, "$.gx");
-                        GiftInfo douyuGift = new GiftInfo();
-                        douyuGift.setPlat(Const.DOUYU);
-                        douyuGift.setrId(rid);
-                        douyuGift.setCategory(categorySec);
-                        douyuGift.setGiftId(gId);
-                        douyuGift.setName(gName);
-                        try {
-                            douyuGift.setType(Integer.parseInt(gType));
-                            douyuGift.setPrice(gPrice);
-                            douyuGift.setExp(gExp);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        douyuGifts.add(douyuGift.toString());
+//                if (douyuGiftHours.contains(hour)) {
+                JSONArray gifts = JsonPath.read(json, "$.data.gift");
+                for (int i = 0; i < gifts.size(); i++) {
+                    String gift = gifts.get(i).toString();
+                    String gId = JsonPath.read(gift, "$.id");
+                    String gName = JsonPath.read(gift, "$.name");
+                    String gType = JsonPath.read(gift, "$.type");
+                    double gPrice = 0.0;
+                    try {
+                        int priceInt = JsonPath.read(gift, "$.pc");
+                        gPrice = (double) priceInt;
+                    } catch (ClassCastException e) {
+                        gPrice = JsonPath.read(gift, "$.pc");
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    int gExp = JsonPath.read(gift, "$.gx");
+                    GiftInfo douyuGift = new GiftInfo();
+                    douyuGift.setPlat(Const.DOUYU);
+                    douyuGift.setrId(rid);
+                    douyuGift.setCategory(categorySec);
+                    douyuGift.setGiftId(gId);
+                    douyuGift.setName(gName);
+                    try {
+                        douyuGift.setType(Integer.parseInt(gType));
+                        douyuGift.setPrice(gPrice);
+                        douyuGift.setExp(gExp);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    douyuGiftObjs.add(douyuGift);
                 }
             }
+//            }
             page.setSkip(true);
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
@@ -169,6 +169,9 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         }
         CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
         String giftIdPath = Const.COMPETITORDIR + "crawler_gift_id/" + date;
+        for (GiftInfo giftInfo : douyuGiftObjs) {
+            douyuGifts.add(giftInfo.toString());
+        }
         CommonTools.writeAndMail(giftIdPath, Const.DOUYUGIFTIDFINISHDETAIL, douyuGifts);
     }
 }

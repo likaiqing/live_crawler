@@ -54,7 +54,7 @@ public class GiftInfo {
         if (null == obj) {
             return false;
         }
-        if (null instanceof GiftInfo) {
+        if (obj instanceof GiftInfo) {
             return this.getGiftId().equals(((GiftInfo) obj).getGiftId());
         } else {
             return false;
