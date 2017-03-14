@@ -18,10 +18,7 @@ import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by likaiqing on 2016/11/14.
@@ -34,6 +31,8 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final Logger logger = LoggerFactory.getLogger(ChushouDetailAnchorProcessor.class);
     private static int exCnt;
+    private static final Set<String> weightFollowRids = new HashSet<>();
+
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
@@ -89,6 +88,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
                 DetailAnchor detailAnchor = map.get(rid);
                 detailAnchor.setWeightNum(null == point ? 0 : point);
                 detailAnchor.setLastStartTime(null == lastDate ? null : format.format(lastDate / 1000));
+                weightFollowRids.add(rid);
             } else if (curUrl.contains("://chushou.tv/room/")) {
                 Html html = page.getHtml();
                 DetailAnchor detailAnchor = new DetailAnchor();
@@ -136,9 +136,12 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new ChushouDetailAnchorProcessor()).thread(2).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        for (Map.Entry<String, DetailAnchor> entry : map.entrySet()) {
-            detailAnchors.add(entry.getValue().toString());
+        for (String rid : weightFollowRids) {
+            detailAnchors.add(map.get(rid).toString());
         }
+//        for (Map.Entry<String, DetailAnchor> entry : map.entrySet()) {
+//            detailAnchors.add(entry.getValue().toString());
+//        }
         CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISHDETAIL, detailAnchors);
     }
 }
