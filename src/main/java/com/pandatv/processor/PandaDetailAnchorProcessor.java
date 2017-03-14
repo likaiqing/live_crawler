@@ -19,7 +19,9 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by likaiqing on 2016/12/14.
@@ -31,6 +33,9 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
     private static final String v2DetailJsonPrefex = "http://www.panda.tv/api_room_v2?roomid=";
     private static final Logger logger = LoggerFactory.getLogger(HuyaDetailAnchorProcessor.class);
     private static int exCnt;
+    private static final Set<String> weightRids = new HashSet<>();
+    private static final Set<String> followRids = new HashSet<>();
+
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
@@ -66,12 +71,14 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
                 DetailAnchor detailAnchor = map.get(rid);
                 int follow = JsonPath.read(page.getJson().toString(), "$.data.fans");
                 detailAnchor.setFollowerNum(follow);
+                followRids.add(rid);
             } else if (curUrl.startsWith(v2DetailJsonPrefex)) {
                 String jsonStr = page.getJson().get();
                 String rid = page.getRequest().getExtra("rid").toString();
                 String bambooStr = JsonPath.read(jsonStr, "$.data.hostinfo.bamboos").toString();
                 DetailAnchor detailAnchor = map.get(rid);
                 detailAnchor.setWeightNum(Long.parseLong(bambooStr));
+                weightRids.add(rid);
             } else if (curUrl.startsWith(detailUrlTmp)) {//设置体重window._config_roominfo bamboos
                 String rid = page.getRequest().getExtra("rid").toString();
                 DetailAnchor detailAnchor = map.get(rid);
@@ -85,6 +92,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
                         String weightStr = scrStr.substring(bamStart, bamEnd);
                         detailAnchor.setWeightNum(Long.parseLong(weightStr));
                         has = true;
+                        weightRids.add(rid);
                     }
                 }
                 if (!has) {//源码没有window._config_roominfo信息
@@ -119,9 +127,16 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new PandaDetailAnchorProcessor()).thread(3).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        for (Map.Entry<String, DetailAnchor> entry : map.entrySet()) {
-            detailAnchors.add(entry.getValue().toString());
+        for (String rid : weightRids) {
+            if (followRids.contains(rid)) {
+                detailAnchors.add(map.get(rid).toString());
+            }else {
+                System.out.println(rid);
+            }
         }
+//        for (Map.Entry<String, DetailAnchor> entry : map.entrySet()) {
+//            detailAnchors.add(entry.getValue().toString());
+//        }
         CommonTools.writeAndMail(hivePaht, Const.PANDAANCHORFINISHDETAIL, detailAnchors);
     }
 }
