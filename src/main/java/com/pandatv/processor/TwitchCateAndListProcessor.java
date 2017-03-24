@@ -83,6 +83,9 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     TwitchChannel channel = new TwitchChannel();
                     int id = JsonPath.read(str, "$.channel._id");
                     String name = JsonPath.read(str, "$.channel.name");
+                    if (null==name){
+                        System.out.println(name);
+                    }
                     String displayName = JsonPath.read(str, "$.channel.display_name");
                     String title = JsonPath.read(str, "$.channel.status");
                     String game = JsonPath.read(str, "$.channel.game");
@@ -154,6 +157,9 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
             twitchCatStrs.add(obj.toString());
         }
         for (TwitchChannel obj : twitchListObjes) {
+            if (null==obj.getNickName()||null==obj.getDisplayName()){
+                System.out.println(obj);
+            }
             twitchListStrs.add(obj.toString());
         }
         CommonTools.writeAndMail(twitchCateHivePaht, Const.TWITCHCATEFINISH, twitchCatStrs);

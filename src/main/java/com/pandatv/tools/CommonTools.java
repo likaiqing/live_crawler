@@ -46,7 +46,7 @@ public class CommonTools {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result;
+        return result.replace("\n","");
     }
 
     public static List<String> getUrls(ResultItems resultItems, String job, String plat, String gameCategory) {
