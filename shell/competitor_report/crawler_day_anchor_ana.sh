@@ -79,11 +79,10 @@ FROM
                   category_sec                    category,
                   count(DISTINCT task_random)     live_times,
                   max(online_num)                 pcu,
-                  max(weight_num)                 weight,
-                  max(follower_num)               followers
+            sum(case when z.rw=1 then weight_num else 0 end)weight,
+          sum(case when z.rw=1 then follower_num else 0 end)followers
                 FROM
-                  panda_competitor.crawler_detail_anchor
-                WHERE par_date = '$date' AND task LIKE '%detailanchor' and category_sec !=''
+                  (select a.*,row_number()over(partition by rid order by task_random desc)rw from panda_competitor.crawler_detail_anchor a WHERE par_date = '$date' AND task LIKE '%detailanchor' and category_sec !='')z
                 GROUP BY rid, split(task, 'detailanchor') [0], category_sec
               ) d
           ) pcu
@@ -98,11 +97,10 @@ FROM
           count(DISTINCT task_random)                     rec_times,
           round(count(DISTINCT task_random) / 60 * $minutes, 2) duration,
           max(online_num)                                 max_pcu,
-          max(weight_num)                                 weight,
-          max(follower_num)                               followers
-        FROM
-          panda_competitor.crawler_indexrec_detail_anchor
-        WHERE par_date = '$date' AND task LIKE '%indexrec'
+            sum(case when z.rw=1 then weight_num else 0 end)weight,
+        sum(case when z.rw=1 then follower_num else 0 end)followers
+        FROM 
+          (select a.*,row_number()over(partition by rid order by task_random desc) rw from panda_competitor.crawler_indexrec_detail_anchor a WHERE par_date = '$date' AND task LIKE '%indexrec') z
         GROUP BY rid, split(task, 'index') [0], category_sec
       ) rec
         ON ana.rid = rec.rid AND ana.plat = rec.plat AND ana.category = rec.category

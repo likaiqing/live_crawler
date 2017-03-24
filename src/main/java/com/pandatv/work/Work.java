@@ -111,6 +111,16 @@ public class Work {
                 judgeParam(args, 3);
                 LongzhuDetailAnchorProcessor.crawler(args);
                 break;
+            case Const.TWITCHCATEANDLIST:
+                logger.info("TwitchCateAndListProcessor.crawler start");
+                judgeParam(args, 3);
+                TwitchCateAndListProcessor.crawler(args);
+                break;
+            case Const.TWITCHDETAILCHANNEL:
+                logger.info("TwitchDetailChannelProcessor.crawler start");
+                judgeParam(args, 3);
+                TwitchDetailChannelProcessor.crawler(args);
+                break;
         }
     }
 

@@ -1,8 +1,6 @@
 package com.pandatv.common;
 
-import com.pandatv.pojo.Anchor;
-import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.pojo.GiftInfo;
+import com.pandatv.pojo.*;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
 import org.apache.commons.lang.RandomStringUtils;
@@ -41,6 +39,12 @@ public abstract class PandaProcessor implements PageProcessor {
     private static String randomStr = RandomStringUtils.random(10, new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});
     private static String randomTime = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
     public static String mailMinuteStr = new SimpleDateFormat("mm").format(new Date());
+
+    //twitch相关
+    protected static Set<TwitchCategory> twitchCatObjes = new HashSet<>();
+    protected static Set<String> twitchCatStrs = new HashSet<>();
+    protected static Set<TwitchChannel> twitchListObjes = new HashSet<>();
+    protected static Set<String> twitchListStrs = new HashSet<>();
 
     protected Site site = Site.me()
             .setSleepTime(10)

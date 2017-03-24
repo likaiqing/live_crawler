@@ -32,8 +32,8 @@ public class Const {
     public static final int MAYIPORT = 8123;
     public static final String ABUYUNPHOST = "proxy.abuyun.com";
     public static final int ABUYUNPORT = 9010;
-    public static final String GENERATORKEY = "H04Y776P798V9KWP";//PandaHttpClientGenerator设置代理验证的常量
-    public static final String GENERATORPASS = "680DB7FCBC8D123C";
+    public static String GENERATORKEY = "H04Y776P798V9KWP";//PandaHttpClientGenerator设置代理验证的常量
+    public static String GENERATORPASS = "680DB7FCBC8D123C";
 
     public static final String HIVEDIR = "/bigdata/hive/panda_realtime/";
 //        public static final String HIVEDIR = "/tmp/hive/likaiqing/panda_realtime/";
@@ -87,4 +87,8 @@ public class Const {
     public static final String LONGZHUDETAILANCHOR = "longzhudetailanchor";
     public static final String QUANMININDEXREC = "quanmindexrec";
     public static final String CHUSHOUINDEXREC = "chushouindexrec";
+    public static final String TWITCH = "twitch";
+    public static final String TWITCHCATEANDLISTFINISH = "twitch版区列表页抓取结束";
+    public static final String TWITCHCATEANDLIST = "twitchcateandlist";
+    public static final String TWITCHDETAILCHANNEL = "twitchdetailchannel";
 }
