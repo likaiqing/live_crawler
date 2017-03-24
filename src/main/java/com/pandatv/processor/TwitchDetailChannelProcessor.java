@@ -170,6 +170,6 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
                 twitchListStrs.add(entry.getValue().toString());
             }
         }
-        CommonTools.writeAndMail(hivePath, Const.TWITCHCATEANDLISTFINISH, twitchListStrs);
+        CommonTools.writeAndMail(hivePath, Const.TWITCHDETAILCHANNELFINISH, twitchListStrs);
     }
 }

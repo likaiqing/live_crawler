@@ -156,7 +156,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         for (TwitchChannel obj : twitchListObjes) {
             twitchListStrs.add(obj.toString());
         }
-        CommonTools.writeAndMail(twitchCateHivePaht, Const.TWITCHCATEANDLISTFINISH, twitchCatStrs);
-        CommonTools.writeAndMail(twitchListHivePaht, Const.TWITCHCATEANDLISTFINISH, twitchListStrs);
+        CommonTools.writeAndMail(twitchCateHivePaht, Const.TWITCHCATEFINISH, twitchCatStrs);
+        CommonTools.writeAndMail(twitchListHivePaht, Const.TWITCHLISTFINISH, twitchListStrs);
     }
 }

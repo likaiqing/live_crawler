@@ -32,6 +32,9 @@ public class Const {
     public static final int MAYIPORT = 8123;
     public static final String ABUYUNPHOST = "proxy.abuyun.com";
     public static final int ABUYUNPORT = 9010;
+    public static final String TWITCHCATEFINISH = "twitch版区结束";
+    public static final String TWITCHLISTFINISH = "twitch列表页结束";
+    public static final String TWITCHDETAILCHANNELFINISH = "twitch详细channel结束";
     public static String GENERATORKEY = "H04Y776P798V9KWP";//PandaHttpClientGenerator设置代理验证的常量
     public static String GENERATORPASS = "680DB7FCBC8D123C";
 
