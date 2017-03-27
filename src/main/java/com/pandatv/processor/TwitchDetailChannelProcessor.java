@@ -161,7 +161,7 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
         String firstUrl = "https://api.twitch.tv/kraken/games/top?limit=40&on_site=1";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
-        Spider.create(new TwitchDetailChannelProcessor()).thread(30).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
+        Spider.create(new TwitchDetailChannelProcessor()).thread(25).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
         System.out.println("end:" + format.format(new Date()));
         System.out.println(cnt);
         for (Map.Entry<String, TwitchDetailChannel> entry : map.entrySet()) {
