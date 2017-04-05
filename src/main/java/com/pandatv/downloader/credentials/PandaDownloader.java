@@ -2,6 +2,7 @@ package com.pandatv.downloader.credentials;
 
 import com.google.common.collect.Sets;
 import com.pandatv.common.Const;
+import com.pandatv.common.PandaProcessor;
 import com.pandatv.mail.SendMail;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +16,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.bouncycastle.cert.ocsp.Req;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -32,7 +32,6 @@ import us.codecraft.webmagic.utils.HttpConstant;
 import us.codecraft.webmagic.utils.UrlUtils;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -99,8 +98,11 @@ public class PandaDownloader extends AbstractDownloader {
             } else {
                 logger.warn(" PandaDownloader code error " + statusCode + "\t" + request.getUrl());
 //                System.out.println("code error " + statusCode + "\t" + request.getUrl());
-                if (proxyRetry++ > Const.PROXYRETRY && proxyRetry %200==0) {
-                    new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", "代理非200次数超出" + Const.PROXYRETRY);
+                synchronized (this) {
+                    proxyRetry++;
+                }
+                if (proxyRetry > Const.PROXYRETRY && proxyRetry % 200 == 0) {
+                    new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", PandaProcessor.job + "代理非200次数超出" + Const.PROXYRETRY);
                 }
                 return addToCycleRetry(request, site);//默认只会再重复1次
             }
@@ -146,7 +148,7 @@ public class PandaDownloader extends AbstractDownloader {
             }
             page.addTargetRequest(request.setPriority(0).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
             Request switchRequest = new Request(Const.SWITCHURL);
-            switchRequest.setPriority(5).putExtra(Request.CYCLE_TRIED_TIMES,site.getCycleRetryTimes());
+            switchRequest.setPriority(5).putExtra(Request.CYCLE_TRIED_TIMES, site.getCycleRetryTimes());
             page.addTargetRequest(switchRequest);
         }
         page.setNeedCycleRetry(true);
