@@ -33,7 +33,7 @@ public abstract class PandaProcessor implements PageProcessor {
     public static String hour;
     public static long s = System.currentTimeMillis();
     public static HiveJDBCConnect hive = new HiveJDBCConnect();
-    public static String mailHours = "02,09,15,22";
+    public static String mailHours = "";
     public static String douyuGiftHours = "02,06,09,12,15,18,22";
 
     private static String randomStr = RandomStringUtils.random(10, new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});

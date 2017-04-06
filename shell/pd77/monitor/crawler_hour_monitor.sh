@@ -10,4 +10,4 @@ fi
 
 jar=/home/likaiqing/hive-tool/crawler_hour_monitor.jar
 java=$(which java)
-$java -jar $date $hour
+$java -jar $jar $date $hour
