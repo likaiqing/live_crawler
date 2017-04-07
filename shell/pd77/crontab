@@ -1,0 +1,33 @@
+#2,17,32,47 * * * * sh /home/likaiqing/shell/douyunewlive.sh >/tmp/douyunewlive.log 2>&1
+*/5 * * * * sh /home/likaiqing/shell/douyu_danmu/douyu_anchor_2_file.sh > /tmp/douyu_anchor_2_file.log 2>&1
+#0 4 * * * sh /home/likaiqing/shell/douyu_danmu/start_danmu_all.sh >> /tmp/start_danmu_all.log 2>&1
+5,15,25,35,45,55 * * * * sh /home/likaiqing/shell/douyu_danmu/monitor_danmu_all.sh > /tmp/monitor_danmu_all.log 2>&1
+#3,13,23,33,43,53 * * * * sh /home/likaiqing/shell/douyu_danmu/monitor_process_all.sh >> /tmp/monitor_process_all.log 2>&1
+
+2,17,32,47 * * * * sh /home/likaiqing/shell/crawler/category_crawler.sh >/tmp/crawler/log/categorycrawler.log 2>&1
+
+*/3 * * * * sh /home/likaiqing/shell/crawler/indexrec.sh >/tmp/crawler/log/indexrec.log 2>&1
+
+*/3 * * * * sh /home/likaiqing/shell/crawler/douyu_anchor.sh >/tmp/crawler/log/douyuanchor.log 2>&1
+*/3 * * * * sh /home/likaiqing/shell/crawler/huya_anchor.sh >/tmp/crawler/log/huyaanchor.log 2>&1
+*/3 * * * * sh /home/likaiqing/shell/crawler/longzhu_anchor.sh >/tmp/crawler/log/longzhuanchor.log 2>&1
+*/3 * * * * sh /home/likaiqing/shell/crawler/quanmin_anchor.sh >/tmp/crawler/log/quanminanchor.log 2>&1
+*/3 * * * * sh /home/likaiqing/shell/crawler/zhanqi_anchor.sh >/tmp/crawler/log/zhanqianchor.log 2>&1
+*/3 * * * * sh /home/likaiqing/shell/crawler/chushou_anchor.sh >/tmp/crawler/log/chushouanchor.log 2>&1
+*/3 * * * * sh /home/likaiqing/shell/crawler/panda_anchor.sh >/tmp/crawler/log/pandaanchor.log 2>&1
+
+*/15 * * * * sh /home/likaiqing/shell/crawler/douyudetailanchor.sh >/tmp/crawler/log/douyudetailanchor.log 2>&1
+*/15 * * * * sh /home/likaiqing/shell/crawler/huyadetailanchor.sh >/tmp/crawler/log/huyadetailanchor.log 2>&1
+*/15 * * * * sh /home/likaiqing/shell/crawler/pandadetailanchor.sh >/tmp/crawler/log/pandadetailanchor.log 2>&1
+*/15 * * * * sh /home/likaiqing/shell/crawler/chushoudetailanchor.sh >/tmp/crawler/log/chushoudetailanchor.log 2>&1
+*/15 * * * * sh /home/likaiqing/shell/crawler/zhanqidetailanchor.sh >/tmp/crawler/log/zhanqidetailanchor.log 2>&1
+*/15 * * * * sh /home/likaiqing/shell/crawler/quanmindetailanchor.sh >/tmp/crawler/log/quanmindetailanchor.log 2>&1
+*/15 * * * * sh /home/likaiqing/shell/crawler/longzhudetailanchor.sh >/tmp/crawler/log/longzhudetailanchor.log 2>&1
+
+*/10 * * * * sh /home/likaiqing/shell/douyu_danmu/monitor_process_v2.sh > /tmp/monitor_process_v2.log 2>&1
+
+*/3 * * * * sh /home/likaiqing/shell/crawler/twitch_cateandlist_crawler.sh >/tmp/crawler/log/twitch_cateandlist_crawler.log 2>&1
+2 * * * * sh /home/likaiqing/shell/crawler/twitch_detailchannel_crawler.sh >/tmp/crawler/log/twitch_detailchannel_crawler.log 2>&1
+
+20 * * * * sh /home/likaiqing/shell/monitor/crawler_hour_monitor.sh > /tmp/crawler_hour_monitor.log 2>&1
+20 2 * * * sh /home/likaiqing/shell/monitor/douyu_danmu_gift_monitor.sh > /tmp/douyu_danmu_gift_monitor.log 2>&1
