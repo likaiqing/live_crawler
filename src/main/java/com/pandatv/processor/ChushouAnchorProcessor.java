@@ -35,7 +35,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
                 String json = page.getJson().toString();
                 JSONArray items = JsonPath.read(json, "$.data.items");
                 String breakpoint = JsonPath.read(json, "$.data.breakpoint");
-                if (items.size() > 0) {
+                if (items.size() > 0 && anchorObjs.size() < Const.CHUSHOUMAX) {
                     page.addTargetRequest(urlTmp + breakpoint);
                     JSONArray read = JsonPath.read(json, "$.data.items");
                     for (int i = 0; i < read.size(); i++) {
