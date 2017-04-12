@@ -45,6 +45,7 @@ public abstract class PandaProcessor implements PageProcessor {
     protected static Set<String> twitchCatStrs = new HashSet<>();
     protected static Set<TwitchChannel> twitchListObjes = new HashSet<>();
     protected static Set<String> twitchListStrs = new HashSet<>();
+    protected static int thread = 1;
 
     protected Site site = Site.me()
             .setSleepTime(10)

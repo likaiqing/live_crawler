@@ -33,9 +33,13 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static String competitionUrl = "http://www.huya.com/cache.php?m=HotRecApi&do=getLiveInfo&yyid=";
     private static int exCnt;
     private static Pattern isNotlivd = Pattern.compile("\"isNotLive\" : \"(\\d)\",");
+    int i = 0;
 
     @Override
     public void process(Page page) {
+        synchronized (this) {
+            i++;
+        }
         String curUrl = page.getUrl().toString();
         logger.info("process url:{}", curUrl);
 //        System.out.println("curUrl:"+curUrl);
@@ -47,7 +51,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 //                    return;
 //                }
                 int newPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
-                if (all.size() > 0 || newPage<=1) {
+                if (all.size() > 0 || newPage <= 1) {
                     page.putField("json", page.getJson().toString());
                     if (newPage < 800) {
                         String newUrl = this.tmpUrl + (newPage);
@@ -152,16 +156,19 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         job = args[0];//
         date = args[1];
         hour = args[2];
-        if (args.length == 4 && args[3].contains(",")) {
-            mailHours = args[3];
+        Const.GENERATORKEY = "H05972909IM78TAP";
+        Const.GENERATORPASS = "36F7B5D8703A39C5";
+        thread = 3;
+        if (args.length == 4) {
+            thread = Integer.parseInt(args[3]);
         }
         String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
-        Spider.create(new HuyaDetailAnchorProcessor()).thread(25).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new HuyaDetailAnchorProcessor()).thread(thread).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (DetailAnchor detailAnchor : detailAnchorObjs) {
             detailAnchors.add(detailAnchor.toString());
         }
-        logger.info("时间:" + date + " " + hour+"");
+        logger.info("时间:" + date + " " + hour + "");
         CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);
     }
 }

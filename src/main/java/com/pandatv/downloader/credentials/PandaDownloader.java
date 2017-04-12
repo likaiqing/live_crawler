@@ -101,6 +101,11 @@ public class PandaDownloader extends AbstractDownloader {
                 synchronized (this) {
                     proxyRetry++;
                 }
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
                 if (proxyRetry > Const.PROXYRETRY && proxyRetry % 200 == 0) {
                     new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", PandaProcessor.job + "代理非200次数超出" + Const.PROXYRETRY);
                 }
