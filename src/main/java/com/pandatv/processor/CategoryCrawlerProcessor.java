@@ -16,7 +16,10 @@ import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by likaiqing on 2016/12/13.
@@ -25,25 +28,33 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
     private static Set<String> categories = new HashSet<>();
     private static final Logger logger = LoggerFactory.getLogger(CategoryCrawlerProcessor.class);
     private static int exCnt;
+    private static String chuchouCate = "https://chushou.tv/gamezone/all-areas.htm";
+    private static String douyuCate = "https://www.douyu.com/directory";
+    private static String huyaCate = "http://www.huya.com/g";
+    private static String pandaCate = "http://www.panda.tv/cate";
+    private static String longzhuCate = "http://longzhu.com/games/?from=rmallgames";
+    private static String zhanqiCate = "https://www.zhanqi.tv/games";
+    private static String quanminCate = "http://www.quanmin.tv/json/categories/list.json?_t=";
+
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
         logger.info("process url:{}", curUrl);
         try {
             Html html = page.getHtml();
-            if (curUrl.equals("https://www.douyu.com/directory")) {
+            if (curUrl.equals(douyuCate)) {
                 List<String> urls = html.xpath("//ul[@id='live-list-contentbox']/li/a/@href").all();
                 List<String> names = html.xpath("//ul[@id='live-list-contentbox']/li/a/p/text()").all();
                 add2Categories(curUrl, urls, names, PlatIdEnum.DOUYU);
-            } else if (curUrl.equals("http://www.huya.com/g")) {
+            } else if (curUrl.equals(huyaCate)) {
                 List<String> urls = html.xpath("//ul[@id='js-game-list']/li/a/@href").all();
                 List<String> names = html.xpath("//ul[@id='js-game-list']/li/a/p/text()").all();
                 add2Categories(curUrl, urls, names, PlatIdEnum.HUYA);
-            } else if (curUrl.equals("https://www.zhanqi.tv/games")) {
+            } else if (curUrl.equals(zhanqiCate)) {
                 List<String> urls = html.xpath("//ul[@id='game-list-panel']/li/a/@href").all();
                 List<String> names = html.xpath("//ul[@id='game-list-panel']/li/a/p/text()").all();
                 add2Categories(curUrl, urls, names, PlatIdEnum.ZHANQI);
-            } else if (curUrl.startsWith("http://www.quanmin.tv")) {
+            } else if (curUrl.startsWith(quanminCate)) {
                 JSONArray jsonArray = JsonPath.read(page.getJson().get(), "$");
                 for (Object obj : jsonArray) {
                     String eName = JsonPath.read(obj, "$.slug");
@@ -53,20 +64,20 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
                     sb.append(Const.SEP).append(PlatIdEnum.QUANMIN.paltName).append(Const.SEP).append(eName).append(Const.SEP).append(cName).append(Const.SEP).append(url).append(Const.SEP).append(curUrl).append(Const.SEP).append(getRandomStr());
                     categories.add(sb.toString());
                 }
-            } else if (curUrl.equals("http://longzhu.com/games/?from=rmallgames")) {
+            } else if (curUrl.equals(longzhuCate)) {
                 List<String> urls = html.xpath("//div[@class='list-con']/div[@class='list-item']/h2/a/@href").all();
                 List<String> names = html.xpath("//div[@class='list-con']/div[@class='list-item']/h2/a/text()").all();
                 add2Categories(curUrl, urls, names, PlatIdEnum.LONGZHU);
-            } else if (curUrl.equals("http://chushou.tv/gamezone.htm")) {
-                List<String> urls = html.xpath("//div[@class='gamezoneBlock']/div[@class='per_gamezone_block']/div[@class='per_gamezone_content']/a/@href").all();
-                List<String> names = html.xpath("//div[@class='gamezoneBlock']/div[@class='per_gamezone_block']/div[@class='per_gamezone_content']/a/span/text()").all();
+            } else if (curUrl.equals(chuchouCate)) {
+                List<String> urls = html.xpath("//div[@class='gamezone-areas-con']/div[@class='zone-item']/div[@class='zone-item-con']/a/@href").all();
+                List<String> names = html.xpath("//div[@class='gamezone-areas-con']/div[@class='zone-item']/div[@class='zone-item-con']/span/text()").all();
                 add2Categories(curUrl, urls, names, PlatIdEnum.CHUSHOU);
-            } else if (curUrl.equals("http://www.panda.tv/cate")) {
+            } else if (curUrl.equals(pandaCate)) {
                 List<String> urls = html.xpath("//ul[@class='sort-menu video-list clearfix']/li/a/@href").all();
                 List<String> names = html.xpath("//ul[@class='sort-menu video-list clearfix']/li/a/div[@class='cate-title']/text()").all();
                 add2Categories(curUrl, urls, names, PlatIdEnum.PANDA);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
@@ -100,7 +111,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_category/" + date;
-        Spider.create(new CategoryCrawlerProcessor()).addUrl("https://www.douyu.com/directory", "http://www.huya.com/g", "https://www.zhanqi.tv/games", "http://www.quanmin.tv/json/categories/list.json?_t=" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date()), "http://longzhu.com/games/?from=rmallgames", "http://chushou.tv/gamezone.htm", "http://www.panda.tv/cate").addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new CategoryCrawlerProcessor()).addUrl(douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate + new SimpleDateFormat("yyyyMMddHHmm").format(new Date())).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         CommonTools.writeAndMail(hivePaht, Const.CATEGORYFINISH, categories);
     }
 

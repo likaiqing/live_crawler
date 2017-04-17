@@ -89,7 +89,7 @@ public class Const {
     public static final String ZHANQIINDEXREC = "zhanqiindexrec";
     public static final String LONGZHUINDEXREC = "longzhuindexrec";
     public static final String LONGZHUDETAILANCHOR = "longzhudetailanchor";
-    public static final String QUANMININDEXREC = "quanmindexrec";
+    public static final String QUANMININDEXREC = "quanminindexrec";
     public static final String CHUSHOUINDEXREC = "chushouindexrec";
     public static final String TWITCH = "twitch";
     public static final String TWITCHCATEANDLISTFINISH = "twitch版区列表页抓取结束";

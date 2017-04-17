@@ -98,18 +98,22 @@ public class PandaDownloader extends AbstractDownloader {
             } else {
                 logger.warn(" PandaDownloader code error " + statusCode + "\t" + request.getUrl());
 //                System.out.println("code error " + statusCode + "\t" + request.getUrl());
-                synchronized (this) {
-                    proxyRetry++;
+                if (statusCode == 429){
+                    synchronized (this) {
+                        proxyRetry++;
+                    }
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                    if (proxyRetry > Const.PROXYRETRY && proxyRetry % 200 == 0) {
+                        new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", PandaProcessor.job + "代理非200次数超出" + Const.PROXYRETRY);
+                    }
+                    return addToCycleRetry(request, site);//默认只会再重复1次
+                }else {
+                    return null;
                 }
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                if (proxyRetry > Const.PROXYRETRY && proxyRetry % 200 == 0) {
-                    new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", PandaProcessor.job + "代理非200次数超出" + Const.PROXYRETRY);
-                }
-                return addToCycleRetry(request, site);//默认只会再重复1次
             }
 //        } catch (SocketTimeoutException se) {
 //            logger.error("time out url:" + request.getUrl());
