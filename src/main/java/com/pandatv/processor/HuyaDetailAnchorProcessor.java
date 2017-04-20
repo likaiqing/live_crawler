@@ -133,7 +133,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         hour = args[2];
         Const.GENERATORKEY = "H05972909IM78TAP";
         Const.GENERATORPASS = "36F7B5D8703A39C5";
-        thread = 20;
+        thread = 5;
         if (args.length == 4) {
             thread = Integer.parseInt(args[3]);
         }
