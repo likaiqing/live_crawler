@@ -18,7 +18,9 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,11 +29,12 @@ import java.util.regex.Pattern;
  */
 public class HuyaDetailAnchorProcessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(HuyaDetailAnchorProcessor.class);
-    private static String tmpUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=";
+    private static String tmpUrl = "http://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=";
     private static String tmpHostUrl = "http://www.huya.com/";
     private static Set<String> competitionLive = new HashSet<>();
     private static String competitionUrl = "http://www.huya.com/cache.php?m=HotRecApi&do=getLiveInfo&yyid=";
     private static int exCnt;
+    private static String huyaDomain = "http://www.huya.com/";
     private static Pattern isNotlivd = Pattern.compile("\"isNotLive\" : \"(\\d)\",");
     int i = 0;
 
@@ -42,55 +45,26 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         }
         String curUrl = page.getUrl().toString();
         logger.info("process url:{}", curUrl);
-//        System.out.println("curUrl:"+curUrl);
         try {
             if (curUrl.startsWith(tmpUrl)) {
-                List<String> all = page.getJson().jsonPath("$.data.list").all();
-//                if (index++ > 10) {//测试使用,跑12页就行
-//                    page.setSkip(true);
-//                    return;
-//                }
-                int newPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1)) + 1;
-                if (all.size() > 0 || newPage <= 1) {
-                    page.putField("json", page.getJson().toString());
-                    if (newPage < 800) {
-                        String newUrl = this.tmpUrl + (newPage);
-                        page.addTargetRequest(newUrl);
-                    }
-                    List<String> rooms = page.getJson().jsonPath("$.data.list").all();
+                String json = page.getJson().get();
+                int totalPage = JsonPath.read(json, "$.data.totalPage");
+                int curPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('=') + 1));
+                int newPage = curPage + 1;
+                if (curPage < totalPage) {
+                    page.addTargetRequest(tmpUrl + newPage);
+                    List<String> rooms = page.getJson().jsonPath("$.data.datas").all();
                     for (String room : rooms) {
-                        String rid = JsonPath.read(room, "$.privateHost");
-                        Request request = new Request(tmpHostUrl + rid);
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("rid", rid);
-                        request.setExtras(map);
+                        String privateHost = JsonPath.read(room, "$.privateHost").toString();
+                        Request request = new Request(huyaDomain + privateHost);
+                        request.putExtra("rid", privateHost);
                         page.addTargetRequest(request);
                     }
                 }
-                page.setSkip(true);
-            } else if (curUrl.startsWith(competitionUrl)) {
-                String json = UnicodeTools.unicodeToString(page.getJson().get());
-                DetailAnchor detailAnchor = new DetailAnchor();
-                String rid = null == page.getRequest().getExtra("rid") ? "" : page.getRequest().getExtra("rid").toString();
-                detailAnchor.setRid(rid);
-                detailAnchor.setName(JsonPath.read(json, "$.data." + rid + ".nick").toString());
-                detailAnchor.setTitle(JsonPath.read(json, "$.data." + rid + ".introduction").toString());
-                detailAnchor.setViewerNum(Integer.parseInt(JsonPath.read(json, "$.data." + rid + ".totalCount").toString()));
-                detailAnchor.setFollowerNum(Integer.parseInt(JsonPath.read(json, "$.data." + rid + ".activityCount").toString()));
-                detailAnchor.setCategorySec(JsonPath.read(json, "$.data." + rid + ".gameFullName").toString());
-                detailAnchorObjs.add(detailAnchor);
-                page.setSkip(true);
+
             } else {
-                Object cycleTriedTimes = page.getRequest().getExtra("_cycle_tried_times");
-                if (null != cycleTriedTimes && (int) cycleTriedTimes >= Const.CYCLERETRYTIMES - 1) {
-                    timeOutUrl.append(curUrl).append(";");
-                }
                 Html html = page.getHtml();
-                Matcher matcher = isNotlivd.matcher(html.toString());
-                if (matcher.find() && matcher.group(1).equals("1")) {
-                    return;
-                }
-                String rid = null == page.getRequest().getExtra("rid") ? "" : page.getRequest().getExtra("rid").toString();
+                String rid = page.getRequest().getExtra("rid").toString();
                 String name = html.xpath("//span[@class='host-name']/text()").get();
                 String title = html.xpath("//h1[@class='host-title']/text()").get();
                 String categoryFir = "";
@@ -108,8 +82,8 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                     viewerStr = viewerStr.replace(",", "");
                 }
                 String followerStr = html.xpath("//div[@id='activityCount']/text()").get();
-                String tag = html.xpath("//span[@class='host-channel']/a/text()").all().toString();//逗号分隔
-                String notice = html.xpath("//div[@class='notice-cont']/text()").get();
+//                String tag = html.xpath("//span[@class='host-channel']/a/text()").all().toString();//逗号分隔
+//                String notice = html.xpath("//div[@class='notice-cont']/text()").get();
                 DetailAnchor detailAnchor = new DetailAnchor();
                 detailAnchor.setRid(rid);
                 detailAnchor.setName(name);
@@ -118,8 +92,8 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setCategorySec(categorySec);
                 detailAnchor.setViewerNum(StringUtils.isEmpty(viewerStr) ? 0 : Integer.parseInt(viewerStr));
                 detailAnchor.setFollowerNum(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr));
-                detailAnchor.setTag(tag);
-                detailAnchor.setNotice(notice);
+                detailAnchor.setTag("");
+                detailAnchor.setNotice("");
                 detailAnchor.setJob(job);
                 detailAnchor.setUrl(curUrl);
                 detailAnchorObjs.add(detailAnchor);
@@ -141,6 +115,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 System.exit(1);
             }
         }
+        page.setSkip(true);
     }
 
     @Override
@@ -158,13 +133,13 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         hour = args[2];
         Const.GENERATORKEY = "H05972909IM78TAP";
         Const.GENERATORPASS = "36F7B5D8703A39C5";
-        thread = 3;
+        thread = 20;
         if (args.length == 4) {
             thread = Integer.parseInt(args[3]);
         }
-        String firstUrl = "http://www.huya.com/cache.php?m=Live&do=ajaxAllLiveByPage&pageNum=1&page=1";
+        String firstUrl = "http://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=1";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
-        Spider.create(new HuyaDetailAnchorProcessor()).thread(thread).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new HuyaDetailAnchorProcessor()).thread(thread).addUrl(tmpUrl + 1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (DetailAnchor detailAnchor : detailAnchorObjs) {
             detailAnchors.add(detailAnchor.toString());
         }
