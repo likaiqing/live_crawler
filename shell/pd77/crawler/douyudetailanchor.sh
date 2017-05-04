@@ -8,4 +8,4 @@ date=`date +%Y%m%d`
 hour=`date +%H`
 minute=`date +%M`
 task=douyudetailanchor
-$java -jar $jar $task ${date} ${hour}
+$java -jar $jar $task ${date} ${hour} 15

@@ -7,3 +7,5 @@ phantomjsdriver.log
 *.jar
 src/test
 *.txt
+src/main/java/META-INF
+classes/
