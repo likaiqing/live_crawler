@@ -5,6 +5,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,13 +32,13 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         if (args.length == 4 && args[3].contains(",")) {
             mailHours = args[3];
         }
-        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
+//        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         String firstUrl = "https://www.douyu.com/directory/all";
         Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(1).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
-        for (Anchor anchor : anchorObjs) {
-            anchors.add(anchor.toString());
-        }
-        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISH, anchors);
+//        for (Anchor anchor : anchorObjs) {
+//            anchors.add(anchor.toString());
+//        }
+//        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISH, anchors);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                 List<String> popularities = page.getHtml().xpath("//body/li/a/div[@class='mes']/p/span[@class='dy-num fr']/text()").all();
                 List<String> categories = page.getHtml().xpath("//body/li/a/div[@class='mes']/div[@class='mes-tit']/span/text()").all();
                 for (int i = 0; i < names.size(); i++) {
-                    Anchor anchor = new Anchor();
+//                    Anchor anchor = new Anchor();
                     String popularitiyStr = popularities.get(i);
                     int popularitiyNum = CommonTools.createNum(popularitiyStr);
                     String rid = rids.get(i);
@@ -75,17 +77,18 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                     if (!CommonTools.isValidUnicode(rid)) {
                         logger.info("rid is not valid unicode,url:{},rid:{}", url, rid);
                     }
-                    anchor.setRid(rid);
-                    anchor.setName(names.get(i));
-                    anchor.setTitle(titles.get(i));
-                    anchor.setCategory(categories.get(i));
-                    anchor.setPopularityStr(popularitiyStr);
-                    anchor.setPopularityNum(popularitiyNum);
-                    anchor.setJob(job);
-                    anchor.setPlat(Const.DOUYU);
-                    anchor.setGame(Const.GAMEALL);
-                    anchor.setUrl(curUrl);
-                    anchorObjs.add(anchor);
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(names.get(i))).append("&tt=").append(CommonTools.getFormatStr(titles.get(i))).append("&cate=").append(categories.get(i)).append("&pop_s=").append(popularitiyStr).append("&pop_n=").append(popularitiyNum).append("&task=").append(job).append("&plat=").append(Const.DOUYU).append("&url_c=").append(Const.GAMEALL).append("&c_time=").append(createTimeFormat.format(new Date())).append("&url=").append(curUrl).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+//                    anchor.setRid(rid);
+//                    anchor.setName(names.get(i));
+//                    anchor.setTitle(titles.get(i));
+//                    anchor.setCategory(categories.get(i));
+//                    anchor.setPopularityStr(popularitiyStr);
+//                    anchor.setPopularityNum(popularitiyNum);
+//                    anchor.setJob(job);
+//                    anchor.setPlat(Const.DOUYU);
+//                    anchor.setGame(Const.GAMEALL);
+//                    anchor.setUrl(curUrl);
+//                    anchorObjs.add(anchor);
                 }
             }
         }catch (Exception e){
