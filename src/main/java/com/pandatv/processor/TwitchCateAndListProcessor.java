@@ -8,6 +8,7 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.TwitchCategory;
 import com.pandatv.pojo.TwitchChannel;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import net.minidev.json.JSONArray;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
@@ -16,7 +17,6 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.scheduler.PriorityScheduler;
 
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -49,19 +49,20 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     int giantBombId = JsonPath.read(cate, "$.game.giantbomb_id");
                     int viewers = JsonPath.read(cate, "$.viewers");
                     int channels = JsonPath.read(cate, "$.channels");
-                    TwitchCategory twitchCategory = new TwitchCategory();
-                    twitchCategory.setId(id);
-                    twitchCategory.setGiantBombId(giantBombId);
-                    twitchCategory.setPlat(Const.TWITCH);
-                    twitchCategory.setName(name);
-                    twitchCategory.setViewers(viewers);
-                    twitchCategory.setChannels(channels);
-                    twitchCategory.setCurUrl(curUrl);
-                    twitchCategory.setNextUrl(nextUrl);
-                    twitchCategory.setTask(job);
-                    twitchCatObjes.add(twitchCategory);
-                    String encode = URLEncoder.encode(name, "utf-8").replace("%20", "+");
-                    page.addTargetRequest(new Request(urlPre + encode + "&limit=20&offset=0").setPriority(1));
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCATEEVENT).append("&par_d=").append(date).append("&id=").append(id).append("&g_b_id=").append(giantBombId).append("&plat=").append(Const.TWITCH).append("&nm=").append(name).append("&vies=").append(viewers).append("&chas=").append(channels).append("&cur_u=").append(curUrl).append("&next_u=").append(nextUrl).append("&task=").append(job).append("&c_time=").append(createTimeFormat.format(new Date())).append("&t_ran=").append(getRandomStr()).toString());
+//                    TwitchCategory twitchCategory = new TwitchCategory();
+//                    twitchCategory.setId(id);
+//                    twitchCategory.setGiantBombId(giantBombId);
+//                    twitchCategory.setPlat(Const.TWITCH);
+//                    twitchCategory.setName(name);
+//                    twitchCategory.setViewers(viewers);
+//                    twitchCategory.setChannels(channels);
+//                    twitchCategory.setCurUrl(curUrl);
+//                    twitchCategory.setNextUrl(nextUrl);
+//                    twitchCategory.setTask(job);
+//                    twitchCatObjes.add(twitchCategory);
+//                    String encode = URLEncoder.encode(name, "utf-8").replace("%20", "+");
+//                    page.addTargetRequest(new Request(urlPre + encode + "&limit=20&offset=0").setPriority(1));
 //                    pageListurls.add(urlPre + encode + "&limit=20&offset=0");
                 }
                 Map<String, String> splitMap = Splitter.on("&").withKeyValueSeparator("=").split(curUrl.substring(curUrl.indexOf("?") + 1));
@@ -80,7 +81,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                 int total = JsonPath.read(json, "$._total");
                 for (int i = 0; i < arr.size(); i++) {
                     String str = arr.get(i).toString();
-                    TwitchChannel channel = new TwitchChannel();
+//                    TwitchChannel channel = new TwitchChannel();
                     int id = JsonPath.read(str, "$.channel._id");
                     String name = JsonPath.read(str, "$.channel.name");
                     String displayName = JsonPath.read(str, "$.channel.display_name");
@@ -93,22 +94,23 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     int viewers = JsonPath.read(str, "$.viewers");
                     int viewsTol = JsonPath.read(str, "$.channel.views");
                     int followers = JsonPath.read(str, "$.channel.followers");
-                    channel.setId(id);
-                    channel.setNickName(name);
-                    channel.setDisplayName(displayName);
-                    channel.setTitle(title);
-                    channel.setPlat(Const.TWITCH);
-                    channel.setGame(game);
-                    channel.setBroadcasterLan(broadcasterLan);
-                    channel.setLanguage(language);
-                    channel.setRegisterTime(registerTime);
-                    channel.setUrl(url);
-                    channel.setViewers(viewers);
-                    channel.setViewsTol(viewsTol);
-                    channel.setFollowers(followers);
-                    channel.setCurUrl(curUrl);
-                    channel.setTask(job);
-                    twitchListObjes.add(channel);
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCHAEVENT).append("&par_d=").append(date).append("&id=").append(id).append("&nick_nm=").append(name).append("&dis_nm=").append(displayName).append("&tt=").append(title).append("&plat=").append(Const.TWITCH).append("&game=").append(game).append("&broa_lan=").append(broadcasterLan).append("&lan=").append(language).append("&reg_time=").append(registerTime).append("&url=").append(url).append("&vies=").append(viewers).append("&vie_tol=").append(viewsTol).append("&fols=").append(followers).append("&cur_u=").append(curUrl).append("&task=").append(job).append("&c_time=").append(createTimeFormat.format(new Date())).append("&t_ran=").append(getRandomStr()).toString());
+//                    channel.setId(id);
+//                    channel.setNickName(name);
+//                    channel.setDisplayName(displayName);
+//                    channel.setTitle(title);
+//                    channel.setPlat(Const.TWITCH);
+//                    channel.setGame(game);
+//                    channel.setBroadcasterLan(broadcasterLan);
+//                    channel.setLanguage(language);
+//                    channel.setRegisterTime(registerTime);
+//                    channel.setUrl(url);
+//                    channel.setViewers(viewers);
+//                    channel.setViewsTol(viewsTol);
+//                    channel.setFollowers(followers);
+//                    channel.setCurUrl(curUrl);
+//                    channel.setTask(job);
+//                    twitchListObjes.add(channel);
                 }
                 int offSet = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf("=") + 1));
                 int newOffSet = 20;
@@ -148,15 +150,15 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
         Spider.create(new TwitchCateAndListProcessor()).thread(18).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
-        System.out.println("end:" + format.format(new Date()));
-        System.out.println(cnt);
-        for (TwitchCategory obj : twitchCatObjes) {
-            twitchCatStrs.add(obj.toString());
-        }
-        for (TwitchChannel obj : twitchListObjes) {
-            twitchListStrs.add(obj.toString());
-        }
-        CommonTools.writeAndMail(twitchCateHivePaht, Const.TWITCHCATEFINISH, twitchCatStrs);
-        CommonTools.writeAndMail(twitchListHivePaht, Const.TWITCHLISTFINISH, twitchListStrs);
+//        System.out.println("end:" + format.format(new Date()));
+//        System.out.println(cnt);
+//        for (TwitchCategory obj : twitchCatObjes) {
+//            twitchCatStrs.add(obj.toString());
+//        }
+//        for (TwitchChannel obj : twitchListObjes) {
+//            twitchListStrs.add(obj.toString());
+//        }
+//        CommonTools.writeAndMail(twitchCateHivePaht, Const.TWITCHCATEFINISH, twitchCatStrs);
+//        CommonTools.writeAndMail(twitchListHivePaht, Const.TWITCHLISTFINISH, twitchListStrs);
     }
 }

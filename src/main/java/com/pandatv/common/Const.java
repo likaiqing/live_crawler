@@ -101,4 +101,7 @@ public class Const {
     public static final String CATEGORYEVENT = "category";
     public static final String DOUYUGIFTIDEVENT = "douyu_gid";
     public static final String INDEXRECEVENT = "indexrec";
+    public static final String TWITCHCATEEVENT = "twitch_cate";
+    public static final String TWITCHCHAEVENT = "twitch_cha";
+    public static final String TWITCHDETAILCHAEVENT = "twitch_d_cha";
 }
