@@ -5,11 +5,10 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.pojo.TwitchCategory;
-import com.pandatv.pojo.TwitchChannel;
-import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import net.minidev.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -26,6 +25,7 @@ import java.util.Map;
  */
 public class TwitchCateAndListProcessor extends PandaProcessor {
     private static int cnt;
+    private static final Logger logger = LoggerFactory.getLogger(TwitchCateAndListProcessor.class);
 //    private static List<String> pageListurls = new ArrayList<>();
     /**
      * 列表页url前缀
@@ -34,6 +34,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
 
     @Override
     public void process(Page page) {
+        requests++;
         String json = page.getJson().get();
         String curUrl = page.getUrl().get();
 //        Map<String, String> splitMap = Splitter.on("&").withKeyValueSeparator("=").split(curUrl.substring(curUrl.indexOf("=") + 1));
@@ -179,7 +180,11 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         String firstUrl = "https://api.twitch.tv/kraken/games/top?limit=40&on_site=1";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
+        long start = System.currentTimeMillis();
         Spider.create(new TwitchCateAndListProcessor()).thread(18).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
+        long end = System.currentTimeMillis();
+        long secs = (end - start) / 1000;
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
 //        System.out.println("end:" + format.format(new Date()));
 //        System.out.println(cnt);
 //        for (TwitchCategory obj : twitchCatObjes) {

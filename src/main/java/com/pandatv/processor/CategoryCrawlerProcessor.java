@@ -39,6 +39,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
 
     @Override
     public void process(Page page) {
+        requests++;
         String curUrl = page.getUrl().get();
         logger.info("process url:{}", curUrl);
         try {
@@ -120,7 +121,11 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_category/" + date;
+        long start = System.currentTimeMillis();
         Spider.create(new CategoryCrawlerProcessor()).addUrl(douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate + new SimpleDateFormat("yyyyMMddHHmm").format(new Date())).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        long end = System.currentTimeMillis();
+        long secs = (end - start) / 1000;
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
 //        CommonTools.writeAndMail(hivePaht, Const.CATEGORYFINISH, categories);
     }
 

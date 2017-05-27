@@ -59,6 +59,7 @@ public class IndexRecProcessor extends PandaProcessor {
 
     @Override
     public void process(Page page) {
+        requests++;
         String curUrl = page.getUrl().toString();
         logger.info("process url:{}", curUrl);
         try {
@@ -476,7 +477,11 @@ public class IndexRecProcessor extends PandaProcessor {
         quanminIndex = "http://www.quanmin.tv/json/page/pc-index/info2.json?_t=" + quanminDf;
         chushouindex = "https://chushou.tv/";
         String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex
+        long start = System.currentTimeMillis();
         Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        long end = System.currentTimeMillis();
+        long secs = (end - start) / 1000;
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
 //            detailAnchors.add(entry.getValue().toString());
             IndexRec indexRec = entry.getValue();

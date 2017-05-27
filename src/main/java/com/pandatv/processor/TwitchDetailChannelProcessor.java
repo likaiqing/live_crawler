@@ -8,6 +8,8 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.TwitchDetailChannel;
 import com.pandatv.tools.HttpUtil;
 import net.minidev.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -24,6 +26,7 @@ import java.util.*;
  */
 public class TwitchDetailChannelProcessor extends PandaProcessor {
     private static int cnt;
+    private static final Logger logger = LoggerFactory.getLogger(TwitchDetailChannelProcessor.class);
     private static List<String> pageListurls = new ArrayList<>();
     private static Map<String, TwitchDetailChannel> map = new HashMap<>();
 
@@ -37,6 +40,7 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
 
     @Override
     public void process(Page page) {
+        requests++;
         String json = page.getJson().get();
         String curUrl = page.getUrl().get();
         try {
@@ -161,9 +165,13 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
         String firstUrl = "https://api.twitch.tv/kraken/games/top?limit=40&on_site=1";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
+        long start = System.currentTimeMillis();
         Spider.create(new TwitchDetailChannelProcessor()).thread(20).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
         System.out.println("end:" + format.format(new Date()));
         System.out.println(cnt);
+        long end = System.currentTimeMillis();
+        long secs = (end - start) / 1000;
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
         for (Map.Entry<String, TwitchDetailChannel> entry : map.entrySet()) {
             TwitchDetailChannel tdc = entry.getValue();
             if (null != tdc.getTeamName() && null != tdc.getVideos() && null != tdc.getFollowing()) {

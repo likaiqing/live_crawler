@@ -42,6 +42,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public void process(Page page) {
+        requests++;
         synchronized (this) {
             i++;
         }
@@ -154,7 +155,11 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         }
         String firstUrl = "http://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=1";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
+        long start = System.currentTimeMillis();
         Spider.create(new HuyaDetailAnchorProcessor()).thread(thread).addUrl(tmpUrl + 1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        long end = System.currentTimeMillis();
+        long secs = (end - start) / 1000;
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
 //        for (DetailAnchor detailAnchor : detailAnchorObjs) {
 //            detailAnchors.add(detailAnchor.toString());
 //        }

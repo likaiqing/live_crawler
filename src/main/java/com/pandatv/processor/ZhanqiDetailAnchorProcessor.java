@@ -36,6 +36,7 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public void process(Page page) {
+        requests++;
         String curUrl = page.getUrl().get();
         logger.info("process url:{}", curUrl);
         try {
@@ -141,7 +142,11 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
+        long start = System.currentTimeMillis();
         Spider.create(new ZhanqiDetailAnchorProcessor()).thread(1).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        long end = System.currentTimeMillis();
+        long secs = (end - start) / 1000;
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
 //        for (DetailAnchor detailAnchor : detailAnchorObjs) {
 //            detailAnchors.add(detailAnchor.toString());
 //        }

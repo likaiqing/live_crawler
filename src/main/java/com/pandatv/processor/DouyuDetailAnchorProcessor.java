@@ -34,6 +34,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public void process(Page page) {
+        requests++;
         String curUrl = page.getUrl().toString();
         logger.info("url:" + curUrl);
         try {
@@ -193,7 +194,11 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         }
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
+        long start = System.currentTimeMillis();
         Spider.create(new DouyuDetailAnchorProcessor()).thread(thread).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
+        long end = System.currentTimeMillis();
+        long secs = (end - start) / 1000;
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
 //        for (DetailAnchor detailAnchor : detailAnchorObjs) {
 //            detailAnchors.add(detailAnchor.toString());
 //        }

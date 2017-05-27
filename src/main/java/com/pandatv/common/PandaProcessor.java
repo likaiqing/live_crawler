@@ -46,7 +46,8 @@ public abstract class PandaProcessor implements PageProcessor {
     protected static int thread = 1;
     private static List<String> userAgents = new ArrayList<>();
     private static String userAgent = "";
-    protected static SimpleDateFormat createTimeFormat =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    protected static SimpleDateFormat createTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    protected static int requests = 0;
 
     static {
         int r = (int) Math.random() * 10;
