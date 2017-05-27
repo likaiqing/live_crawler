@@ -6,6 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -137,11 +138,15 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new ChushouDetailAnchorProcessor()).thread(2).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (String rid : weightFollowRids) {
-            detailAnchors.add(map.get(rid).toString());
+//            detailAnchors.add(map.get(rid).toString());
+            DetailAnchor da = map.get(rid);
+            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(da.getName())).append("&tt=").append(CommonTools.getFormatStr(da.getTitle())).append("&cate_fir=&cate_sec=").append(da.getCategorySec()).append("&on_num=").append(da.getViewerNum()).append("&fol_num=").append(da.getFollowerNum()).append("&task=").append(job).append("&rank=&w_str=&w_num=").append(da.getWeightNum()).append("&tag=&url=").append(da.getUrl()).append("&c_time=").append(createTimeFormat.format(new Date())).append("&notice=&last_s_t=").append(da.getLastStartTime()).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-//        for (Map.Entry<String, DetailAnchor> entry : map.entrySet()) {
-//            detailAnchors.add(entry.getValue().toString());
-//        }
-        CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISHDETAIL, detailAnchors);
+//        CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISHDETAIL, detailAnchors);
     }
 }

@@ -6,6 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import com.pandatv.tools.UnicodeTools;
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +19,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -84,19 +86,20 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 String followerStr = html.xpath("//div[@id='activityCount']/text()").get();
 //                String tag = html.xpath("//span[@class='host-channel']/a/text()").all().toString();//逗号分隔
 //                String notice = html.xpath("//div[@class='notice-cont']/text()").get();
-                DetailAnchor detailAnchor = new DetailAnchor();
-                detailAnchor.setRid(rid);
-                detailAnchor.setName(name);
-                detailAnchor.setTitle(title);
-                detailAnchor.setCategoryFir(categoryFir);
-                detailAnchor.setCategorySec(categorySec);
-                detailAnchor.setViewerNum(StringUtils.isEmpty(viewerStr) ? 0 : Integer.parseInt(viewerStr));
-                detailAnchor.setFollowerNum(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr));
-                detailAnchor.setTag("");
-                detailAnchor.setNotice("");
-                detailAnchor.setJob(job);
-                detailAnchor.setUrl(curUrl);
-                detailAnchorObjs.add(detailAnchor);
+                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate_fir=").append(categoryFir).append("&cate_sec=").append(categorySec).append("&on_num=").append(StringUtils.isEmpty(viewerStr) ? 0 : Integer.parseInt(viewerStr)).append("&fol_num=").append(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr)).append("&task=").append(job).append("&rank=&w_str=&w_num=&tag=&url=").append(curUrl).append("&c_time=").append(createTimeFormat.format(new Date())).append("&notice=&last_s_t=&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+//                DetailAnchor detailAnchor = new DetailAnchor();
+//                detailAnchor.setRid(rid);
+//                detailAnchor.setName(name);
+//                detailAnchor.setTitle(title);
+//                detailAnchor.setCategoryFir(categoryFir);
+//                detailAnchor.setCategorySec(categorySec);
+//                detailAnchor.setViewerNum(StringUtils.isEmpty(viewerStr) ? 0 : Integer.parseInt(viewerStr));
+//                detailAnchor.setFollowerNum(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr));
+//                detailAnchor.setTag("");
+//                detailAnchor.setNotice("");
+//                detailAnchor.setJob(job);
+//                detailAnchor.setUrl(curUrl);
+//                detailAnchorObjs.add(detailAnchor);
                 page.setSkip(true);
             }
         } catch (Exception e) {
@@ -140,10 +143,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "http://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=1";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new HuyaDetailAnchorProcessor()).thread(thread).addUrl(tmpUrl + 1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        for (DetailAnchor detailAnchor : detailAnchorObjs) {
-            detailAnchors.add(detailAnchor.toString());
-        }
-        logger.info("时间:" + date + " " + hour + "");
-        CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);
+//        for (DetailAnchor detailAnchor : detailAnchorObjs) {
+//            detailAnchors.add(detailAnchor.toString());
+//        }
+//        logger.info("时间:" + date + " " + hour + "");
+//        CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);
     }
 }

@@ -7,8 +7,10 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.pojo.GiftInfo;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import us.codecraft.webmagic.Page;
@@ -17,6 +19,7 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -82,21 +85,22 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 String name = JsonPath.read(json, "$.data.owner_name");
                 String title = JsonPath.read(json, "$.data.room_name");
                 String categorySec = JsonPath.read(json, "$.data.cate_name");
-                int viewerStr = JsonPath.read(json, "$.data.online");
+                int viewers = JsonPath.read(json, "$.data.online");
                 String followerStr = JsonPath.read(json, "$.data.fans_num");
                 String weightStr = JsonPath.read(json, "$.data.owner_weight");
                 String lastStartTime = JsonPath.read(json, "$.data.start_time");
-                detailAnchor.setRid(rid);
-                detailAnchor.setName(name);
-                detailAnchor.setTitle(title);
-                detailAnchor.setCategorySec(categorySec);
-                detailAnchor.setViewerNum(viewerStr);
-                detailAnchor.setFollowerNum(Integer.parseInt(followerStr));
-                detailAnchor.setWeightNum(CommonTools.getDouyuWeight(weightStr));
-                detailAnchor.setUrl(curUrl);
-                detailAnchor.setLastStartTime(lastStartTime);
-                detailAnchor.setJob(job);
-                detailAnchorObjs.add(detailAnchor);
+                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate_fir=&cate_sec=").append(categorySec).append("&on_num=").append(viewers).append("&fol_num=").append(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr)).append("&task=").append(job).append("&rank=&w_str=&w_num=").append(CommonTools.getDouyuWeight(weightStr)).append("&tag=&url=").append(curUrl).append("&c_time=").append(createTimeFormat.format(new Date())).append("&notice=&last_s_t=").append(lastStartTime).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+//                detailAnchor.setRid(rid);
+//                detailAnchor.setName(name);
+//                detailAnchor.setTitle(title);
+//                detailAnchor.setCategorySec(categorySec);
+//                detailAnchor.setViewerNum(viewerStr);
+//                detailAnchor.setFollowerNum(Integer.parseInt(followerStr));
+//                detailAnchor.setWeightNum(CommonTools.getDouyuWeight(weightStr));
+//                detailAnchor.setUrl(curUrl);
+//                detailAnchor.setLastStartTime(lastStartTime);
+//                detailAnchor.setJob(job);
+//                detailAnchorObjs.add(detailAnchor);
 //                if (douyuGiftHours.contains(hour)) {
                 JSONArray gifts = JsonPath.read(json, "$.data.gift");
                 for (int i = 0; i < gifts.size(); i++) {
@@ -165,14 +169,14 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Spider.create(new DouyuDetailAnchorProcessor()).thread(thread).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
-        for (DetailAnchor detailAnchor : detailAnchorObjs) {
-            detailAnchors.add(detailAnchor.toString());
-        }
-        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
-        String giftIdPath = Const.COMPETITORDIR + "crawler_gift_id/" + date;
-        for (GiftInfo giftInfo : douyuGiftObjs) {
-            douyuGifts.add(giftInfo.toString());
-        }
-        CommonTools.writeAndMail(giftIdPath, Const.DOUYUGIFTIDFINISHDETAIL, douyuGifts);
+//        for (DetailAnchor detailAnchor : detailAnchorObjs) {
+//            detailAnchors.add(detailAnchor.toString());
+//        }
+//        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
+//        String giftIdPath = Const.COMPETITORDIR + "crawler_gift_id/" + date;
+//        for (GiftInfo giftInfo : douyuGiftObjs) {
+//            douyuGifts.add(giftInfo.toString());
+//        }
+//        CommonTools.writeAndMail(giftIdPath, Const.DOUYUGIFTIDFINISHDETAIL, douyuGifts);
     }
 }

@@ -7,6 +7,7 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
@@ -73,18 +74,19 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
                 int follow = JsonPath.read(json, "$.follow");
                 int weight = JsonPath.read(json, "$.weight");//统计的时候需要除以100
                 String lastStartTime = JsonPath.read(json, "$.play_at");//substring(0,16)
-                DetailAnchor detailAnchor = new DetailAnchor();
-                detailAnchor.setRid(rid + "");
-                detailAnchor.setName(name);
-                detailAnchor.setTitle(title);
-                detailAnchor.setCategorySec(category);
-                detailAnchor.setViewerNum(online);
-                detailAnchor.setFollowerNum(follow);
-                detailAnchor.setWeightNum((int) (weight / 100));
-                detailAnchor.setLastStartTime(lastStartTime.substring(0, 16));
-                detailAnchor.setJob(job);
-                detailAnchor.setUrl(curUrl);
-                detailAnchorObjs.add(detailAnchor);
+                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate_fir=&cate_sec=").append(category).append("&on_num=").append(online).append("&fol_num=").append(follow).append("&task=").append(job).append("&rank=&w_str=&w_num=").append((int) (weight / 100)).append("&tag=&url=").append(curUrl).append("&c_time=").append(createTimeFormat.format(new Date())).append("&notice=&last_s_t=").append(lastStartTime.substring(0, 16)).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+//                DetailAnchor detailAnchor = new DetailAnchor();
+//                detailAnchor.setRid(rid + "");
+//                detailAnchor.setName(name);
+//                detailAnchor.setTitle(title);
+//                detailAnchor.setCategorySec(category);
+//                detailAnchor.setViewerNum(online);
+//                detailAnchor.setFollowerNum(follow);
+//                detailAnchor.setWeightNum((int) (weight / 100));
+//                detailAnchor.setLastStartTime(lastStartTime.substring(0, 16));
+//                detailAnchor.setJob(job);
+//                detailAnchor.setUrl(curUrl);
+//                detailAnchorObjs.add(detailAnchor);
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
@@ -113,9 +115,9 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         String dateStr = format.format(new Date());
         Spider.create(new QuanminDetailAnchorProcessor()).thread(2).addUrl(firUrl + dateStr).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        for (DetailAnchor detailAnchor : detailAnchorObjs) {
-            detailAnchors.add(detailAnchor.toString());
-        }
-        CommonTools.writeAndMail(hivePaht, Const.QUANMINFINISHDETAIL, detailAnchors);
+//        for (DetailAnchor detailAnchor : detailAnchorObjs) {
+//            detailAnchors.add(detailAnchor.toString());
+//        }
+//        CommonTools.writeAndMail(hivePaht, Const.QUANMINFINISHDETAIL, detailAnchors);
     }
 }

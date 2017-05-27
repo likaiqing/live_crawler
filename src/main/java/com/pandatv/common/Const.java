@@ -95,6 +95,7 @@ public class Const {
     public static final String TWITCHCATEANDLISTFINISH = "twitch版区列表页抓取结束";
     public static final String TWITCHCATEANDLIST = "twitchcateandlist";
     public static final String TWITCHDETAILCHANNEL = "twitchdetailchannel";
-    public static final String DDPUNCHDOMAIN = "http://dd.panda.tv/player_punch.gif?event=";
+    public static final String DDPUNCHDOMAIN = "http://dd.panda.tv/crawler_punch.gif?event=";
     public static final String ANCHOREVENT = "anchor";
+    public static final String DETAILANCHOREVENT = "d_anchor";
 }
