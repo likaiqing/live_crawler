@@ -5,6 +5,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -93,8 +94,9 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
             StringBuffer sb = new StringBuffer();
             String url = urls.get(i);
             String name = names.get(i);
-            sb.append(platIdEnum.platId).append(Const.SEP).append(platIdEnum.paltName).append(Const.SEP).append(url.substring(url.lastIndexOf("/") + 1)).append(Const.SEP).append(name).append(Const.SEP).append(url).append(Const.SEP).append(curUrl).append(Const.SEP).append(getRandomStr());
-            categories.add(sb.toString());
+            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.CATEGORYEVENT).append("&p_id=").append(platIdEnum.platId).append("&p_nm=").append(platIdEnum.paltName).append("&e_n=").append(url.substring(url.lastIndexOf("/") + 1)).append("&c_n=").append(name).append("&url=").append(url).append("&ent_url=").append(curUrl).append("&t_ran=").append(getRandomStr()).toString());
+//            sb.append(platIdEnum.platId).append(Const.SEP).append(platIdEnum.paltName).append(Const.SEP).append(url.substring(url.lastIndexOf("/") + 1)).append(Const.SEP).append(name).append(Const.SEP).append(url).append(Const.SEP).append(curUrl).append(Const.SEP).append(getRandomStr());
+//            categories.add(sb.toString());
         }
     }
 
@@ -112,7 +114,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_category/" + date;
         Spider.create(new CategoryCrawlerProcessor()).addUrl(douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate + new SimpleDateFormat("yyyyMMddHHmm").format(new Date())).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        CommonTools.writeAndMail(hivePaht, Const.CATEGORYFINISH, categories);
+//        CommonTools.writeAndMail(hivePaht, Const.CATEGORYFINISH, categories);
     }
 
     public static enum PlatIdEnum {

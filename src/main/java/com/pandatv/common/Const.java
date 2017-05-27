@@ -98,4 +98,5 @@ public class Const {
     public static final String DDPUNCHDOMAIN = "http://dd.panda.tv/crawler_punch.gif?event=";
     public static final String ANCHOREVENT = "anchor";
     public static final String DETAILANCHOREVENT = "d_anchor";
+    public static final String CATEGORYEVENT = "category";
 }
