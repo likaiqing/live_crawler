@@ -118,20 +118,21 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                         e.printStackTrace();
                     }
                     int gExp = JsonPath.read(gift, "$.gx");
-                    GiftInfo douyuGift = new GiftInfo();
-                    douyuGift.setPlat(Const.DOUYU);
-                    douyuGift.setrId(rid);
-                    douyuGift.setCategory(categorySec);
-                    douyuGift.setGiftId(gId);
-                    douyuGift.setName(gName);
-                    try {
-                        douyuGift.setType(Integer.parseInt(gType));
-                        douyuGift.setPrice(gPrice);
-                        douyuGift.setExp(gExp);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    douyuGiftObjs.add(douyuGift);
+//                    GiftInfo douyuGift = new GiftInfo();
+//                    douyuGift.setPlat(Const.DOUYU);
+//                    douyuGift.setrId(rid);
+//                    douyuGift.setCategory(categorySec);
+//                    douyuGift.setGiftId(gId);
+//                    douyuGift.setName(gName);
+//                    try {
+//                        douyuGift.setType(Integer.parseInt(gType));
+//                        douyuGift.setPrice(gPrice);
+//                        douyuGift.setExp(gExp);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DOUYUGIFTIDEVENT).append("&par_d=").append(date).append("&plat=").append(Const.DOUYU).append("&cate=").append(categorySec).append("&rid=").append(rid).append("&g_id=").append(gId).append("&g_nm=").append(gName).append("&g_ty=").append(gType).append("&price=").append(gPrice).append("&exp=").append(gExp).append("&t_ran=").append(getRandomStr()).append("&c_time=").append(createTimeFormat.format(new Date())).toString());
+//                    douyuGiftObjs.add(douyuGift);
                 }
             }
 //            }

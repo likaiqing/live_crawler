@@ -99,4 +99,5 @@ public class Const {
     public static final String ANCHOREVENT = "anchor";
     public static final String DETAILANCHOREVENT = "d_anchor";
     public static final String CATEGORYEVENT = "category";
+    public static final String DOUYUGIFTIDEVENT = "douyu_gid";
 }
