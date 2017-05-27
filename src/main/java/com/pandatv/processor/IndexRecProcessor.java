@@ -6,6 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.IndexRec;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import com.pandatv.tools.UnicodeTools;
 import net.minidev.json.JSONArray;
@@ -477,8 +478,10 @@ public class IndexRecProcessor extends PandaProcessor {
         String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex
         Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
-            detailAnchors.add(entry.getValue().toString());
+//            detailAnchors.add(entry.getValue().toString());
+            IndexRec indexRec = entry.getValue();
+            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(indexRec.getRid()).append("&nm=").append(indexRec.getName()).append("&tt=").append(indexRec.getTitle()).append("&cate_fir=").append(indexRec.getCategoryFir()).append("&cate_sec=").append(indexRec.getCategorySec()).append("&on_num=").append(indexRec.getViewerNum()).append("&fol_num=").append(indexRec.getFollowerNum()).append("&task=").append(job).append("&rank=&w_str=&w_num=&tag=&url=").append(indexRec.getUrl()).append("&c_time=").append(createTimeFormat.format(new Date())).append("&notice=&last_s_t=&t_ran=").append(getRandomStr()).toString());
         }
-        CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
+//        CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
     }
 }
