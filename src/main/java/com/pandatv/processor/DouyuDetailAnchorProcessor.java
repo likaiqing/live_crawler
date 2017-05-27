@@ -89,7 +89,20 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 String followerStr = JsonPath.read(json, "$.data.fans_num");
                 String weightStr = JsonPath.read(json, "$.data.owner_weight");
                 String lastStartTime = JsonPath.read(json, "$.data.start_time");
-                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate_fir=&cate_sec=").append(categorySec).append("&on_num=").append(viewers).append("&fol_num=").append(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr)).append("&task=").append(job).append("&rank=&w_str=&w_num=").append(CommonTools.getDouyuWeight(weightStr)).append("&tag=&url=").append(curUrl).append("&c_time=").append(createTimeFormat.format(new Date())).append("&notice=&last_s_t=").append(lastStartTime).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+                        .append("&par_d=").append(date)
+                        .append("&rid=").append(rid)
+                        .append("&nm=").append(CommonTools.getFormatStr(name))
+                        .append("&tt=").append(CommonTools.getFormatStr(title))
+                        .append("&cate_fir=&cate_sec=").append(categorySec)
+                        .append("&on_num=").append(viewers)
+                        .append("&fol_num=").append(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr))
+                        .append("&task=").append(job)
+                        .append("&rank=&w_str=&w_num=").append(CommonTools.getDouyuWeight(weightStr))
+                        .append("&tag=&url=").append(curUrl)
+                        .append("&c_time=").append(createTimeFormat.format(new Date()))
+                        .append("&notice=&last_s_t=").append(lastStartTime)
+                        .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
 //                detailAnchor.setRid(rid);
 //                detailAnchor.setName(name);
 //                detailAnchor.setTitle(title);
@@ -131,7 +144,18 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
 //                    }
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DOUYUGIFTIDEVENT).append("&par_d=").append(date).append("&plat=").append(Const.DOUYU).append("&cate=").append(categorySec).append("&rid=").append(rid).append("&g_id=").append(gId).append("&g_nm=").append(gName).append("&g_ty=").append(gType).append("&price=").append(gPrice).append("&exp=").append(gExp).append("&t_ran=").append(getRandomStr()).append("&c_time=").append(createTimeFormat.format(new Date())).toString());
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DOUYUGIFTIDEVENT)
+                            .append("&par_d=").append(date)
+                            .append("&plat=").append(Const.DOUYU)
+                            .append("&cate=").append(categorySec)
+                            .append("&rid=").append(rid)
+                            .append("&g_id=").append(gId)
+                            .append("&g_nm=").append(gName)
+                            .append("&g_ty=").append(gType)
+                            .append("&price=").append(gPrice)
+                            .append("&exp=").append(gExp)
+                            .append("&t_ran=").append(getRandomStr())
+                            .append("&c_time=").append(createTimeFormat.format(new Date())).toString());
 //                    douyuGiftObjs.add(douyuGift);
                 }
             }

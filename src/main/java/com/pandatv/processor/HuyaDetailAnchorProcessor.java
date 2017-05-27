@@ -86,7 +86,19 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 String followerStr = html.xpath("//div[@id='activityCount']/text()").get();
 //                String tag = html.xpath("//span[@class='host-channel']/a/text()").all().toString();//逗号分隔
 //                String notice = html.xpath("//div[@class='notice-cont']/text()").get();
-                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate_fir=").append(categoryFir).append("&cate_sec=").append(categorySec).append("&on_num=").append(StringUtils.isEmpty(viewerStr) ? 0 : Integer.parseInt(viewerStr)).append("&fol_num=").append(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr)).append("&task=").append(job).append("&rank=&w_str=&w_num=&tag=&url=").append(curUrl).append("&c_time=").append(createTimeFormat.format(new Date())).append("&notice=&last_s_t=&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+                        .append("&par_d=").append(date)
+                        .append("&rid=").append(rid)
+                        .append("&nm=").append(CommonTools.getFormatStr(name))
+                        .append("&tt=").append(CommonTools.getFormatStr(title))
+                        .append("&cate_fir=").append(categoryFir)
+                        .append("&cate_sec=").append(categorySec)
+                        .append("&on_num=").append(StringUtils.isEmpty(viewerStr) ? 0 : Integer.parseInt(viewerStr))
+                        .append("&fol_num=").append(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr))
+                        .append("&task=").append(job)
+                        .append("&rank=&w_str=&w_num=&tag=&url=").append(curUrl)
+                        .append("&c_time=").append(createTimeFormat.format(new Date()))
+                        .append("&notice=&last_s_t=&t_ran=").append(PandaProcessor.getRandomStr()).toString());
 //                DetailAnchor detailAnchor = new DetailAnchor();
 //                detailAnchor.setRid(rid);
 //                detailAnchor.setName(name);

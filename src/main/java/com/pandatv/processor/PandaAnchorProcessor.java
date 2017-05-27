@@ -41,7 +41,20 @@ public class PandaAnchorProcessor extends PandaProcessor {
                     String category = JsonPath.read(obj, "$.classification.cname");
                     String popularitiyStr = JsonPath.read(obj, "$.person_num");
                     int popularitiyNum = Integer.parseInt(popularitiyStr);
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate=").append(category).append("&pop_s=").append(popularitiyStr).append("&pop_n=").append(popularitiyNum).append("&task=").append(job).append("&plat=").append(Const.PANDA).append("&url_c=").append(Const.GAMEALL).append("&c_time=").append(createTimeFormat.format(new Date())).append("&url=").append(curUrl).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+                            .append("&par_d=").append(date)
+                            .append("&rid=").append(rid)
+                            .append("&nm=").append(CommonTools.getFormatStr(name))
+                            .append("&tt=").append(CommonTools.getFormatStr(title))
+                            .append("&cate=").append(category)
+                            .append("&pop_s=").append(popularitiyStr)
+                            .append("&pop_n=").append(popularitiyNum)
+                            .append("&task=").append(job)
+                            .append("&plat=").append(Const.PANDA)
+                            .append("&url_c=").append(Const.GAMEALL)
+                            .append("&c_time=").append(createTimeFormat.format(new Date()))
+                            .append("&url=").append(curUrl)
+                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
 //                    Anchor anchor = new Anchor();
 //                    anchor.setRid(rid);
 //                    anchor.setName(name);

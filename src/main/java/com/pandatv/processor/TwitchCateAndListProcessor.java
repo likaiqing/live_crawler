@@ -49,7 +49,19 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     int giantBombId = JsonPath.read(cate, "$.game.giantbomb_id");
                     int viewers = JsonPath.read(cate, "$.viewers");
                     int channels = JsonPath.read(cate, "$.channels");
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCATEEVENT).append("&par_d=").append(date).append("&id=").append(id).append("&g_b_id=").append(giantBombId).append("&plat=").append(Const.TWITCH).append("&nm=").append(name).append("&vies=").append(viewers).append("&chas=").append(channels).append("&cur_u=").append(curUrl).append("&next_u=").append(nextUrl).append("&task=").append(job).append("&c_time=").append(createTimeFormat.format(new Date())).append("&t_ran=").append(getRandomStr()).toString());
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCATEEVENT)
+                            .append("&par_d=").append(date)
+                            .append("&id=").append(id)
+                            .append("&g_b_id=").append(giantBombId)
+                            .append("&plat=").append(Const.TWITCH)
+                            .append("&nm=").append(name)
+                            .append("&vies=").append(viewers)
+                            .append("&chas=").append(channels)
+                            .append("&cur_u=").append(curUrl)
+                            .append("&next_u=").append(nextUrl)
+                            .append("&task=").append(job)
+                            .append("&c_time=").append(createTimeFormat.format(new Date()))
+                            .append("&t_ran=").append(getRandomStr()).toString());
 //                    TwitchCategory twitchCategory = new TwitchCategory();
 //                    twitchCategory.setId(id);
 //                    twitchCategory.setGiantBombId(giantBombId);
@@ -94,7 +106,25 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     int viewers = JsonPath.read(str, "$.viewers");
                     int viewsTol = JsonPath.read(str, "$.channel.views");
                     int followers = JsonPath.read(str, "$.channel.followers");
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCHAEVENT).append("&par_d=").append(date).append("&id=").append(id).append("&nick_nm=").append(name).append("&dis_nm=").append(displayName).append("&tt=").append(title).append("&plat=").append(Const.TWITCH).append("&game=").append(game).append("&broa_lan=").append(broadcasterLan).append("&lan=").append(language).append("&reg_time=").append(registerTime).append("&url=").append(url).append("&vies=").append(viewers).append("&vie_tol=").append(viewsTol).append("&fols=").append(followers).append("&cur_u=").append(curUrl).append("&task=").append(job).append("&c_time=").append(createTimeFormat.format(new Date())).append("&t_ran=").append(getRandomStr()).toString());
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCHAEVENT)
+                            .append("&par_d=").append(date)
+                            .append("&id=").append(id)
+                            .append("&nick_nm=").append(name)
+                            .append("&dis_nm=").append(displayName)
+                            .append("&tt=").append(title)
+                            .append("&plat=").append(Const.TWITCH)
+                            .append("&game=").append(game)
+                            .append("&broa_lan=").append(broadcasterLan)
+                            .append("&lan=").append(language)
+                            .append("&reg_time=").append(registerTime)
+                            .append("&url=").append(url)
+                            .append("&vies=").append(viewers)
+                            .append("&vie_tol=").append(viewsTol)
+                            .append("&fols=").append(followers)
+                            .append("&cur_u=").append(curUrl)
+                            .append("&task=").append(job)
+                            .append("&c_time=").append(createTimeFormat.format(new Date()))
+                            .append("&t_ran=").append(getRandomStr()).toString());
 //                    channel.setId(id);
 //                    channel.setNickName(name);
 //                    channel.setDisplayName(displayName);

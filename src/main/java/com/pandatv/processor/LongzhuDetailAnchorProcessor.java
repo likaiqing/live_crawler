@@ -56,7 +56,19 @@ public class LongzhuDetailAnchorProcessor extends PandaProcessor {
                     String category = JsonPath.read(room, "$.game[0].name");
                     String popularitiyStr = JsonPath.read(room, "$.viewers");
                     int popularitiyNum = Integer.parseInt(popularitiyStr);
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate_fir=&cate_sec=").append(category).append("&on_num=").append(popularitiyNum).append("&fol_num=").append((Integer) JsonPath.read(room, "$.channel.followers")).append("&task=").append(job).append("&rank=&w_str=&w_num=").append((Integer) JsonPath.read(room, "$.channel.flowers")).append("&tag=&url=").append(curUrl).append("&c_time=").append(createTimeFormat.format(new Date())).append("&notice=&last_s_t=").append(getLastStartTime((Long) JsonPath.read(room, "$.channel.broadcast_begin"))).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+                            .append("&par_d=").append(date)
+                            .append("&rid=").append(rid)
+                            .append("&nm=").append(CommonTools.getFormatStr(name))
+                            .append("&tt=").append(CommonTools.getFormatStr(title))
+                            .append("&cate_fir=&cate_sec=").append(category)
+                            .append("&on_num=").append(popularitiyNum)
+                            .append("&fol_num=").append((Integer) JsonPath.read(room, "$.channel.followers"))
+                            .append("&task=").append(job)
+                            .append("&rank=&w_str=&w_num=").append((Integer) JsonPath.read(room, "$.channel.flowers"))
+                            .append("&tag=&url=").append(curUrl).append("&c_time=").append(createTimeFormat.format(new Date()))
+                            .append("&notice=&last_s_t=").append(getLastStartTime((Long) JsonPath.read(room, "$.channel.broadcast_begin")))
+                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
 //                    DetailAnchor detailAnchor = new DetailAnchor();
 //                    detailAnchor.setRid(rid);
 //                    detailAnchor.setName(name);

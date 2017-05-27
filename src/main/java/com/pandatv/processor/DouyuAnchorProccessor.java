@@ -77,7 +77,20 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                     if (!CommonTools.isValidUnicode(rid)) {
                         logger.info("rid is not valid unicode,url:{},rid:{}", url, rid);
                     }
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(names.get(i))).append("&tt=").append(CommonTools.getFormatStr(titles.get(i))).append("&cate=").append(categories.get(i)).append("&pop_s=").append(popularitiyStr).append("&pop_n=").append(popularitiyNum).append("&task=").append(job).append("&plat=").append(Const.DOUYU).append("&url_c=").append(Const.GAMEALL).append("&c_time=").append(createTimeFormat.format(new Date())).append("&url=").append(curUrl).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+                            .append("&par_d=").append(date)
+                            .append("&rid=").append(rid)
+                            .append("&nm=").append(CommonTools.getFormatStr(names.get(i)))
+                            .append("&tt=").append(CommonTools.getFormatStr(titles.get(i)))
+                            .append("&cate=").append(categories.get(i))
+                            .append("&pop_s=").append(popularitiyStr)
+                            .append("&pop_n=").append(popularitiyNum)
+                            .append("&task=").append(job)
+                            .append("&plat=").append(Const.DOUYU)
+                            .append("&url_c=").append(Const.GAMEALL)
+                            .append("&c_time=").append(createTimeFormat.format(new Date()))
+                            .append("&url=").append(curUrl)
+                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
 //                    anchor.setRid(rid);
 //                    anchor.setName(names.get(i));
 //                    anchor.setTitle(titles.get(i));
