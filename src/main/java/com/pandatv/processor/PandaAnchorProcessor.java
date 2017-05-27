@@ -4,8 +4,8 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -15,12 +15,15 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
+import java.util.Date;
+
 /**
  * Created by likaiqing on 2016/12/14.
  */
 public class PandaAnchorProcessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(PandaAnchorProcessor.class);
     private static int exCnt;
+
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
@@ -38,18 +41,19 @@ public class PandaAnchorProcessor extends PandaProcessor {
                     String category = JsonPath.read(obj, "$.classification.cname");
                     String popularitiyStr = JsonPath.read(obj, "$.person_num");
                     int popularitiyNum = Integer.parseInt(popularitiyStr);
-                    Anchor anchor = new Anchor();
-                    anchor.setRid(rid);
-                    anchor.setName(name);
-                    anchor.setTitle(title);
-                    anchor.setCategory(category);
-                    anchor.setPopularityStr(popularitiyStr);
-                    anchor.setPopularityNum(popularitiyNum);
-                    anchor.setJob(job);
-                    anchor.setPlat(Const.PANDA);
-                    anchor.setGame(Const.GAMEALL);
-                    anchor.setUrl(curUrl);
-                    anchorObjs.add(anchor);
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate=").append(category).append("&pop_s=").append(popularitiyStr).append("&pop_n=").append(popularitiyNum).append("&task=").append(job).append("&plat=").append(Const.PANDA).append("&url_c=").append(Const.GAMEALL).append("&c_time=").append(createTimeFormat.format(new Date())).append("&url=").append(curUrl).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+//                    Anchor anchor = new Anchor();
+//                    anchor.setRid(rid);
+//                    anchor.setName(name);
+//                    anchor.setTitle(title);
+//                    anchor.setCategory(category);
+//                    anchor.setPopularityStr(popularitiyStr);
+//                    anchor.setPopularityNum(popularitiyNum);
+//                    anchor.setJob(job);
+//                    anchor.setPlat(Const.PANDA);
+//                    anchor.setGame(Const.GAMEALL);
+//                    anchor.setUrl(curUrl);
+//                    anchorObjs.add(anchor);
                 }
             }
             page.setSkip(true);
@@ -79,9 +83,9 @@ public class PandaAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         Spider.create(new PandaAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        for (Anchor anchor : anchorObjs) {
-            anchors.add(anchor.toString());
-        }
-        CommonTools.writeAndMail(hivePaht, Const.PANDAANCHORFINISH, anchors);
+//        for (Anchor anchor : anchorObjs) {
+//            anchors.add(anchor.toString());
+//        }
+//        CommonTools.writeAndMail(hivePaht, Const.PANDAANCHORFINISH, anchors);
     }
 }

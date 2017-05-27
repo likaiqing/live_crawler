@@ -3,7 +3,6 @@ package com.pandatv.processor;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
@@ -25,6 +24,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(DouyuAnchorProccessor.class);
     private static String url = "https://www.douyu.com/directory/all?isAjax=1&page=";
     private static int exCnt;
+
     public static void crawler(String[] args) {
         job = args[0];//douyuanchor
         date = args[1];
@@ -91,7 +91,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 //                    anchorObjs.add(anchor);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
             logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();

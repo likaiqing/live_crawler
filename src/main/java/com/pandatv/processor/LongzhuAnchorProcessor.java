@@ -5,8 +5,8 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
-import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -17,6 +17,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by likaiqing on 2016/11/14.
@@ -29,6 +30,7 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(LongzhuAnchorProcessor.class);
     private static final String firUrl = "http://api.plu.cn/tga/streams?max-results=18&sort-by=views&filter=0&game=0&callback=_callbacks_._36bxu1&start-index=0";
     private static int exCnt;
+
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
@@ -54,17 +56,18 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
                     String category = JsonPath.read(room, "$.game[0].name");
                     String popularitiyStr = JsonPath.read(room, "$.viewers");
                     int popularitiyNum = Integer.parseInt(popularitiyStr);
-                    anchor.setRid(rid);
-                    anchor.setName(name);
-                    anchor.setTitle(title);
-                    anchor.setCategory(category);
-                    anchor.setPopularityStr(popularitiyStr);
-                    anchor.setPopularityNum(popularitiyNum);
-                    anchor.setJob(job);
-                    anchor.setPlat(Const.LONGZHU);
-                    anchor.setGame(Const.GAMEALL);
-                    anchor.setUrl(curUrl);
-                    anchorObjs.add(anchor);
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate=").append(category).append("&pop_s=").append(popularitiyStr).append("&pop_n=").append(popularitiyNum).append("&task=").append(job).append("&plat=").append(Const.LONGZHU).append("&url_c=").append(Const.GAMEALL).append("&c_time=").append(createTimeFormat.format(new Date())).append("&url=").append(curUrl).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+//                    anchor.setRid(rid);
+//                    anchor.setName(name);
+//                    anchor.setTitle(title);
+//                    anchor.setCategory(category);
+//                    anchor.setPopularityStr(popularitiyStr);
+//                    anchor.setPopularityNum(popularitiyNum);
+//                    anchor.setJob(job);
+//                    anchor.setPlat(Const.LONGZHU);
+//                    anchor.setGame(Const.GAMEALL);
+//                    anchor.setUrl(curUrl);
+//                    anchorObjs.add(anchor);
                 }
             }
             page.setSkip(true);
@@ -97,9 +100,9 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         Spider.create(new LongzhuAnchorProcessor()).thread(1).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        for (Anchor anchor : anchorObjs) {
-            anchors.add(anchor.toString());
-        }
-        CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISH, anchors);
+//        for (Anchor anchor : anchorObjs) {
+//            anchors.add(anchor.toString());
+//        }
+//        CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISH, anchors);
     }
 }

@@ -6,6 +6,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +18,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,18 +47,19 @@ public class HuyaAnchorProcessor extends PandaProcessor {
                     String category = JsonPath.read(jsonStr, "$.gameFullName");
                     String popularityStr = JsonPath.read(jsonStr, "$.totalCount");
                     int popularityNum = Integer.parseInt(popularityStr);
-                    Anchor anchor = new Anchor();
-                    anchor.setRid(rid);
-                    anchor.setName(name);
-                    anchor.setTitle(title);
-                    anchor.setCategory(category);
-                    anchor.setPopularityStr(popularityStr);
-                    anchor.setPopularityNum(popularityNum);
-                    anchor.setJob(job);
-                    anchor.setPlat(Const.HUYA);
-                    anchor.setGame(Const.GAMEALL);
-                    anchor.setUrl(url);
-                    anchorObjs.add(anchor);
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT).append("&par_d=").append(date).append("&rid=").append(rid).append("&nm=").append(CommonTools.getFormatStr(name)).append("&tt=").append(CommonTools.getFormatStr(title)).append("&cate=").append(category).append("&pop_s=").append(popularityStr).append("&pop_n=").append(popularityNum).append("&task=").append(job).append("&plat=").append(Const.HUYA).append("&url_c=").append(Const.GAMEALL).append("&c_time=").append(createTimeFormat.format(new Date())).append("&url=").append(url).append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+//                    Anchor anchor = new Anchor();
+//                    anchor.setRid(rid);
+//                    anchor.setName(name);
+//                    anchor.setTitle(title);
+//                    anchor.setCategory(category);
+//                    anchor.setPopularityStr(popularityStr);
+//                    anchor.setPopularityNum(popularityNum);
+//                    anchor.setJob(job);
+//                    anchor.setPlat(Const.HUYA);
+//                    anchor.setGame(Const.GAMEALL);
+//                    anchor.setUrl(url);
+//                    anchorObjs.add(anchor);
                 }
             }
         }catch (Exception e){
@@ -86,10 +89,10 @@ public class HuyaAnchorProcessor extends PandaProcessor {
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         String firstUrl = "http://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=1";
         Spider.create(new HuyaAnchorProcessor()).thread(1).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        for (Anchor anchor : anchorObjs) {
-            anchors.add(anchor.toString());
-        }
-        CommonTools.writeAndMail(hivePaht, Const.HUYAFINISH, anchors);
+//        for (Anchor anchor : anchorObjs) {
+//            anchors.add(anchor.toString());
+//        }
+//        CommonTools.writeAndMail(hivePaht, Const.HUYAFINISH, anchors);
     }
 
     public static void main(String[] args) {
