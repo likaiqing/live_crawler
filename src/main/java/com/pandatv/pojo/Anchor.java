@@ -1,7 +1,5 @@
 package com.pandatv.pojo;
 
-import com.jayway.jsonpath.JsonPath;
-import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.tools.CommonTools;
 
@@ -121,15 +119,15 @@ public class Anchor {
         StringBuffer sb = new StringBuffer();
 //        return sb.append(this.rid).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getTitle()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getPopularityStr()).append(Const.SEP).append(this.getPopularityNum()).append(Const.SEP).append(this.getJob()).append(Const.SEP).append(this.getPlat()).append(Const.SEP).append(this.getGame()).append(Const.SEP).append(createTime).append(Const.SEP).append(this.getUrl()).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
         sb.append("&rid=").append(this.rid)
-                .append("&nm=").append(PandaProcessor.encoder.encoder(this.getName()))
-                .append("&tt=").append(PandaProcessor.encoder.encoder(this.getTitle()))
-                .append("&cate=").append(PandaProcessor.encoder.encoder(this.getCategory()))
-                .append("&pop_s=").append(PandaProcessor.encoder.encoder(this.getPopularityStr()))
+                .append("&nm=").append(PandaProcessor.encoder.encodeToString(this.getName().getBytes()))
+                .append("&tt=").append(PandaProcessor.encoder.encodeToString(this.getTitle().getBytes()))
+                .append("&cate=").append(PandaProcessor.encoder.encodeToString(this.getCategory().getBytes()))
+                .append("&pop_s=").append(PandaProcessor.encoder.encodeToString(this.getPopularityStr().getBytes()))
                 .append("&pop_n=").append(this.getPopularityNum())
                 .append("&task=").append(this.getJob())
                 .append("&plat=").append(this.getPlat())
                 .append("&url_c=").append(this.getGame())
-                .append("&c_time=").append(PandaProcessor.encoder.encoder(createTime))
+                .append("&c_time=").append(PandaProcessor.encoder.encodeToString(createTime.getBytes()))
                 .append("&url=").append(this.getUrl())
                 .append("&t_ran=").append(PandaProcessor.getRandomStr());
         return sb.toString();
