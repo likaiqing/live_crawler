@@ -134,20 +134,22 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
             if (followRids.contains(rid)) {
 //                detailAnchors.add(map.get(rid).toString());
                 DetailAnchor da = map.get(rid);
+//                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+//                        .append("&par_d=").append(date)
+//                        .append("&rid=").append(rid)
+//                        .append("&nm=").append(CommonTools.getFormatStr(da.getName()))
+//                        .append("&tt=").append(CommonTools.getFormatStr(da.getTitle()))
+//                        .append("&cate_fir=&cate_sec=").append(da.getCategorySec())
+//                        .append("&on_num=").append(da.getViewerNum())
+//                        .append("&fol_num=").append(da.getFollowerNum())
+//                        .append("&task=").append(job)
+//                        .append("&rank=&w_str=&w_num=").append(da.getWeightNum())
+//                        .append("&tag=&url=").append(da.getUrl())
+//                        .append("&c_time=").append(createTimeFormat.format(new Date()))
+//                        .append("&notice=&last_s_t=").append(da.getLastStartTime())
+//                        .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
                 HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                        .append("&par_d=").append(date)
-                        .append("&rid=").append(rid)
-                        .append("&nm=").append(CommonTools.getFormatStr(da.getName()))
-                        .append("&tt=").append(CommonTools.getFormatStr(da.getTitle()))
-                        .append("&cate_fir=&cate_sec=").append(da.getCategorySec())
-                        .append("&on_num=").append(da.getViewerNum())
-                        .append("&fol_num=").append(da.getFollowerNum())
-                        .append("&task=").append(job)
-                        .append("&rank=&w_str=&w_num=").append(da.getWeightNum())
-                        .append("&tag=&url=").append(da.getUrl())
-                        .append("&c_time=").append(createTimeFormat.format(new Date()))
-                        .append("&notice=&last_s_t=").append(da.getLastStartTime())
-                        .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                        .append("&par_d=").append(date).append(da.toString()).toString());
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {

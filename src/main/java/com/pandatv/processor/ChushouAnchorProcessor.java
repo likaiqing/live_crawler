@@ -101,7 +101,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
 //                            .append("&c_time=").append(createTimeFormat.format(new Date()))
 //                            .append("&url=").append(curUrl)
 //                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
-//                    Anchor anchor = new Anchor();
+                    Anchor anchor = new Anchor();
                     String rid = rids.get(i);
                     anchor.setRid(rid.substring(rid.lastIndexOf("/") + 1, rid.lastIndexOf(".")));
                     anchor.setName(names.get(i));

@@ -54,7 +54,7 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
                     page.addTargetRequest(new Request(domain + url).putExtra("rid", url.replace("/", "")));
                 }
             } else {
-//                DetailAnchor detailAnchor = new DetailAnchor();
+                DetailAnchor detailAnchor = new DetailAnchor();
                 List<String> allScript = page.getHtml().xpath("//script").all();
                 for (String script : allScript) {
                     if (script.contains("window.oPageConfig.oRoom")) {
@@ -83,30 +83,32 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
                             logger.error("NumberFormatException url:{})", curUrl);
                         }
                         long fight = Long.parseLong(JsonPath.read(json, "$.anchorAttr.hots.fight").toString());//经验值
+//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+//                                .append("&par_d=").append(date)
+//                                .append("&rid=").append(rid)
+//                                .append("&nm=").append(CommonTools.getFormatStr(name))
+//                                .append("&tt=").append(CommonTools.getFormatStr(title))
+//                                .append("&cate_fir=&cate_sec=").append(gameName)
+//                                .append("&on_num=").append(onlineNum)
+//                                .append("&fol_num=").append(follows)
+//                                .append("&task=").append(job)
+//                                .append("&rank=&w_str=&w_num=").append(fight)
+//                                .append("&tag=&url=").append(curUrl)
+//                                .append("&c_time=").append(createTimeFormat.format(new Date()))
+//                                .append("&notice=&last_s_t=").append(lastStartTime.substring(0, 16))
+//                                .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                        detailAnchor.setRid(rid);
+                        detailAnchor.setName(name);
+                        detailAnchor.setTitle(title);
+                        detailAnchor.setJob(job);
+                        detailAnchor.setUrl(curUrl);
+                        detailAnchor.setLastStartTime(lastStartTime);
+                        detailAnchor.setCategorySec(gameName);
+                        detailAnchor.setFollowerNum(follows);
+                        detailAnchor.setViewerNum(onlineNum);
+                        detailAnchor.setWeightNum(fight);
                         HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                                .append("&par_d=").append(date)
-                                .append("&rid=").append(rid)
-                                .append("&nm=").append(CommonTools.getFormatStr(name))
-                                .append("&tt=").append(CommonTools.getFormatStr(title))
-                                .append("&cate_fir=&cate_sec=").append(gameName)
-                                .append("&on_num=").append(onlineNum)
-                                .append("&fol_num=").append(follows)
-                                .append("&task=").append(job)
-                                .append("&rank=&w_str=&w_num=").append(fight)
-                                .append("&tag=&url=").append(curUrl)
-                                .append("&c_time=").append(createTimeFormat.format(new Date()))
-                                .append("&notice=&last_s_t=").append(lastStartTime.substring(0, 16))
-                                .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
-//                        detailAnchor.setRid(rid);
-//                        detailAnchor.setName(name);
-//                        detailAnchor.setTitle(title);
-//                        detailAnchor.setJob(job);
-//                        detailAnchor.setUrl(curUrl);
-//                        detailAnchor.setLastStartTime(lastStartTime);
-//                        detailAnchor.setCategorySec(gameName);
-//                        detailAnchor.setFollowerNum(follows);
-//                        detailAnchor.setViewerNum(onlineNum);
-//                        detailAnchor.setWeightNum(fight);
+                                .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
 //                        detailAnchorObjs.add(detailAnchor);
                     }
                 }

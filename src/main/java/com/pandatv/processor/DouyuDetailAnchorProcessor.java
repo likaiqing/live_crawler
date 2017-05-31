@@ -90,30 +90,32 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 String followerStr = JsonPath.read(json, "$.data.fans_num");
                 String weightStr = JsonPath.read(json, "$.data.owner_weight");
                 String lastStartTime = JsonPath.read(json, "$.data.start_time");
+//                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+//                        .append("&par_d=").append(date)
+//                        .append("&rid=").append(rid)
+//                        .append("&nm=").append(CommonTools.getFormatStr(name))
+//                        .append("&tt=").append(CommonTools.getFormatStr(title))
+//                        .append("&cate_fir=&cate_sec=").append(categorySec)
+//                        .append("&on_num=").append(viewers)
+//                        .append("&fol_num=").append(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr))
+//                        .append("&task=").append(job)
+//                        .append("&rank=&w_str=&w_num=").append(CommonTools.getDouyuWeight(weightStr))
+//                        .append("&tag=&url=").append(curUrl)
+//                        .append("&c_time=").append(createTimeFormat.format(new Date()))
+//                        .append("&notice=&last_s_t=").append(lastStartTime)
+//                        .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                detailAnchor.setRid(rid);
+                detailAnchor.setName(name);
+                detailAnchor.setTitle(title);
+                detailAnchor.setCategorySec(categorySec);
+                detailAnchor.setViewerNum(viewers);
+                detailAnchor.setFollowerNum(Integer.parseInt(followerStr));
+                detailAnchor.setWeightNum(CommonTools.getDouyuWeight(weightStr));
+                detailAnchor.setUrl(curUrl);
+                detailAnchor.setLastStartTime(lastStartTime);
+                detailAnchor.setJob(job);
                 HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                        .append("&par_d=").append(date)
-                        .append("&rid=").append(rid)
-                        .append("&nm=").append(CommonTools.getFormatStr(name))
-                        .append("&tt=").append(CommonTools.getFormatStr(title))
-                        .append("&cate_fir=&cate_sec=").append(categorySec)
-                        .append("&on_num=").append(viewers)
-                        .append("&fol_num=").append(StringUtils.isEmpty(followerStr) ? 0 : Integer.parseInt(followerStr))
-                        .append("&task=").append(job)
-                        .append("&rank=&w_str=&w_num=").append(CommonTools.getDouyuWeight(weightStr))
-                        .append("&tag=&url=").append(curUrl)
-                        .append("&c_time=").append(createTimeFormat.format(new Date()))
-                        .append("&notice=&last_s_t=").append(lastStartTime)
-                        .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
-//                detailAnchor.setRid(rid);
-//                detailAnchor.setName(name);
-//                detailAnchor.setTitle(title);
-//                detailAnchor.setCategorySec(categorySec);
-//                detailAnchor.setViewerNum(viewerStr);
-//                detailAnchor.setFollowerNum(Integer.parseInt(followerStr));
-//                detailAnchor.setWeightNum(CommonTools.getDouyuWeight(weightStr));
-//                detailAnchor.setUrl(curUrl);
-//                detailAnchor.setLastStartTime(lastStartTime);
-//                detailAnchor.setJob(job);
+                        .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
 //                detailAnchorObjs.add(detailAnchor);
 //                if (douyuGiftHours.contains(hour)) {
                 JSONArray gifts = JsonPath.read(json, "$.data.gift");
