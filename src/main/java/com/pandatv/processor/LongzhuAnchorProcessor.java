@@ -57,30 +57,32 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
                     String category = JsonPath.read(room, "$.game[0].name");
                     String popularitiyStr = JsonPath.read(room, "$.viewers");
                     int popularitiyNum = Integer.parseInt(popularitiyStr);
+//                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                            .append("&par_d=").append(date)
+//                            .append("&rid=").append(rid)
+//                            .append("&nm=").append(CommonTools.getFormatStr(name))
+//                            .append("&tt=").append(CommonTools.getFormatStr(title))
+//                            .append("&cate=").append(category)
+//                            .append("&pop_s=").append(popularitiyStr)
+//                            .append("&pop_n=").append(popularitiyNum)
+//                            .append("&task=").append(job)
+//                            .append("&plat=").append(Const.LONGZHU)
+//                            .append("&url_c=").append(Const.GAMEALL)
+//                            .append("&c_time=").append(createTimeFormat.format(new Date()))
+//                            .append("&url=").append(curUrl)
+//                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                    anchor.setRid(rid);
+                    anchor.setName(name);
+                    anchor.setTitle(title);
+                    anchor.setCategory(category);
+                    anchor.setPopularityStr(popularitiyStr);
+                    anchor.setPopularityNum(popularitiyNum);
+                    anchor.setJob(job);
+                    anchor.setPlat(Const.LONGZHU);
+                    anchor.setGame(Const.GAMEALL);
+                    anchor.setUrl(curUrl);
                     HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                            .append("&par_d=").append(date)
-                            .append("&rid=").append(rid)
-                            .append("&nm=").append(CommonTools.getFormatStr(name))
-                            .append("&tt=").append(CommonTools.getFormatStr(title))
-                            .append("&cate=").append(category)
-                            .append("&pop_s=").append(popularitiyStr)
-                            .append("&pop_n=").append(popularitiyNum)
-                            .append("&task=").append(job)
-                            .append("&plat=").append(Const.LONGZHU)
-                            .append("&url_c=").append(Const.GAMEALL)
-                            .append("&c_time=").append(createTimeFormat.format(new Date()))
-                            .append("&url=").append(curUrl)
-                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
-//                    anchor.setRid(rid);
-//                    anchor.setName(name);
-//                    anchor.setTitle(title);
-//                    anchor.setCategory(category);
-//                    anchor.setPopularityStr(popularitiyStr);
-//                    anchor.setPopularityNum(popularitiyNum);
-//                    anchor.setJob(job);
-//                    anchor.setPlat(Const.LONGZHU);
-//                    anchor.setGame(Const.GAMEALL);
-//                    anchor.setUrl(curUrl);
+                            .append("&par_d=").append(date).append(anchor.toString()).toString());
 //                    anchorObjs.add(anchor);
                 }
             }

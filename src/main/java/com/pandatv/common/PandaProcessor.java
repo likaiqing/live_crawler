@@ -48,6 +48,7 @@ public abstract class PandaProcessor implements PageProcessor {
     private static String userAgent = "";
     protected static SimpleDateFormat createTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     protected static int requests = 0;
+    public static Base64.Encoder encoder;
 
     static {
         int r = (int) Math.random() * 10;
@@ -62,6 +63,7 @@ public abstract class PandaProcessor implements PageProcessor {
         userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36");
         userAgents.add("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393");
         userAgent = userAgents.get(r);
+        encoder = Base64.getEncoder();
     }
 
     protected Site site = Site.me()

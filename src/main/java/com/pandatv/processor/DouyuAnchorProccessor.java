@@ -3,6 +3,7 @@ package com.pandatv.processor;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
+import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
@@ -72,7 +73,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                 List<String> popularities = page.getHtml().xpath("//body/li/a/div[@class='mes']/p/span[@class='dy-num fr']/text()").all();
                 List<String> categories = page.getHtml().xpath("//body/li/a/div[@class='mes']/div[@class='mes-tit']/span/text()").all();
                 for (int i = 0; i < names.size(); i++) {
-//                    Anchor anchor = new Anchor();
+                    Anchor anchor = new Anchor();
                     String popularitiyStr = popularities.get(i);
                     int popularitiyNum = CommonTools.createNum(popularitiyStr);
                     String rid = rids.get(i);
@@ -82,30 +83,32 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                     if (!CommonTools.isValidUnicode(rid)) {
                         logger.info("rid is not valid unicode,url:{},rid:{}", url, rid);
                     }
+//                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                            .append("&par_d=").append(date)
+//                            .append("&rid=").append(rid)
+//                            .append("&nm=").append(CommonTools.getFormatStr(names.get(i)))
+//                            .append("&tt=").append(CommonTools.getFormatStr(titles.get(i)))
+//                            .append("&cate=").append(categories.get(i))
+//                            .append("&pop_s=").append(popularitiyStr)
+//                            .append("&pop_n=").append(popularitiyNum)
+//                            .append("&task=").append(job)
+//                            .append("&plat=").append(Const.DOUYU)
+//                            .append("&url_c=").append(Const.GAMEALL)
+//                            .append("&c_time=").append(createTimeFormat.format(new Date()))
+//                            .append("&url=").append(curUrl)
+//                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                    anchor.setRid(rid);
+                    anchor.setName(names.get(i));
+                    anchor.setTitle(titles.get(i));
+                    anchor.setCategory(categories.get(i));
+                    anchor.setPopularityStr(popularitiyStr);
+                    anchor.setPopularityNum(popularitiyNum);
+                    anchor.setJob(job);
+                    anchor.setPlat(Const.DOUYU);
+                    anchor.setGame(Const.GAMEALL);
+                    anchor.setUrl(curUrl);
                     HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                            .append("&par_d=").append(date)
-                            .append("&rid=").append(rid)
-                            .append("&nm=").append(CommonTools.getFormatStr(names.get(i)))
-                            .append("&tt=").append(CommonTools.getFormatStr(titles.get(i)))
-                            .append("&cate=").append(categories.get(i))
-                            .append("&pop_s=").append(popularitiyStr)
-                            .append("&pop_n=").append(popularitiyNum)
-                            .append("&task=").append(job)
-                            .append("&plat=").append(Const.DOUYU)
-                            .append("&url_c=").append(Const.GAMEALL)
-                            .append("&c_time=").append(createTimeFormat.format(new Date()))
-                            .append("&url=").append(curUrl)
-                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
-//                    anchor.setRid(rid);
-//                    anchor.setName(names.get(i));
-//                    anchor.setTitle(titles.get(i));
-//                    anchor.setCategory(categories.get(i));
-//                    anchor.setPopularityStr(popularitiyStr);
-//                    anchor.setPopularityNum(popularitiyNum);
-//                    anchor.setJob(job);
-//                    anchor.setPlat(Const.DOUYU);
-//                    anchor.setGame(Const.GAMEALL);
-//                    anchor.setUrl(curUrl);
+                            .append("&par_d=").append(date).append(anchor.toString()).toString());
 //                    anchorObjs.add(anchor);
                 }
             }
