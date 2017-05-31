@@ -65,7 +65,18 @@ public class GiftInfo {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.getPlat()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getrId()).append(Const.SEP).append(this.getGiftId()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getType()).append(Const.SEP).append(this.getPrice()).append(Const.SEP).append(this.getExp()).append(Const.SEP).append(PandaProcessor.getRandomStr()).append(Const.SEP).append(createTime).toString();
+//        return sb.append(this.getPlat()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getrId()).append(Const.SEP).append(this.getGiftId()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getType()).append(Const.SEP).append(this.getPrice()).append(Const.SEP).append(this.getExp()).append(Const.SEP).append(PandaProcessor.getRandomStr()).append(Const.SEP).append(createTime).toString();
+        sb.append("&plat=").append(this.getPlat())
+                .append("&cate=").append(PandaProcessor.encoder.encodeToString(this.getCategory().getBytes()))
+                .append("&rid=").append(this.getrId())
+                .append("&g_id=").append(this.getGiftId())
+                .append("&g_nm=").append(PandaProcessor.encoder.encodeToString(this.getName().getBytes()))
+                .append("&g_ty=").append(this.getType())
+                .append("&price=").append(this.getPrice())
+                .append("&exp=").append(this.getExp())
+                .append("&t_ran=").append(PandaProcessor.getRandomStr())
+                .append("&c_time=").append(PandaProcessor.encoder.encodeToString(createTime.getBytes()));
+        return sb.toString();
     }
 
     public String getrId() {
