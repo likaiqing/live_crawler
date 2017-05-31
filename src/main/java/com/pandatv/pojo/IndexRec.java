@@ -17,7 +17,7 @@ public class IndexRec extends DetailAnchor {
     }
 
     public String toString() {
-        return super.toString() + Const.SEP + this.getLocation();
+        return super.toString() + "&loc=" + this.getLocation();
     }
 
 }
