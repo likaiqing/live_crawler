@@ -176,29 +176,33 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
             TwitchDetailChannel tdc = entry.getValue();
             if (null != tdc.getTeamName() && null != tdc.getVideos() && null != tdc.getFollowing()) {
 //                twitchListStrs.add(entry.getValue().toString());
+//                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
+//                        .append(Const.TWITCHDETAILCHAEVENT)
+//                        .append("&par_d=").append(date)
+//                        .append("&id=").append(tdc.getId())
+//                        .append("&nick_nm=").append(tdc.getNickName())
+//                        .append("&dis_nm=").append(tdc.getDisplayName())
+//                        .append("&tt=").append(tdc.getTitle())
+//                        .append("&plat=").append(tdc.getPlat())
+//                        .append("&game=").append(tdc.getGame())
+//                        .append("&broa_lan=").append(tdc.getBroadcasterLan())
+//                        .append("&lan=").append(tdc.getLanguage())
+//                        .append("&reg_time=").append(tdc.getRegisterTime())
+//                        .append("&url=").append(tdc.getUrl())
+//                        .append("&vies=").append(tdc.getViewers())
+//                        .append("&vie_tol=").append(tdc.getViewsTol())
+//                        .append("&fols=").append(tdc.getFollowers())
+//                        .append("&cur_u=").append(tdc.getCurUrl())
+//                        .append("&task=").append(job)
+//                        .append("&c_time=").append(createTimeFormat.format(new Date()))
+//                        .append("&t_ran=").append(getRandomStr())
+//                        .append("&team_nm=").append(tdc.getTeamName())
+//                        .append("&viedos=").append(tdc.getVideos())
+//                        .append("&fol_ing=").append(tdc.getFollowing()).toString());
+
                 HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
                         .append(Const.TWITCHDETAILCHAEVENT)
-                        .append("&par_d=").append(date)
-                        .append("&id=").append(tdc.getId())
-                        .append("&nick_nm=").append(tdc.getNickName())
-                        .append("&dis_nm=").append(tdc.getDisplayName())
-                        .append("&tt=").append(tdc.getTitle())
-                        .append("&plat=").append(tdc.getPlat())
-                        .append("&game=").append(tdc.getGame())
-                        .append("&broa_lan=").append(tdc.getBroadcasterLan())
-                        .append("&lan=").append(tdc.getLanguage())
-                        .append("&reg_time=").append(tdc.getRegisterTime())
-                        .append("&url=").append(tdc.getUrl())
-                        .append("&vies=").append(tdc.getViewers())
-                        .append("&vie_tol=").append(tdc.getViewsTol())
-                        .append("&fols=").append(tdc.getFollowers())
-                        .append("&cur_u=").append(tdc.getCurUrl())
-                        .append("&task=").append(job)
-                        .append("&c_time=").append(createTimeFormat.format(new Date()))
-                        .append("&t_ran=").append(getRandomStr())
-                        .append("&team_nm=").append(tdc.getTeamName())
-                        .append("&viedos=").append(tdc.getVideos())
-                        .append("&fol_ing=").append(tdc.getFollowing()).toString());
+                        .append("&par_d=").append(date).append(tdc.toString()).toString());
             }
         }
 //        CommonTools.writeAndMail(hivePath, Const.TWITCHDETAILCHANNELFINISH, twitchListStrs);

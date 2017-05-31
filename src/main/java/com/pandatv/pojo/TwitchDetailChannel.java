@@ -1,7 +1,6 @@
 package com.pandatv.pojo;
 
-import com.pandatv.common.Const;
-import com.pandatv.tools.CommonTools;
+import com.pandatv.common.PandaProcessor;
 
 /**
  * Created by likaiqing on 2017/3/22.
@@ -38,7 +37,12 @@ public class TwitchDetailChannel extends TwitchChannel {
     @Override
     public String toString() {
         StringBuffer bf = new StringBuffer();
-        return bf.append(super.toString()).append(Const.SEP).append(this.getTeamName()).append(Const.SEP).append(this.getVideos()).append(Const.SEP).append(this.getFollowing()).toString();
+//        return bf.append(super.toString()).append(Const.SEP).append(this.getTeamName()).append(Const.SEP).append(this.getVideos()).append(Const.SEP).append(this.getFollowing()).toString();
+        bf.append(super.toString())
+                .append("&team_nm=").append(PandaProcessor.encoder.encodeToString(this.getTeamName().getBytes()))
+                .append("&viedos=").append(this.getVideos())
+                .append("&fol_ing=").append(this.getFollowing());
+        return bf.toString();
     }
 
     public static void main(String[] args) {

@@ -139,7 +139,25 @@ public class TwitchChannel {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.getId()).append(Const.SEP).append(this.getNickName()).append(Const.SEP).append(this.getDisplayName()).append(Const.SEP).append(this.getTitle()).append(Const.SEP).append(this.getPlat()).append(Const.SEP).append(this.getGame()).append(Const.SEP).append(this.getBroadcasterLan()).append(Const.SEP).append(this.getLanguage()).append(Const.SEP).append(this.getRegisterTime()).append(Const.SEP).append(this.getUrl()).append(Const.SEP).append(this.getViewers()).append(Const.SEP).append(this.getViewsTol()).append(Const.SEP).append(this.getFollowers()).append(Const.SEP).append(this.getCurUrl()).append(Const.SEP).append(this.getTask()).append(Const.SEP).append(createTime).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
+//        return sb.append(this.getId()).append(Const.SEP).append(this.getNickName()).append(Const.SEP).append(this.getDisplayName()).append(Const.SEP).append(this.getTitle()).append(Const.SEP).append(this.getPlat()).append(Const.SEP).append(this.getGame()).append(Const.SEP).append(this.getBroadcasterLan()).append(Const.SEP).append(this.getLanguage()).append(Const.SEP).append(this.getRegisterTime()).append(Const.SEP).append(this.getUrl()).append(Const.SEP).append(this.getViewers()).append(Const.SEP).append(this.getViewsTol()).append(Const.SEP).append(this.getFollowers()).append(Const.SEP).append(this.getCurUrl()).append(Const.SEP).append(this.getTask()).append(Const.SEP).append(createTime).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
+        sb.append("&id=").append(id)
+                .append("&nick_nm=").append(PandaProcessor.encoder.encodeToString(this.getNickName().getBytes()))
+                .append("&dis_nm=").append(PandaProcessor.encoder.encodeToString(this.getDisplayName().getBytes()))
+                .append("&tt=").append(PandaProcessor.encoder.encodeToString(this.getTitle().getBytes()))
+                .append("&plat=").append(this.getPlat())
+                .append("&game=").append(PandaProcessor.encoder.encodeToString(this.getGame().getBytes()))
+                .append("&broa_lan=").append(broadcasterLan)
+                .append("&lan=").append(language)
+                .append("&reg_time=").append(PandaProcessor.encoder.encodeToString(this.getRegisterTime().getBytes()))
+                .append("&url=").append(PandaProcessor.encoder.encodeToString(this.getUrl().getBytes()))
+                .append("&vies=").append(viewers)
+                .append("&vie_tol=").append(viewsTol)
+                .append("&fols=").append(followers)
+                .append("&cur_u=").append(curUrl)
+                .append("&task=").append(this.getTask())
+                .append("&c_time=").append(PandaProcessor.encoder.encodeToString(createTime.getBytes()))
+                .append("&t_ran=").append(PandaProcessor.getRandomStr());
+        return sb.toString();
     }
 
     @Override
