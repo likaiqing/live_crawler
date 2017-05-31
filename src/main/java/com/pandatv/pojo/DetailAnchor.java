@@ -3,6 +3,7 @@ package com.pandatv.pojo;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.tools.CommonTools;
 
+import javax.xml.bind.DatatypeConverter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -132,17 +133,17 @@ public class DetailAnchor {
         StringBuffer sb = new StringBuffer();
 //        return sb.append(this.getRid()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getTitle()).append(Const.SEP).append(this.getCategoryFir()).append(Const.SEP).append(this.getCategorySec()).append(Const.SEP).append(this.getViewerNum()).append(Const.SEP).append(this.getFollowerNum()).append(Const.SEP).append(this.getJob()).append(Const.SEP).append(this.getRank()).append(Const.SEP).append(this.getWeightStr()).append(Const.SEP).append(this.getWeightNum()).append(Const.SEP).append(this.getTag()).append(Const.SEP).append(this.getUrl()).append(Const.SEP).append(createTime).append(Const.SEP).append(this.getNotice()).append(Const.SEP).append(this.getLastStartTime()).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
         sb.append("&rid=").append(this.getRid())
-                .append("&nm=").append(PandaProcessor.encoder.encodeToString(this.getName().getBytes()))
-                .append("&tt=").append(PandaProcessor.encoder.encodeToString(this.getTitle().getBytes()))
-                .append("&cate_fir=&cate_sec=").append(PandaProcessor.encoder.encodeToString(this.getCategorySec().getBytes()))
+                .append("&nm=").append(DatatypeConverter.printBase64Binary(this.getName().getBytes()))
+                .append("&tt=").append(DatatypeConverter.printBase64Binary(this.getTitle().getBytes()))
+                .append("&cate_fir=&cate_sec=").append(DatatypeConverter.printBase64Binary(this.getCategorySec().getBytes()))
                 .append("&on_num=").append(this.getViewerNum())
                 .append("&fol_num=").append(this.getFollowerNum())
                 .append("&task=").append(this.getJob())
                 .append("&rank=&w_str=&w_num=").append(this.getWeightNum())
                 .append("&tag=&url=").append(this.getUrl())
-                .append("&c_time=").append(PandaProcessor.encoder.encodeToString(createTime.getBytes()))
-                .append("&notice=&last_s_t=").append(PandaProcessor.encoder.encodeToString(this.getLastStartTime().getBytes()))
-                .append("&t_ran=").append(PandaProcessor.getRandomStr());
+                .append("&c_time=").append(DatatypeConverter.printBase64Binary(createTime.getBytes()))
+                .append("&notice=&last_s_t=").append(DatatypeConverter.printBase64Binary(this.getLastStartTime().getBytes()))
+                .append("&t_ran=").append(DatatypeConverter.printBase64Binary(PandaProcessor.getRandomStr().getBytes()));
         return sb.toString();
     }
 

@@ -3,6 +3,7 @@ package com.pandatv.pojo;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 
+import javax.xml.bind.DatatypeConverter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -67,15 +68,15 @@ public class GiftInfo {
         StringBuffer sb = new StringBuffer();
 //        return sb.append(this.getPlat()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getrId()).append(Const.SEP).append(this.getGiftId()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getType()).append(Const.SEP).append(this.getPrice()).append(Const.SEP).append(this.getExp()).append(Const.SEP).append(PandaProcessor.getRandomStr()).append(Const.SEP).append(createTime).toString();
         sb.append("&plat=").append(this.getPlat())
-                .append("&cate=").append(PandaProcessor.encoder.encodeToString(this.getCategory().getBytes()))
+                .append("&cate=").append(DatatypeConverter.printBase64Binary(this.getCategory().getBytes()))
                 .append("&rid=").append(this.getrId())
                 .append("&g_id=").append(this.getGiftId())
-                .append("&g_nm=").append(PandaProcessor.encoder.encodeToString(this.getName().getBytes()))
+                .append("&g_nm=").append(DatatypeConverter.printBase64Binary(this.getName().getBytes()))
                 .append("&g_ty=").append(this.getType())
                 .append("&price=").append(this.getPrice())
                 .append("&exp=").append(this.getExp())
-                .append("&t_ran=").append(PandaProcessor.getRandomStr())
-                .append("&c_time=").append(PandaProcessor.encoder.encodeToString(createTime.getBytes()));
+                .append("&t_ran=").append(DatatypeConverter.printBase64Binary(PandaProcessor.getRandomStr().getBytes()))
+                .append("&c_time=").append(DatatypeConverter.printBase64Binary(createTime.getBytes()));
         return sb.toString();
     }
 

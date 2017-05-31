@@ -15,6 +15,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
+import javax.xml.bind.DatatypeConverter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -99,7 +100,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
                     .append("&p_id=").append(platIdEnum.platId)
                     .append("&p_nm=").append(platIdEnum.paltName)
                     .append("&e_n=").append(url.substring(url.lastIndexOf("/") + 1))
-                    .append("&c_n=").append(encoder.encodeToString(name.getBytes()))
+                    .append("&c_n=").append(DatatypeConverter.printBase64Binary(name.getBytes()))
                     .append("&url=").append(url)
                     .append("&ent_url=").append(curUrl)
                     .append("&t_ran=").append(getRandomStr()).toString());

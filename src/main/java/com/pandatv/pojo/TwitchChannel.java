@@ -4,6 +4,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.tools.CommonTools;
 
+import javax.xml.bind.DatatypeConverter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -141,22 +142,22 @@ public class TwitchChannel {
         StringBuffer sb = new StringBuffer();
 //        return sb.append(this.getId()).append(Const.SEP).append(this.getNickName()).append(Const.SEP).append(this.getDisplayName()).append(Const.SEP).append(this.getTitle()).append(Const.SEP).append(this.getPlat()).append(Const.SEP).append(this.getGame()).append(Const.SEP).append(this.getBroadcasterLan()).append(Const.SEP).append(this.getLanguage()).append(Const.SEP).append(this.getRegisterTime()).append(Const.SEP).append(this.getUrl()).append(Const.SEP).append(this.getViewers()).append(Const.SEP).append(this.getViewsTol()).append(Const.SEP).append(this.getFollowers()).append(Const.SEP).append(this.getCurUrl()).append(Const.SEP).append(this.getTask()).append(Const.SEP).append(createTime).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
         sb.append("&id=").append(id)
-                .append("&nick_nm=").append(PandaProcessor.encoder.encodeToString(this.getNickName().getBytes()))
-                .append("&dis_nm=").append(PandaProcessor.encoder.encodeToString(this.getDisplayName().getBytes()))
-                .append("&tt=").append(PandaProcessor.encoder.encodeToString(this.getTitle().getBytes()))
+                .append("&nick_nm=").append(DatatypeConverter.printBase64Binary(this.getNickName().getBytes()))
+                .append("&dis_nm=").append(DatatypeConverter.printBase64Binary(this.getDisplayName().getBytes()))
+                .append("&tt=").append(DatatypeConverter.printBase64Binary(this.getTitle().getBytes()))
                 .append("&plat=").append(this.getPlat())
-                .append("&game=").append(PandaProcessor.encoder.encodeToString(this.getGame().getBytes()))
+                .append("&game=").append(DatatypeConverter.printBase64Binary(this.getGame().getBytes()))
                 .append("&broa_lan=").append(broadcasterLan)
                 .append("&lan=").append(language)
-                .append("&reg_time=").append(PandaProcessor.encoder.encodeToString(this.getRegisterTime().getBytes()))
-                .append("&url=").append(PandaProcessor.encoder.encodeToString(this.getUrl().getBytes()))
+                .append("&reg_time=").append(DatatypeConverter.printBase64Binary(this.getRegisterTime().getBytes()))
+                .append("&url=").append(this.getUrl().getBytes())
                 .append("&vies=").append(viewers)
                 .append("&vie_tol=").append(viewsTol)
                 .append("&fols=").append(followers)
                 .append("&cur_u=").append(curUrl)
                 .append("&task=").append(this.getTask())
-                .append("&c_time=").append(PandaProcessor.encoder.encodeToString(createTime.getBytes()))
-                .append("&t_ran=").append(PandaProcessor.getRandomStr());
+                .append("&c_time=").append(DatatypeConverter.printBase64Binary(createTime.getBytes()))
+                .append("&t_ran=").append(DatatypeConverter.printBase64Binary(PandaProcessor.getRandomStr().getBytes()));
         return sb.toString();
     }
 

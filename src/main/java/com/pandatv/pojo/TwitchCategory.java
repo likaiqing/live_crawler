@@ -4,6 +4,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.tools.CommonTools;
 
+import javax.xml.bind.DatatypeConverter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -107,14 +108,14 @@ public class TwitchCategory {
         sb.append("&id=").append(id)
                 .append("&g_b_id=").append(giantBombId)
                 .append("&plat=").append(this.getPlat())
-                .append("&nm=").append(PandaProcessor.encoder.encodeToString(this.getName().getBytes()))
+                .append("&nm=").append(DatatypeConverter.printBase64Binary(this.getName().getBytes()))
                 .append("&vies=").append(viewers)
                 .append("&chas=").append(channels)
                 .append("&cur_u=").append(curUrl)
                 .append("&next_u=").append(nextUrl)
                 .append("&task=").append(this.getTask())
-                .append("&c_time=").append(PandaProcessor.encoder.encodeToString(createTime.getBytes()))
-                .append("&t_ran=").append(PandaProcessor.getRandomStr());
+                .append("&c_time=").append(DatatypeConverter.printBase64Binary(createTime.getBytes()))
+                .append("&t_ran=").append(DatatypeConverter.printBase64Binary(PandaProcessor.getRandomStr().getBytes()));
         return sb.toString();
     }
 
