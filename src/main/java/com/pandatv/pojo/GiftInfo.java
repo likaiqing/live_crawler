@@ -1,6 +1,5 @@
 package com.pandatv.pojo;
 
-import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 
 import javax.xml.bind.DatatypeConverter;
@@ -21,7 +20,7 @@ public class GiftInfo {
     private int exp; //经验值,10=1元
 
     public String getName() {
-        return name;
+        return null == name ? "" : name;
     }
 
     public void setName(String name) {
@@ -97,7 +96,7 @@ public class GiftInfo {
     }
 
     public String getCategory() {
-        return category;
+        return null == category ? "" : category;
     }
 
     public void setCategory(String category) {

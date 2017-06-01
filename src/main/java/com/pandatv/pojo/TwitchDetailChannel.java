@@ -1,7 +1,5 @@
 package com.pandatv.pojo;
 
-import com.pandatv.common.PandaProcessor;
-
 import javax.xml.bind.DatatypeConverter;
 
 /**
@@ -13,7 +11,7 @@ public class TwitchDetailChannel extends TwitchChannel {
     private Integer following;//正在关注数
 
     public String getTeamName() {
-        return teamName;
+        return null == teamName ? "" : teamName;
     }
 
     public void setTeamName(String teamName) {

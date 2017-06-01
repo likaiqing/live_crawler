@@ -200,9 +200,15 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
 //                        .append("&viedos=").append(tdc.getVideos())
 //                        .append("&fol_ing=").append(tdc.getFollowing()).toString());
 
-                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
-                        .append(Const.TWITCHDETAILCHAEVENT)
-                        .append("&par_d=").append(date).append(tdc.toString()).toString());
+                try {
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
+                            .append(Const.TWITCHDETAILCHAEVENT)
+                            .append("&par_d=").append(date).append(tdc.toString()).toString());
+                    Thread.sleep(10);
+                }catch (Exception e){
+
+                }
+
             }
         }
 //        CommonTools.writeAndMail(hivePath, Const.TWITCHDETAILCHANNELFINISH, twitchListStrs);

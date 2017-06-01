@@ -185,7 +185,7 @@ public class IndexRecProcessor extends PandaProcessor {
         indexRec.setJob(Const.QUANMININDEXREC);
         indexRec.setUrl(curUrl);
         indexRec.setLocation(location);
-        detailAnchors.add(indexRec.toString());
+        indexRecObjes.add(indexRec);
     }
 
     private void executeQuanminIndex(Page page) {
@@ -217,7 +217,7 @@ public class IndexRecProcessor extends PandaProcessor {
         indexRec.setWeightNum(flowerCount);
         indexRec.setUrl(curUrl);
         indexRec.setCategorySec(category);
-        detailAnchors.add(indexRec.toString());
+        indexRecObjes.add(indexRec);
     }
 
     private void executeLongzhuIndex(Page page) {
@@ -254,7 +254,7 @@ public class IndexRecProcessor extends PandaProcessor {
                 indexRec.setFollowerNum(follows);
                 indexRec.setViewerNum(onlineNum);
                 indexRec.setWeightNum(fight);
-                detailAnchors.add(indexRec.toString());
+                indexRecObjes.add(indexRec);
             }
         }
     }
@@ -396,7 +396,7 @@ public class IndexRecProcessor extends PandaProcessor {
         indexRec.setJob(Const.HUYAINDEXREC);
         indexRec.setUrl(curUrl);
         indexRec.setLocation(location + "");
-        detailAnchors.add(indexRec.toString());
+        indexRecObjes.add(indexRec);
     }
 
     private void executeDouyRecDetail(Page page, String curUrl) {
@@ -426,7 +426,7 @@ public class IndexRecProcessor extends PandaProcessor {
         indexRec.setLastStartTime(lastStartTime);
         indexRec.setJob(Const.DOUYUINDEXREC);
         indexRec.setLocation(location + "");
-        detailAnchors.add(indexRec.toString());
+        indexRecObjes.add(indexRec);
     }
 
     private void executeHuyaIndex(Page page) {
@@ -478,15 +478,12 @@ public class IndexRecProcessor extends PandaProcessor {
         chushouindex = "https://chushou.tv/";
         String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex
         long start = System.currentTimeMillis();
-        Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
-//            detailAnchors.add(entry.getValue().toString());
-            IndexRec indexRec = entry.getValue();
-            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.INDEXRECEVENT)
-                    .append("&par_d=").append(date).append(indexRec.toString()).toString());
+            indexRecObjes.add(entry.getValue());
 //                    .append("&rid=").append(indexRec.getRid())
 //                    .append("&nm=").append(indexRec.getName())
 //                    .append("&tt=").append(indexRec.getTitle())
@@ -500,6 +497,16 @@ public class IndexRecProcessor extends PandaProcessor {
 //                    .append("&notice=&last_s_t=&t_ran=").append(getRandomStr())
 //                    .append("&loc=").append(indexRec.getLocation()).toString());
         }
+        for (IndexRec indexRec : indexRecObjes) {
+            try {
+                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.INDEXRECEVENT)
+                        .append("&par_d=").append(date).append(indexRec.toString()).toString());
+                Thread.sleep(10);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        logger.info("indexrec,获取个数:" + indexRecObjes.size());
 //        CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
     }
 }

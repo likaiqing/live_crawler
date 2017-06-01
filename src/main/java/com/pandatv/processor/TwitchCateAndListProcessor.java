@@ -76,8 +76,13 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     twitchCategory.setCurUrl(curUrl);
                     twitchCategory.setNextUrl(nextUrl);
                     twitchCategory.setTask(job);
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCATEEVENT)
-                                    .append("&par_d=").append(date).append(twitchCategory.toString()).toString());
+                    try {
+                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCATEEVENT)
+                                .append("&par_d=").append(date).append(twitchCategory.toString()).toString());
+                        Thread.sleep(10);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 //                    twitchCatObjes.add(twitchCategory);
                     String encode = URLEncoder.encode(name, "utf-8").replace("%20", "+");
                     page.addTargetRequest(new Request(urlPre + encode + "&limit=20&offset=0").setPriority(1));
@@ -146,8 +151,13 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     channel.setFollowers(followers);
                     channel.setCurUrl(curUrl);
                     channel.setTask(job);
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCHAEVENT)
-                                    .append("&par_d=").append(date).append(channel.toString()).toString());
+                    try {
+                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCHAEVENT)
+                                .append("&par_d=").append(date).append(channel.toString()).toString());
+                        Thread.sleep(10);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 //                    twitchListObjes.add(channel);
                 }
                 int offSet = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf("=") + 1));

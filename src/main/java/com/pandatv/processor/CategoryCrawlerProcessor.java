@@ -103,7 +103,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
                     .append("&c_n=").append(DatatypeConverter.printBase64Binary(name.getBytes()))
                     .append("&url=").append(url)
                     .append("&ent_url=").append(curUrl)
-                    .append("&t_ran=").append(getRandomStr()).toString());
+                    .append("&t_ran=").append(DatatypeConverter.printBase64Binary(getRandomStr().getBytes())).toString());
 //            sb.append(platIdEnum.platId).append(Const.SEP).append(platIdEnum.paltName).append(Const.SEP).append(url.substring(url.lastIndexOf("/") + 1)).append(Const.SEP).append(name).append(Const.SEP).append(url).append(Const.SEP).append(curUrl).append(Const.SEP).append(getRandomStr());
 //            categories.add(sb.toString());
         }

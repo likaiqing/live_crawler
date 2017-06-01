@@ -169,7 +169,7 @@ public class DetailAnchor {
     }
 
     public String getCategorySec() {
-        return categorySec;
+        return null == categorySec ? "" : categorySec;
     }
 
     public void setCategorySec(String categorySec) {
@@ -185,7 +185,7 @@ public class DetailAnchor {
     }
 
     public String getLastStartTime() {
-        return lastStartTime;
+        return null == lastStartTime ? "" : lastStartTime;
     }
 
     public void setLastStartTime(String lastStartTime) {

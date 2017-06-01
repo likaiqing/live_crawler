@@ -48,6 +48,8 @@ public abstract class PandaProcessor implements PageProcessor {
     private static String userAgent = "";
     protected static SimpleDateFormat createTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     protected static int requests = 0;
+
+    protected static Set<IndexRec> indexRecObjes = new HashSet<>();
 //    public static Base64.Encoder encoder;
 
     static {

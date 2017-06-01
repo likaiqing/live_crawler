@@ -31,7 +31,7 @@ public class Anchor {
     }
 
     public String getCategory() {
-        return category;
+        return null == category ? "" : category;
     }
 
     public void setCategory(String category) {
@@ -63,7 +63,7 @@ public class Anchor {
     }
 
     public String getPopularityStr() {
-        return popularityStr;
+        return null == popularityStr ? "" : popularityStr;
     }
 
     public void setPopularityStr(String popularityStr) {

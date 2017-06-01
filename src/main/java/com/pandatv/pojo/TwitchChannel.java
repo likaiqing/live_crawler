@@ -1,6 +1,5 @@
 package com.pandatv.pojo;
 
-import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.tools.CommonTools;
 
@@ -37,7 +36,7 @@ public class TwitchChannel {
     }
 
     public String getNickName() {
-        return nickName;
+        return CommonTools.getFormatStr(nickName);
     }
 
     public void setNickName(String nickName) {
@@ -69,7 +68,7 @@ public class TwitchChannel {
     }
 
     public String getGame() {
-        return game;
+        return CommonTools.getFormatStr(game);
     }
 
     public void setGame(String game) {
@@ -183,7 +182,7 @@ public class TwitchChannel {
     }
 
     public String getRegisterTime() {
-        return registerTime;
+        return null == registerTime ? "" : registerTime;
     }
 
     public void setRegisterTime(String registerTime) {

@@ -5,7 +5,6 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
@@ -145,8 +144,9 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
         for (String rid : weightFollowRids) {
 //            detailAnchors.add(map.get(rid).toString());
             DetailAnchor da = map.get(rid);
-            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                    .append("&par_d=").append(date).append(da.toString()).toString());
+            try {
+                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+                        .append("&par_d=").append(date).append(da.toString()).toString());
 //                    .append("&rid=").append(rid)
 //                    .append("&nm=").append(CommonTools.getFormatStr(da.getName()))
 //                    .append("&tt=").append(CommonTools.getFormatStr(da.getTitle()))
@@ -159,9 +159,9 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
 //                    .append("&c_time=").append(createTimeFormat.format(new Date()))
 //                    .append("&notice=&last_s_t=").append(da.getLastStartTime())
 //                    .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
-            try {
+
                 Thread.sleep(10);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
