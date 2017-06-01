@@ -149,11 +149,11 @@ public class TwitchChannel {
                 .append("&broa_lan=").append(broadcasterLan)
                 .append("&lan=").append(language)
                 .append("&reg_time=").append(DatatypeConverter.printBase64Binary(this.getRegisterTime().getBytes()))
-                .append("&url=").append(this.getUrl().getBytes())
+                .append("&url=").append(DatatypeConverter.printBase64Binary(this.getUrl().getBytes()))
                 .append("&vies=").append(viewers)
                 .append("&vie_tol=").append(viewsTol)
                 .append("&fols=").append(followers)
-                .append("&cur_u=").append(curUrl)
+                .append("&cur_u=").append(DatatypeConverter.printBase64Binary(this.getCurUrl().getBytes()))
                 .append("&task=").append(this.getTask())
                 .append("&c_time=").append(DatatypeConverter.printBase64Binary(createTime.getBytes()))
                 .append("&t_ran=").append(DatatypeConverter.printBase64Binary(PandaProcessor.getRandomStr().getBytes()));
