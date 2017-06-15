@@ -1,12 +1,10 @@
 package com.pandatv.processor;
 
-import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
-import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -16,8 +14,6 @@ import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
 import javax.xml.bind.DatatypeConverter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +31,8 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
     private static String pandaCate = "http://www.panda.tv/cate";
     private static String longzhuCate = "http://longzhu.com/games/?from=rmallgames";
     private static String zhanqiCate = "https://www.zhanqi.tv/games";
-    private static String quanminCate = "http://www.quanmin.tv/json/categories/list.json?_t=";
+    //    private static String quanminCate = "http://www.quanmin.tv/json/categories/list.json?_t=";
+    private static String quanminCate = "http://www.quanmin.tv/category";
 
     @Override
     public void process(Page page) {
@@ -57,15 +54,18 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
                 List<String> names = html.xpath("//ul[@id='game-list-panel']/li/a/p/text()").all();
                 add2Categories(curUrl, urls, names, PlatIdEnum.ZHANQI);
             } else if (curUrl.startsWith(quanminCate)) {
-                JSONArray jsonArray = JsonPath.read(page.getJson().get(), "$");
-                for (Object obj : jsonArray) {
-                    String eName = JsonPath.read(obj, "$.slug");
-                    String cName = JsonPath.read(obj, "$.name");
-                    String url = "http://www.quanmin.tv/game/" + eName;
-                    StringBuffer sb = new StringBuffer(PlatIdEnum.QUANMIN.platId);
-                    sb.append(Const.SEP).append(PlatIdEnum.QUANMIN.paltName).append(Const.SEP).append(eName).append(Const.SEP).append(cName).append(Const.SEP).append(url).append(Const.SEP).append(curUrl).append(Const.SEP).append(getRandomStr());
-                    categories.add(sb.toString());
-                }
+//                JSONArray jsonArray = JsonPath.read(page.getJson().get(), "$");
+//                for (Object obj : jsonArray) {
+//                    String eName = JsonPath.read(obj, "$.slug");
+//                    String cName = JsonPath.read(obj, "$.name");
+//                    String url = "http://www.quanmin.tv/game/" + eName;
+//                StringBuffer sb = new StringBuffer(PlatIdEnum.QUANMIN.platId);
+//                sb.append(Const.SEP).append(PlatIdEnum.QUANMIN.paltName).append(Const.SEP).append(eName).append(Const.SEP).append(cName).append(Const.SEP).append(url).append(Const.SEP).append(curUrl).append(Const.SEP).append(getRandomStr());
+//                    categories.add(sb.toString());
+//                }
+                List<String> enameUrls = html.xpath("//div[@class='list_w-card_wrap']/a/@href").all();
+                List<String> cnames = html.xpath("//div[@class='list_w-card_wrap']/a/@title").all();
+                add2Categories(curUrl, enameUrls, cnames, PlatIdEnum.QUANMIN);
             } else if (curUrl.equals(longzhuCate)) {
                 List<String> urls = html.xpath("//div[@class='list-con']/div[@class='list-item']/h2/a/@href").all();
                 List<String> names = html.xpath("//div[@class='list-con']/div[@class='list-item']/h2/a/text()").all();
@@ -123,7 +123,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_category/" + date;
         long start = System.currentTimeMillis();
-        Spider.create(new CategoryCrawlerProcessor()).addUrl(douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate + new SimpleDateFormat("yyyyMMddHHmm").format(new Date())).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new CategoryCrawlerProcessor()).addUrl(douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate /**+ new SimpleDateFormat("yyyyMMddHHmm").format(new Date())*/).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));

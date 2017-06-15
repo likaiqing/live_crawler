@@ -1,0 +1,2 @@
+*/3 * * * * sh /root/shell/crawler/twitch_cateandlist_crawler.sh >/tmp/twitch_cateandlist_crawler.log 2>&1
+2 * * * * sh /root/shell/crawler/twitch_detailchannel_crawler.sh >/tmp/twitch_detailchannel_crawler.log 2>&1

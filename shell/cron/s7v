@@ -1,0 +1,7 @@
+2,17,32,47 * * * * sh /root/shell/crawler/douyudetailanchor.sh >/tmp/douyudetailanchor.log 2>&1
+5,20,35,50 * * * * sh /root/shell/crawler/huyadetailanchor.sh >/tmp/huyadetailanchor.log 2>&1
+*/15 * * * * sh /root/shell/crawler/pandadetailanchor.sh >/tmp/pandadetailanchor.log 2>&1
+*/15 * * * * sh /root/shell/crawler/chushoudetailanchor.sh >/tmp/chushoudetailanchor.log 2>&1
+*/15 * * * * sh /root/shell/crawler/zhanqidetailanchor.sh >/tmp/zhanqidetailanchor.log 2>&1
+*/15 * * * * sh /root/shell/crawler/quanminanchor.sh >/tmp/quanmindetailanchor.log 2>&1
+*/15 * * * * sh /root/shell/crawler/longzhudetailanchor.sh >/tmp/longzhudetailanchor.log 2>&1
