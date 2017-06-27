@@ -30,13 +30,8 @@ public class HttpUtil {
             connection.setRequestProperty("user-agent",
                     "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
             connection.connect();
-            in = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result += line;
-            }
-            logger.info("sendget,url:" + url);
+            connection.getContentType();
+//            logger.info("sendget,url:" + url);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
