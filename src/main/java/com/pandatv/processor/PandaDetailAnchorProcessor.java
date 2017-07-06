@@ -89,7 +89,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
                     if (script.toString().contains("window._config_roominfo")) {
                         String scrStr = script.toString();
                         int bamStart = scrStr.indexOf("\"bamboos\":\"") + 11;
-                        int bamEnd = scrStr.indexOf("\"}", bamStart);
+                        int bamEnd = scrStr.indexOf("\"", bamStart);
                         String weightStr = scrStr.substring(bamStart, bamEnd);
                         detailAnchor.setWeightNum(Long.parseLong(weightStr));
                         has = true;

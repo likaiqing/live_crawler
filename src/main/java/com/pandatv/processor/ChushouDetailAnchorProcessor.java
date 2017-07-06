@@ -32,6 +32,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(ChushouDetailAnchorProcessor.class);
     private static int exCnt;
     private static final Set<String> weightFollowRids = new HashSet<>();
+    private static int pageIndex = 0;
 
     @Override
     public void process(Page page) {
@@ -43,7 +44,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
                 String json = page.getJson().toString();
                 JSONArray items = JsonPath.read(json, "$.data.items");
                 String breakpoint = JsonPath.read(json, "$.data.breakpoint");
-                if (items.size() > 0 && map.size() < Const.CHUSHOUMAX) {
+                if (items.size() > 0 && map.size() < Const.CHUSHOUMAX && pageIndex++ <= 500) {
                     page.addTargetRequest(urlTmp + breakpoint);
                     JSONArray read = JsonPath.read(json, "$.data.items");
                     for (int i = 0; i < read.size(); i++) {
