@@ -69,7 +69,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
                         anchor.setJob(job);
                         anchor.setPlat(Const.CHUSHOU);
                         anchor.setGame(Const.GAMEALL);
-                        anchor.setUrl(curUrl);
+                        anchor.setUrl(curUrl.replace("&","").replace("=",":"));
                         HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
                                         .append("&par_d=").append(date).append(anchor.toString()).toString());
 //                        anchorObjs.add(anchor);
@@ -131,7 +131,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+        return this.site.setSleepTime(0);
     }
 
     public static void crawler(String[] args) {
