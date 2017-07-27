@@ -41,7 +41,7 @@ public class SendMail {
             // 根据session创建一个邮件消息
             Message mailMessage = new MimeMessage(sendMailSession);
             // 创建邮件发送者地址
-            Address from = new InternetAddress("mailman@pandatv.com");
+            Address from = new InternetAddress("data@postman.ops.pandatv.com");
             // 设置邮件消息的发送者
             mailMessage.setFrom(from);
             // 创建邮件的接收者地址，并设置到邮件消息中
@@ -95,7 +95,7 @@ public class SendMail {
             // 根据session创建一个邮件消息
             Message mailMessage = new MimeMessage(sendMailSession);
             // 创建邮件发送者地址
-            Address from = new InternetAddress("mailman@pandatv.com");
+            Address from = new InternetAddress("data@postman.ops.pandatv.com");
             // 设置邮件消息的发送者
             mailMessage.setFrom(from);
             // 创建邮件的接收者地址，并设置到邮件消息中

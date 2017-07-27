@@ -27,7 +27,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
     private static int exCnt;
     private static String chuchouCate = "https://chushou.tv/gamezone/all-areas.htm";
     private static String douyuCate = "https://www.douyu.com/directory";
-    private static String huyaCate = "http://www.huya.com/g";
+    private static String huyaCate = "http://www.huya.com/g?areafib=1";
     private static String pandaCate = "http://www.panda.tv/cate";
     private static String longzhuCate = "http://longzhu.com/games/?from=rmallgames";
     private static String zhanqiCate = "https://www.zhanqi.tv/games";
@@ -47,7 +47,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
                 add2Categories(curUrl, urls, names, PlatIdEnum.DOUYU);
             } else if (curUrl.equals(huyaCate)) {
                 List<String> urls = html.xpath("//ul[@id='js-game-list']/li/a/@href").all();
-                List<String> names = html.xpath("//ul[@id='js-game-list']/li/a/p/text()").all();
+                List<String> names = html.xpath("//ul[@id='js-game-list']/li/a/h3/text()").all();
                 add2Categories(curUrl, urls, names, PlatIdEnum.HUYA);
             } else if (curUrl.equals(zhanqiCate)) {
                 List<String> urls = html.xpath("//ul[@id='game-list-panel']/li/a/@href").all();
@@ -111,7 +111,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+        return this.site.setHttpProxy(null);
     }
 
     public static void crawler(String[] args) {
@@ -123,7 +123,8 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_category/" + date;
         long start = System.currentTimeMillis();
-        Spider.create(new CategoryCrawlerProcessor()).addUrl(douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate /**+ new SimpleDateFormat("yyyyMMddHHmm").format(new Date())*/).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        //douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate /**+ new SimpleDateFormat("yyyyMMddHHmm").format(new Date())*/
+        Spider.create(new CategoryCrawlerProcessor()).addUrl(huyaCate).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
