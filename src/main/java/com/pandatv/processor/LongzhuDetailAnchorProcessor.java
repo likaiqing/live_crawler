@@ -4,13 +4,10 @@ import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.pojo.Anchor;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -19,7 +16,6 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by likaiqing on 2016/11/14.
@@ -30,8 +26,10 @@ public class LongzhuDetailAnchorProcessor extends PandaProcessor {
     private static int index = 0;
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final Logger logger = LoggerFactory.getLogger(LongzhuDetailAnchorProcessor.class);
-    private static final String firUrl = "http://api.plu.cn/tga/streams?max-results=18&sort-by=views&filter=0&game=0&callback=_callbacks_._36bxu1&start-index=0";
+    private static final String callback = "_callbacks_._36bxu1";
+    private static String firUrl = "http://api.plu.cn/tga/streams?max-results=18&sort-by=views&filter=0&game=0&callback=" + callback + "&start-index=0";
     private static int exCnt;
+
     @Override
     public void process(Page page) {
         requests++;
@@ -39,7 +37,7 @@ public class LongzhuDetailAnchorProcessor extends PandaProcessor {
         try {
             logger.info("process url:{}", curUrl);
             String json = page.getJson().toString();
-            json = json.substring(20, json.lastIndexOf(")"));
+            json = json.substring(callback.length() + 1, json.lastIndexOf(")"));
             if (curUrl.equals(firUrl)) {
                 Integer total = JsonPath.read(json, "$.data.totalItems");
                 pageCount = Integer.parseInt(JsonPath.read(json, "$.data.limit").toString());
@@ -117,7 +115,7 @@ public class LongzhuDetailAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         long start = System.currentTimeMillis();
-        Spider.create(new LongzhuDetailAnchorProcessor()).thread(1).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new LongzhuDetailAnchorProcessor()).thread(3).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
