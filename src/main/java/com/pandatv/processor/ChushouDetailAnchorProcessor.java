@@ -24,7 +24,7 @@ import java.util.*;
  * Created by likaiqing on 2016/11/14.
  */
 public class ChushouDetailAnchorProcessor extends PandaProcessor {
-    private static String urlTmp = "http://chushou.tv/live/down-v2.htm?&breakpoint=";
+    private static String urlTmp = "https://chushou.tv/live/down-v2.htm?&breakpoint=";
     private static String pointUrlTmpPre = "https://chushou.tv/play-help/bang-guide-info.htm?roomId=";
     private static String pointUrlTmpSuf = "&_=";//13位时间戳
     private static final Map<String, DetailAnchor> map = new HashMap<>();
@@ -67,7 +67,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
                 } else {
                     page.setSkip(true);
                 }
-            } else if (curUrl.equals("http://chushou.tv/live/list.htm")) {
+            } else if (curUrl.equals("https://chushou.tv/live/list.htm")) {
                 String breakPoint = page.getHtml().xpath("//div[@class='more']/@data-break").toString();
                 page.addTargetRequest(urlTmp + breakPoint);
                 Html html = page.getHtml();
@@ -129,7 +129,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        String firUrl = "http://chushou.tv/live/list.htm";
+        String firUrl = "https://chushou.tv/live/list.htm";
         job = args[0];//chushouanchor
         date = args[1];//20161114
         hour = args[2];//10
@@ -138,7 +138,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         long start = System.currentTimeMillis();
-        Spider.create(new ChushouDetailAnchorProcessor()).thread(2).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new ChushouDetailAnchorProcessor()).thread(4).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));

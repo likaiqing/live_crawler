@@ -1,12 +1,12 @@
 package com.pandatv.mail;
 
-//import javax.mail.Authenticator;
-//import javax.mail.PasswordAuthentication;
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
 
 /**
  * Created by likaiqing on 2016/11/22.
  */
-public class MyAuthenticator /**extends Authenticator*/ {
+public class MyAuthenticator extends Authenticator {
     private String username;
     private String password;
     public MyAuthenticator(){
@@ -18,10 +18,10 @@ public class MyAuthenticator /**extends Authenticator*/ {
         this.password = password;
     }
 
-//    @Override
-//    protected PasswordAuthentication getPasswordAuthentication() {
-//        return new PasswordAuthentication(username, password);
-//    }
+    @Override
+    protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(username, password);
+    }
 
     public String getUsername() {
         return username;
