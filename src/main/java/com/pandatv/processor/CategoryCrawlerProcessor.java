@@ -123,8 +123,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_category/" + date;
         long start = System.currentTimeMillis();
-        //douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate /**+ new SimpleDateFormat("yyyyMMddHHmm").format(new Date())*/
-        Spider.create(new CategoryCrawlerProcessor()).addUrl(huyaCate).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new CategoryCrawlerProcessor()).addUrl(douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate /**+ new SimpleDateFormat("yyyyMMddHHmm").format(new Date())*/).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));

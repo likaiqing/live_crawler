@@ -14,7 +14,7 @@
     </properties>
     <dependencies>
         <!--apache poi-->
-        <dependency>
+        <!--dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>${poi-version}</version>
@@ -38,7 +38,7 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j-core</artifactId>
             <version>1.4-dev-8</version>
-        </dependency>
+        </dependency-->
         <!--webmagic-->
         <dependency>
             <groupId>us.codecraft</groupId>
@@ -63,7 +63,7 @@
         </dependency>
 
 
-        <dependency>
+        <!--dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>2.52.0</version>
@@ -82,7 +82,7 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
             <version>2.52.0</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -91,7 +91,7 @@
 
         <!--hive jdbc jar-->
         <!--1,hive-->
-        <dependency>
+        <!--dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-jdbc</artifactId>
             <version>2.0.1</version>
@@ -110,9 +110,9 @@
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-service</artifactId>
             <version>2.0.1</version>
-        </dependency>
+        </dependency-->
         <!--2,hadoop-->
-        <dependency>
+        <!--dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>2.7.0</version>
@@ -126,7 +126,7 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
             <version>2.7.0</version>
-        </dependency>
+        </dependency-->
         <!--3,commons-->
         <dependency>
             <groupId>commons-logging</groupId>
@@ -160,29 +160,29 @@
             <version>3.1.0-incubating</version>
         </dependency>
         <!--5,servlet-->
-        <dependency>
+        <!--dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
-        </dependency>
+        </dependency-->
         <!--mail-->
-        <dependency>
+        <!--dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.5.5</version>
-        </dependency>
+        </dependency-->
         <!--okhttp-->
-        <dependency>
+        <!--dependency>
             <groupId>com.squareup.okhttp</groupId>
             <artifactId>okhttp</artifactId>
             <version>2.5.0</version>
-        </dependency>
+        </dependency-->
         <!--java db-ip-->
-        <dependency>
+        <!--dependency>
             <groupId>in.ankushs</groupId>
             <artifactId>Java-DB-IP</artifactId>
             <version>2.0</version>
-        </dependency>
+        </dependency-->
     </dependencies>
     <build>
         <plugins>

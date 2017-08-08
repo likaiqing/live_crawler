@@ -53,17 +53,28 @@ public abstract class PandaProcessor implements PageProcessor {
 //    public static Base64.Encoder encoder;
 
     static {
-        int r = (int) Math.random() * 10;
-        userAgents.add("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; NetworkBench/8.0.1.309-5653879-2740891)");
-        userAgents.add("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; NetworkBench/8.0.1.309-5748187-2740891)");
-        userAgents.add("CMDC M623C_LTE/V1 Linux/3.10.28 Android/5.1.1 Release/12.3.2015 Browser/AppleWebKit537.36 Mobile Safari/537.36 System/Android 5.1.1");
-        userAgents.add("Android.Thunder.Mozilla/5.0 (Linux; Android 7.0; KNT-UL10 Build/HUAWEIKNT-UL10; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/55.0.2883.91 Mobile Safari/537.36");
-        userAgents.add("Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; InfoPath.3; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727)");
-        userAgents.add("Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; SLCC2; Media Center PC 6.0; Tablet PC 2.0)");
-        userAgents.add("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; NetworkBench/8.0.1.309-3512246-2741620)");
-        userAgents.add("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; QQDownload 718; SV1; .NET CLR 2.0.50727; {D9D54F49-E51C-445e-92F2-1EE3C2313240})");
-        userAgents.add("HS-T967_TD/1.0 Linux/3.4.5 Android/4.1.2 Release/08.27.2013 Browser/AppleWebKit534.30 (KHTML, like Gecko) Mozilla/5.0 Mobile pandaclient");
-        userAgents.add("K-Touch Tou ch3c/TBT595731_9291_V0001 Android/4.4.2 Release/20140401 Browser/AppleWebKit534.30 Profile/MIDP-2.0 Configuration/CLDC-1.1 pandaclient");
+        int r = (int) Math.random() * 20;
+
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36 LBBROWSER");
+        userAgents.add("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2626.106 Safari/537.36 Yunhai Browser");
+        userAgents.add("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36 qblink tgp_daemon.exe QBCore/3.43.549.400 QQBrowser/9.0.2524.400");
+        userAgents.add("Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 UBrowser/6.1.3228.1 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.104 Safari/537.36 Core/1.53.3226.400 QQBrowser/9.6.11682.400");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 UBrowser/6.1.3228.1 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
+        userAgents.add("Mozilla/5.0 (Windows NT 6.1; Win64; x64; Trident/7.0; rv:11.0) like Gecko");
         userAgent = userAgents.get(r);
 //        encoder = Base64.getEncoder();
     }

@@ -91,8 +91,8 @@ public class HuyaAnchorProcessor extends PandaProcessor {
                 anchor.setPlat(Const.HUYA);
                 anchor.setGame(Const.GAMEALL);
                 anchor.setUrl(url);
-                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                        .append("&par_d=").append(date).append(anchor.toString()).toString());
+//                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                        .append("&par_d=").append(date).append(anchor.toString()).toString());
 //                    anchorObjs.add(anchor);
             }
         }
@@ -112,7 +112,7 @@ public class HuyaAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         long start = System.currentTimeMillis();
-        Spider.create(new HuyaAnchorProcessor()).thread(6).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new HuyaAnchorProcessor()).thread(10).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));

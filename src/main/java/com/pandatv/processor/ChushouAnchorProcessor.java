@@ -12,6 +12,7 @@ import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by likaiqing on 2016/11/14.
  */
 public class ChushouAnchorProcessor extends PandaProcessor {
-    private static String urlTmp = "http://chushou.tv/live/down-v2.htm?&breakpoint=";
+    private static String urlTmp = "https://chushou.tv/live/down-v2.htm?&breakpoint=";
     private static final Logger logger = LoggerFactory.getLogger(ChushouAnchorProcessor.class);
     private static int exCnt;
     private static int cnt;
@@ -35,7 +36,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
         String curUrl = page.getUrl().get();
         logger.info("process url:{}", curUrl);
         try {
-            if (!curUrl.equals("http://chushou.tv/live/list.htm")) {
+            if (!curUrl.equals("https://chushou.tv/live/list.htm")) {
                 String json = page.getJson().toString();
                 JSONArray items = JsonPath.read(json, "$.data.items");
                 String breakpoint = JsonPath.read(json, "$.data.breakpoint");
@@ -70,12 +71,10 @@ public class ChushouAnchorProcessor extends PandaProcessor {
                         anchor.setPlat(Const.CHUSHOU);
                         anchor.setGame(Const.GAMEALL);
                         anchor.setUrl(curUrl.replace("&","").replace("=",":"));
-                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                                        .append("&par_d=").append(date).append(anchor.toString()).toString());
+//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                                        .append("&par_d=").append(date).append(anchor.toString()).toString());
 //                        anchorObjs.add(anchor);
                     }
-                } else {
-                    page.setSkip(true);
                 }
             } else {
                 String breakPoint = page.getHtml().xpath("//div[@class='more']/@data-break").toString();
@@ -118,6 +117,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
 //                    anchorObjs.add(anchor);
                 }
             }
+            page.setSkip(true);
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
             logger.error("execute faild,url:" + curUrl);
@@ -131,11 +131,11 @@ public class ChushouAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.setSleepTime(0);
+        return this.site.setSleepTime(0).setHttpProxy(null);
     }
 
     public static void crawler(String[] args) {
-        String firUrl = "http://chushou.tv/live/list.htm";
+        String firUrl = "https://chushou.tv/live/list.htm";
         job = args[0];//chushouanchor
         date = args[1];//20161114
         hour = args[2];//10

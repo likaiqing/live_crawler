@@ -1,12 +1,12 @@
 package com.pandatv.tools;
 
 import com.pandatv.pojo.DetailAnchor;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.compress.*;
+//import org.apache.hadoop.conf.Configuration;
+//import org.apache.hadoop.fs.FSDataOutputStream;
+//import org.apache.hadoop.fs.FileStatus;
+//import org.apache.hadoop.fs.FileSystem;
+//import org.apache.hadoop.fs.Path;
+//import org.apache.hadoop.io.compress.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,58 +61,58 @@ public class HiveJDBCConnect {
 
     public void write(String path, List<List<String>> list) {
         path = (path.endsWith("/")) ? path : (path + "/");
-        Configuration conf = new Configuration();
-        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));
-        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("core-site.xml"));
-        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("mapred-site.xml"));
-        FileSystem fs = null;
-        CompressionOutputStream cmpOut = null;
-        FSDataOutputStream hdfsOutStream = null;
+//        Configuration conf = new Configuration();
+//        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));
+//        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("core-site.xml"));
+//        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("mapred-site.xml"));
+//        FileSystem fs = null;
+//        CompressionOutputStream cmpOut = null;
+//        FSDataOutputStream hdfsOutStream = null;
+//
+//        try {
+//            fs = FileSystem.get(conf);
+//            CompressionCodecFactory e = new CompressionCodecFactory(conf);
+//            CompressionCodec codec = e.getCodecByName("DEFLATE");
+//            Compressor compressor = CodecPool.getCompressor(codec, conf);
+//            String filepath = path + System.currentTimeMillis() + "_" + Math.random() + ".deflate";
+//            if(fs.exists(new Path(filepath))) {
+//                hdfsOutStream = fs.append(new Path(filepath));
+//            } else {
+//                hdfsOutStream = fs.create(new Path(filepath));
+//            }
+//
+//            cmpOut = codec.createOutputStream(hdfsOutStream, compressor);
+//            Iterator var12 = list.iterator();
+//
+//            while(var12.hasNext()) {
+//                List listSub = (List)var12.next();
+//                byte[] line = this.consumeRecordToHive(listSub);
+//                if(line != null) {
+//                    cmpOut.write(line);
+//                }
+//            }
+//        } catch (IOException var30) {
+//            var30.printStackTrace();
+//        } finally {
+//            try {
+//                cmpOut.close();
+//            } catch (IOException var29) {
+//                var29.printStackTrace();
+//            }
+//
+//            try {
+//                hdfsOutStream.close();
+//            } catch (IOException var28) {
+//                var28.printStackTrace();
+//            }
+//
+//            try {
+//                fs.close();
+//            } catch (IOException var27) {
+//                var27.printStackTrace();
+//            }
 
-        try {
-            fs = FileSystem.get(conf);
-            CompressionCodecFactory e = new CompressionCodecFactory(conf);
-            CompressionCodec codec = e.getCodecByName("DEFLATE");
-            Compressor compressor = CodecPool.getCompressor(codec, conf);
-            String filepath = path + System.currentTimeMillis() + "_" + Math.random() + ".deflate";
-            if(fs.exists(new Path(filepath))) {
-                hdfsOutStream = fs.append(new Path(filepath));
-            } else {
-                hdfsOutStream = fs.create(new Path(filepath));
-            }
-
-            cmpOut = codec.createOutputStream(hdfsOutStream, compressor);
-            Iterator var12 = list.iterator();
-
-            while(var12.hasNext()) {
-                List listSub = (List)var12.next();
-                byte[] line = this.consumeRecordToHive(listSub);
-                if(line != null) {
-                    cmpOut.write(line);
-                }
-            }
-        } catch (IOException var30) {
-            var30.printStackTrace();
-        } finally {
-            try {
-                cmpOut.close();
-            } catch (IOException var29) {
-                var29.printStackTrace();
-            }
-
-            try {
-                hdfsOutStream.close();
-            } catch (IOException var28) {
-                var28.printStackTrace();
-            }
-
-            try {
-                fs.close();
-            } catch (IOException var27) {
-                var27.printStackTrace();
-            }
-
-        }
+//        }
 
     }
 
@@ -168,80 +168,80 @@ public class HiveJDBCConnect {
         }
     }
     public void write2(String path, Set<String> list,String job,String curMinute) {
-        path = (path.endsWith("/")) ? path : (path + "/");
-        Configuration conf = new Configuration();
-        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));
-        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("core-site.xml"));
-        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("mapred-site.xml"));
-        conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
-        org.apache.hadoop.fs.FileSystem fs;
-        try {
-            fs = org.apache.hadoop.fs.FileSystem.get(conf);
-            CompressionCodecFactory factory = new CompressionCodecFactory(conf);
-            FSDataOutputStream hdfsOutStream = null;
-            CompressionCodec codec = factory.getCodecByName("DEFLATE");
-            Compressor compressor = CodecPool.getCompressor(codec, conf);
-            CompressionOutputStream cmpOut = null;
-            String filepath = path + System.currentTimeMillis() + "_" + job+  curMinute + ".deflate";
-            if (fs.exists(new Path(filepath))) {
-                hdfsOutStream = fs.append(new Path(filepath));
-            } else {
-                hdfsOutStream = fs.create(new Path(filepath));
-            }
-
-            cmpOut = codec.createOutputStream(hdfsOutStream, compressor);
-            for (String subStr : list) {
-                byte[] line = (subStr + "\n").getBytes("UTF-8");
-                if (line == null)
-                    continue;
-                cmpOut.write(line);
-            }
-            cmpOut.finish();
-            cmpOut.close();
-            hdfsOutStream.close();
-            fs.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        path = (path.endsWith("/")) ? path : (path + "/");
+//        Configuration conf = new Configuration();
+//        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));
+//        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("core-site.xml"));
+//        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("mapred-site.xml"));
+//        conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
+//        org.apache.hadoop.fs.FileSystem fs;
+//        try {
+//            fs = org.apache.hadoop.fs.FileSystem.get(conf);
+//            CompressionCodecFactory factory = new CompressionCodecFactory(conf);
+//            FSDataOutputStream hdfsOutStream = null;
+//            CompressionCodec codec = factory.getCodecByName("DEFLATE");
+//            Compressor compressor = CodecPool.getCompressor(codec, conf);
+//            CompressionOutputStream cmpOut = null;
+//            String filepath = path + System.currentTimeMillis() + "_" + job+  curMinute + ".deflate";
+//            if (fs.exists(new Path(filepath))) {
+//                hdfsOutStream = fs.append(new Path(filepath));
+//            } else {
+//                hdfsOutStream = fs.create(new Path(filepath));
+//            }
+//
+//            cmpOut = codec.createOutputStream(hdfsOutStream, compressor);
+//            for (String subStr : list) {
+//                byte[] line = (subStr + "\n").getBytes("UTF-8");
+//                if (line == null)
+//                    continue;
+//                cmpOut.write(line);
+//            }
+//            cmpOut.finish();
+//            cmpOut.close();
+//            hdfsOutStream.close();
+//            fs.close();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
     }
     public void write2(String path, Set<DetailAnchor> set) {
-        path = (path.endsWith("/")) ? path : (path + "/");
-        Configuration conf = new Configuration();
-        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));
-        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("core-site.xml"));
-        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("mapred-site.xml"));
-        conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
-        org.apache.hadoop.fs.FileSystem fs;
-        try {
-            fs = org.apache.hadoop.fs.FileSystem.get(conf);
-            CompressionCodecFactory factory = new CompressionCodecFactory(conf);
-            FSDataOutputStream hdfsOutStream = null;
-            CompressionCodec codec = factory.getCodecByName("DEFLATE");
-            Compressor compressor = CodecPool.getCompressor(codec, conf);
-            CompressionOutputStream cmpOut = null;
-            String filepath = path + System.currentTimeMillis() + "_" + Math.random() + ".deflate";
-            if (fs.exists(new Path(filepath))) {
-                hdfsOutStream = fs.append(new Path(filepath));
-            } else {
-                hdfsOutStream = fs.create(new Path(filepath));
-            }
-
-            cmpOut = codec.createOutputStream(hdfsOutStream, compressor);
-            for (DetailAnchor detailAnchor : set) {
-                byte[] line = (detailAnchor.toString() + "\n").getBytes("UTF-8");
-                if (line == null)
-                    continue;
-                cmpOut.write(line);
-            }
-            cmpOut.finish();
-            cmpOut.close();
-            hdfsOutStream.close();
-            fs.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        path = (path.endsWith("/")) ? path : (path + "/");
+//        Configuration conf = new Configuration();
+//        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("hdfs-site.xml"));
+//        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("core-site.xml"));
+//        conf.addResource(HiveJDBCConnect.class.getClassLoader().getResourceAsStream("mapred-site.xml"));
+//        conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
+//        org.apache.hadoop.fs.FileSystem fs;
+//        try {
+//            fs = org.apache.hadoop.fs.FileSystem.get(conf);
+//            CompressionCodecFactory factory = new CompressionCodecFactory(conf);
+//            FSDataOutputStream hdfsOutStream = null;
+//            CompressionCodec codec = factory.getCodecByName("DEFLATE");
+//            Compressor compressor = CodecPool.getCompressor(codec, conf);
+//            CompressionOutputStream cmpOut = null;
+//            String filepath = path + System.currentTimeMillis() + "_" + Math.random() + ".deflate";
+//            if (fs.exists(new Path(filepath))) {
+//                hdfsOutStream = fs.append(new Path(filepath));
+//            } else {
+//                hdfsOutStream = fs.create(new Path(filepath));
+//            }
+//
+//            cmpOut = codec.createOutputStream(hdfsOutStream, compressor);
+//            for (DetailAnchor detailAnchor : set) {
+//                byte[] line = (detailAnchor.toString() + "\n").getBytes("UTF-8");
+//                if (line == null)
+//                    continue;
+//                cmpOut.write(line);
+//            }
+//            cmpOut.finish();
+//            cmpOut.close();
+//            hdfsOutStream.close();
+//            fs.close();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
     }
 
     public  ResultSet excutesql(String sql) {

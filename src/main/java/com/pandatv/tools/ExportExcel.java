@@ -2,10 +2,10 @@ package com.pandatv.tools;
 
 import com.pandatv.pojo.Book;
 import com.pandatv.pojo.Student;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+//import org.apache.poi.xssf.usermodel.XSSFCell;
+//import org.apache.poi.xssf.usermodel.XSSFRow;
+//import org.apache.poi.xssf.usermodel.XSSFSheet;
+//import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
 import java.io.*;
@@ -30,33 +30,33 @@ public class ExportExcel<T> {
     }
 
     private void exportExcel(String title, String[] headers, List<Map<String, String>> maps, OutputStream out, String[] fieldsName, String pattern) {
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        // 生成一个表格
-        XSSFSheet sheet = workbook.createSheet(title);
-        // 设置表格默认列宽度为15个字节
-        sheet.setDefaultColumnWidth((short) 15);
-        XSSFRow row = sheet.createRow(0);
-        for (short i = 0; i < headers.length; i++) {
-            XSSFCell cell = row.createCell(i);
-//            cell.setCellStyle(style);
-            cell.setCellValue(headers[i]);
-        }
-        int index=0;
-        for (int i = 0; i < maps.size(); i++) {
-            Map<String, String> fieldMap = maps.get(i);
-            row = sheet.createRow(++index);
-            for (int j = 0; j < fieldsName.length; j++) {
-                XSSFCell cell = row.createCell(j);
-                String fieldName = fieldsName[j];
-                String value = fieldMap.get(fieldName);
-                cell.setCellValue(value);
-            }
-        }
-        try {
-            workbook.write(out);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        XSSFWorkbook workbook = new XSSFWorkbook();
+//        // 生成一个表格
+//        XSSFSheet sheet = workbook.createSheet(title);
+//        // 设置表格默认列宽度为15个字节
+//        sheet.setDefaultColumnWidth((short) 15);
+//        XSSFRow row = sheet.createRow(0);
+//        for (short i = 0; i < headers.length; i++) {
+//            XSSFCell cell = row.createCell(i);
+////            cell.setCellStyle(style);
+//            cell.setCellValue(headers[i]);
+//        }
+//        int index=0;
+//        for (int i = 0; i < maps.size(); i++) {
+//            Map<String, String> fieldMap = maps.get(i);
+//            row = sheet.createRow(++index);
+//            for (int j = 0; j < fieldsName.length; j++) {
+//                XSSFCell cell = row.createCell(j);
+//                String fieldName = fieldsName[j];
+//                String value = fieldMap.get(fieldName);
+//                cell.setCellValue(value);
+//            }
+//        }
+//        try {
+//            workbook.write(out);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

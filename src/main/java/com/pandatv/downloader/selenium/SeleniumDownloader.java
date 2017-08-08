@@ -101,8 +101,8 @@ public class SeleniumDownloader implements Downloader, Closeable {
         String content = webElement.getAttribute("outerHTML");
         Page page = new Page();
         page.setRawText(content);
-        page.setHtml(new Html(UrlUtils.fixAllRelativeHrefs(content,
-                request.getUrl())));
+//        page.setHtml(new Html(UrlUtils.fixAllRelativeHrefs(content,
+//                request.getUrl())));
         page.setUrl(new PlainText(request.getUrl()));
         page.setRequest(request);
         webDriverPool.returnToPool(webDriver);
