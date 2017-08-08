@@ -35,6 +35,9 @@ public class PandaAnchorProcessor extends PandaProcessor {
             if (items.size() > 0) {
                 int equalIndex = curUrl.lastIndexOf("=");
                 int curPage = Integer.parseInt(curUrl.substring(equalIndex + 1));
+                if (curPage>150){
+                    return;
+                }
                 page.addTargetRequest(curUrl.substring(0, equalIndex) + "=" + (curPage + 1));
                 for (Object obj : items) {
                     String rid = JsonPath.read(obj, "$.id");
@@ -78,8 +81,8 @@ public class PandaAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (exCnt++ > Const.EXTOTAL) {
-                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
+            if (exCnt++ % 10 ==0) {
+                MailTools.sendAlarmmail("pandaanchor 异常请求个数过多", "url: " + curUrl);
                 System.exit(1);
             }
         }
@@ -91,7 +94,7 @@ public class PandaAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        String firUrl = "http://www.panda.tv/live_lists?status=2&order=person_num&pagenum=120&pageno=1";
+        String firUrl = "https://www.panda.tv/live_lists?status=2&order=person_num&pagenum=120&pageno=1";
         job = args[0];//pandaanchor
         date = args[1];//20161114
         hour = args[2];//10
@@ -103,7 +106,7 @@ public class PandaAnchorProcessor extends PandaProcessor {
         Spider.create(new PandaAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt);
 //        for (Anchor anchor : anchorObjs) {
 //            anchors.add(anchor.toString());
 //        }

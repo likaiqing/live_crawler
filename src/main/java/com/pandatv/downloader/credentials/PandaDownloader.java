@@ -87,6 +87,9 @@ public class PandaDownloader extends AbstractDownloader {
         int statusCode = 0;
         try {
             HttpUriRequest httpUriRequest = getHttpUriRequest(request, site, headers);
+            if (httpUriRequest.getURI().toString().equals("https://www.panda.tv/349158")){
+                System.out.println("stop");
+            }
             httpResponse = getHttpClient(site).execute(httpUriRequest);
             statusCode = httpResponse.getStatusLine().getStatusCode();
             request.putExtra(Request.STATUS_CODE, statusCode);

@@ -28,9 +28,9 @@ import java.util.Set;
  */
 public class PandaDetailAnchorProcessor extends PandaProcessor {
     private static final Map<String, DetailAnchor> map = new HashMap<>();
-    private static final String detailUrlTmp = "http://www.panda.tv/";
-    private static final String followJsonPrefex = "http://www.panda.tv/room_followinfo?roomid=";
-    private static final String v2DetailJsonPrefex = "http://www.panda.tv/api_room_v2?roomid=";
+    private static final String detailUrlTmp = "https://www.panda.tv/";
+    private static final String followJsonPrefex = "https://www.panda.tv/room_followinfo?roomid=";
+    private static final String v2DetailJsonPrefex = "https://www.panda.tv/api_room_v2?roomid=";
     private static final Logger logger = LoggerFactory.getLogger(HuyaDetailAnchorProcessor.class);
     private static int exCnt;
     private static final Set<String> weightRids = new HashSet<>();
@@ -42,7 +42,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
         String curUrl = page.getUrl().get();
         logger.info("process url:{}", curUrl);
         try {
-            if (curUrl.startsWith("http://www.panda.tv/live_lists?status=2&order=person_num&pagenum=120&pageno=")) {
+            if (curUrl.startsWith("https://www.panda.tv/live_lists?status=2&order=person_num&pagenum=120&pageno=")) {
                 JSONArray items = JsonPath.read(page.getJson().get(), "$.data.items");
                 if (items.size() > 0) {
                     int equalIndex = curUrl.lastIndexOf("=");
@@ -64,7 +64,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
                         detailAnchor.setJob(job);
                         detailAnchor.setUrl(curUrl);
                         map.put(rid, detailAnchor);
-                        page.addTargetRequest(new Request(detailUrlTmp + rid).putExtra("rid", rid));
+                        page.addTargetRequest(new Request(detailUrlTmp + rid.trim()).putExtra("rid", rid));
                     }
                 }
             } else if (curUrl.startsWith(followJsonPrefex)) {//获取订阅数
@@ -97,17 +97,17 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
                     }
                 }
                 if (!has) {//源码没有window._config_roominfo信息
-                    page.addTargetRequest(new Request(v2DetailJsonPrefex + rid).putExtra("rid", rid));
+                    page.addTargetRequest(new Request(v2DetailJsonPrefex + rid.trim()).putExtra("rid", rid));
                 }
-                page.addTargetRequest(new Request(followJsonPrefex + rid).putExtra("rid", rid));
+                page.addTargetRequest(new Request(followJsonPrefex + rid.trim()).putExtra("rid", rid));
             }
             page.setSkip(true);
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (exCnt++ > Const.EXTOTAL) {
-                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
+            if (exCnt++ % 500 ==0) {
+                MailTools.sendAlarmmail("pandadetailanchor 异常请求个数过多", "url: " + curUrl);
                 System.exit(1);
             }
         }
@@ -119,7 +119,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        String firUrl = "http://www.panda.tv/live_lists?status=2&order=person_num&pagenum=120&pageno=1";
+        String firUrl = "https://www.panda.tv/live_lists?status=2&order=person_num&pagenum=120&pageno=1";
         job = args[0];//pandaanchor
         date = args[1];//20161114
         hour = args[2];//10

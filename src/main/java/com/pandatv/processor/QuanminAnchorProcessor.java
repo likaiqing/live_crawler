@@ -48,7 +48,7 @@ public class QuanminAnchorProcessor extends PandaProcessor {
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
             if (exCnt++ % 5==0) {
-                MailTools.sendAlarmmail("", "url: " + curUrl);
+                MailTools.sendAlarmmail("quanminanchor 异常请求个数过多", "url: " + curUrl);
                 System.exit(1);
             }
         }
