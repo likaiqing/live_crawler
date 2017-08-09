@@ -110,7 +110,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
                 }
             }).start();
             try {
-                Thread.sleep(10);
+                Thread.sleep(3);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
