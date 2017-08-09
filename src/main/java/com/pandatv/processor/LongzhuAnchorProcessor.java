@@ -88,7 +88,7 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
                                     .append("&par_d=").append(date).append(anchor.toString()).toString());
                         }
                     }).start();
-                    Thread.sleep(5);
+                    Thread.sleep(3);
 //                    anchorObjs.add(anchor);
                 }
             }
