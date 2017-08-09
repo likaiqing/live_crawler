@@ -161,7 +161,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                                         .append("&par_d=").append(date).append(channel.toString()).toString());
                             }
                         }).start();
-                        Thread.sleep(10);
+                        Thread.sleep(5);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -119,7 +119,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
                                     .append("&par_d=").append(date).append(anchor.toString()).toString());
                         }
                     }).start();
-                    Thread.sleep(10);
+                    Thread.sleep(5);
 //                    anchorObjs.add(anchor);
                 }
             }
