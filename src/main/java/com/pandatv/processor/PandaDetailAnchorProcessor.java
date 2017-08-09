@@ -106,9 +106,9 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (exCnt++ % 500 ==0) {
-                MailTools.sendAlarmmail("pandadetailanchor 异常请求个数过多", "url: " + curUrl);
-                System.exit(1);
+            if (++exCnt % 500 ==0) {
+                MailTools.sendAlarmmail("pandadetailanchor 异常请求个数过多", "url: " + failedUrl.toString());
+//                System.exit(1);
             }
         }
     }
@@ -131,7 +131,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
         Spider.create(new PandaDetailAnchorProcessor()).thread(3).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
         for (String rid : weightRids) {
             if (followRids.contains(rid)) {
 //                detailAnchors.add(map.get(rid).toString());

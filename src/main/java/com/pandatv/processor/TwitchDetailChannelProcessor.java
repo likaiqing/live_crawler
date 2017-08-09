@@ -7,6 +7,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.TwitchDetailChannel;
 import com.pandatv.tools.HttpUtil;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
     private static String videosSuf = "/videos?limit=60&offset=0&broadcast_type=archive%2Cupload%2Chighlight&on_site=1";
     private static String followingPre = "https://api.twitch.tv/kraken/users/";
     private static String followingSuf = "/follows/channels?offset=0&on_site=1&on_site=1";
-
+    private static int exCnt;
     @Override
     public void process(Page page) {
         requests++;
@@ -144,6 +145,14 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
 
         } catch (Exception e) {
             e.printStackTrace();
+            e.printStackTrace();
+            failedUrl.append(curUrl + ";  ");
+            logger.info("process exception,url:{}" + curUrl);
+            e.printStackTrace();
+            if (++exCnt % 1000 == 0) {
+                MailTools.sendAlarmmail("twitchdetailchannel 异常请求个数过多", "url: " + failedUrl.toString());
+//                System.exit(1);
+            }
         }
     }
 
@@ -171,7 +180,7 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
         System.out.println(cnt);
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
         for (Map.Entry<String, TwitchDetailChannel> entry : map.entrySet()) {
             TwitchDetailChannel tdc = entry.getValue();
             if (null != tdc.getTeamName() && null != tdc.getVideos() && null != tdc.getFollowing()) {

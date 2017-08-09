@@ -53,9 +53,9 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (exCnt++ % 300 == 0) {
+            if (++exCnt % 300 == 0) {
                 MailTools.sendAlarmmail("quanmindetailanchor 异常请求个数过多", "url: " + curUrl);
-                System.exit(1);
+//                System.exit(1);
             }
         }
     }
@@ -105,6 +105,6 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
         Spider.create(new QuanminDetailAnchorProcessor()).thread(3).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt);
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
     }
 }

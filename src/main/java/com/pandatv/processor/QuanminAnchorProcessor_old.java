@@ -65,7 +65,7 @@ public class QuanminAnchorProcessor_old extends PandaProcessor {
             e.printStackTrace();
             if (exCnt++ > Const.EXTOTAL) {
                 MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
-                System.exit(1);
+//                System.exit(1);
             }
         }
 

@@ -90,9 +90,9 @@ public class LongzhuDetailAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (exCnt++ > Const.EXTOTAL) {
-                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
-                System.exit(1);
+            if (++exCnt %10 ==0) {
+                MailTools.sendAlarmmail("longzhudetailanchor 异常请求个数过多", "url: " + failedUrl);
+//                System.exit(1);
             }
         }
     }
@@ -118,7 +118,7 @@ public class LongzhuDetailAnchorProcessor extends PandaProcessor {
         Spider.create(new LongzhuDetailAnchorProcessor()).thread(3).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (DetailAnchor detailAnchor : detailAnchorObjs) {
 //            detailAnchors.add(detailAnchor.toString());
 //        }

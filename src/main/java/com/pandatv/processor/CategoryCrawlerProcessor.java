@@ -83,9 +83,9 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (exCnt++ > Const.EXTOTAL) {
-                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
-                System.exit(1);
+            if (++exCnt % 1==0) {
+                MailTools.sendAlarmmail("category 异常请求个数过多", "url: " + failedUrl.toString());
+//                System.exit(1);
             }
         }
     }
@@ -126,7 +126,7 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
         Spider.create(new CategoryCrawlerProcessor()).addUrl(douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate /**+ new SimpleDateFormat("yyyyMMddHHmm").format(new Date())*/).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        CommonTools.writeAndMail(hivePaht, Const.CATEGORYFINISH, categories);
     }
 

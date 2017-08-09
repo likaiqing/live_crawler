@@ -8,6 +8,7 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.TwitchCategory;
 import com.pandatv.pojo.TwitchChannel;
 import com.pandatv.tools.HttpUtil;
+import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import java.util.Map;
 public class TwitchCateAndListProcessor extends PandaProcessor {
     private static int cnt;
     private static final Logger logger = LoggerFactory.getLogger(TwitchCateAndListProcessor.class);
+    private static int exCnt;
 //    private static List<String> pageListurls = new ArrayList<>();
     /**
      * 列表页url前缀
@@ -175,6 +177,13 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
 
         } catch (Exception e) {
             e.printStackTrace();
+            failedUrl.append(curUrl + ";  ");
+            logger.info("process exception,url:{}" + curUrl);
+            e.printStackTrace();
+            if (++exCnt % 100 == 0) {
+                MailTools.sendAlarmmail("twitchcateandlist 异常请求个数过多", "url: " + failedUrl.toString());
+//                System.exit(1);
+            }
         }
     }
 
@@ -201,7 +210,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         Spider.create(new TwitchCateAndListProcessor()).thread(18).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        System.out.println("end:" + format.format(new Date()));
 //        System.out.println(cnt);
 //        for (TwitchCategory obj : twitchCatObjes) {

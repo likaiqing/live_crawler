@@ -102,9 +102,9 @@ public class IndexRecProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();
-            if (exCnt++ > Const.EXTOTAL) {
-                MailTools.sendAlarmmail("斗鱼首页推荐", "url: " + curUrl);
-                System.exit(1);
+            if (++exCnt % 1==0) {
+                MailTools.sendAlarmmail("indexrec 异常请求个数过多", "url: " + failedUrl.toString());
+//                System.exit(1);
             }
 
         }
@@ -481,7 +481,7 @@ public class IndexRecProcessor extends PandaProcessor {
         Spider.create(new IndexRecProcessor()).thread(1).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
             indexRecObjes.add(entry.getValue());
 //                    .append("&rid=").append(indexRec.getRid())

@@ -170,9 +170,9 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (exCnt++ > Const.EXTOTAL) {
-                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + curUrl);
-                System.exit(1);
+            if (++exCnt % 600==0) {
+                MailTools.sendAlarmmail("douyudetailanchor 异常请求个数过多", "url: " + failedUrl.toString());
+//                System.exit(1);
             }
 
         }

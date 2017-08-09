@@ -5,7 +5,6 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
-import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
@@ -15,8 +14,6 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
-
-import java.util.Date;
 
 /**
  * Created by likaiqing on 2016/12/14.
@@ -35,7 +32,7 @@ public class PandaAnchorProcessor extends PandaProcessor {
             if (items.size() > 0) {
                 int equalIndex = curUrl.lastIndexOf("=");
                 int curPage = Integer.parseInt(curUrl.substring(equalIndex + 1));
-                if (curPage>150){
+                if (curPage > 150) {
                     return;
                 }
                 page.addTargetRequest(curUrl.substring(0, equalIndex) + "=" + (curPage + 1));
@@ -81,9 +78,9 @@ public class PandaAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (exCnt++ % 10 ==0) {
-                MailTools.sendAlarmmail("pandaanchor 异常请求个数过多", "url: " + curUrl);
-                System.exit(1);
+            if (++exCnt % 10 == 0) {
+                MailTools.sendAlarmmail("pandaanchor 异常请求个数过多", "url: " + failedUrl.toString());
+//                System.exit(1);
             }
         }
     }
@@ -101,12 +98,12 @@ public class PandaAnchorProcessor extends PandaProcessor {
         if (args.length == 4 && args[3].contains(",")) {
             mailHours = args[3];
         }
-        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
+//        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         long start = System.currentTimeMillis();
         Spider.create(new PandaAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt);
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (Anchor anchor : anchorObjs) {
 //            anchors.add(anchor.toString());
 //        }

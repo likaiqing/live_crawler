@@ -46,9 +46,9 @@ public class HuyaAnchorProcessor extends PandaProcessor {
             failedUrl.append(url + ";  ");
             logger.info("process exception,url:{}" + url);
             e.printStackTrace();
-            if (exCnt++ > Const.EXTOTAL) {
-                MailTools.sendAlarmmail(Const.DOUYUEXIT, "url: " + url);
-                System.exit(1);
+            if (++exCnt % 10==0) {
+                MailTools.sendAlarmmail("huyaanchor 异常请求个数过多", "url: " + failedUrl.toString());
+//                System.exit(1);
             }
         }
 
@@ -91,8 +91,8 @@ public class HuyaAnchorProcessor extends PandaProcessor {
                 anchor.setPlat(Const.HUYA);
                 anchor.setGame(Const.GAMEALL);
                 anchor.setUrl(url);
-//                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-//                        .append("&par_d=").append(date).append(anchor.toString()).toString());
+                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+                        .append("&par_d=").append(date).append(anchor.toString()).toString());
 //                    anchorObjs.add(anchor);
             }
         }
@@ -115,7 +115,7 @@ public class HuyaAnchorProcessor extends PandaProcessor {
         Spider.create(new HuyaAnchorProcessor()).thread(10).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (Anchor anchor : anchorObjs) {
 //            anchors.add(anchor.toString());
 //        }

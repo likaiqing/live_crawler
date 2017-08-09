@@ -39,7 +39,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(10).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (Anchor anchor : anchorObjs) {
 //            anchors.add(anchor.toString());
 //        }
@@ -116,9 +116,9 @@ public class DouyuAnchorProccessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();
-            if (exCnt++ > Const.EXTOTAL) {
-                MailTools.sendAlarmmail("斗鱼首页推荐", "url: " + curUrl);
-                System.exit(1);
+            if (++exCnt % 10==0) {
+                MailTools.sendAlarmmail("douyuanchor 异常请求个数过多", "url: " + failedUrl.toString());
+//                System.exit(1);
             }
         }
 
