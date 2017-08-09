@@ -119,7 +119,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                                 .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
                     }
                 }).start();
-                Thread.sleep(10);
+                Thread.sleep(3);
 //                detailAnchorObjs.add(detailAnchor);
                 page.setSkip(true);
             }
