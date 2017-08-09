@@ -81,8 +81,14 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
                     anchor.setPlat(Const.LONGZHU);
                     anchor.setGame(Const.GAMEALL);
                     anchor.setUrl(curUrl);
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                            .append("&par_d=").append(date).append(anchor.toString()).toString());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+                                    .append("&par_d=").append(date).append(anchor.toString()).toString());
+                        }
+                    }).start();
+                    Thread.sleep(10);
 //                    anchorObjs.add(anchor);
                 }
             }
@@ -116,7 +122,7 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         long start = System.currentTimeMillis();
-        Spider.create(new LongzhuAnchorProcessor()).thread(6).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new LongzhuAnchorProcessor()).thread(3).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());

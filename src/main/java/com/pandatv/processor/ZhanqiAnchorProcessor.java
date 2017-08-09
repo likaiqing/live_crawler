@@ -75,8 +75,14 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
                 anchor.setPlat(Const.ZHANQI);
                 anchor.setGame(Const.GAMEALL);
                 anchor.setUrl(curUrl);
-                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                        .append("&par_d=").append(date).append(anchor.toString()).toString());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+                                .append("&par_d=").append(date).append(anchor.toString()).toString());
+                    }
+                }).start();
+                Thread.sleep(10);
 //                anchorObjs.add(anchor);
             }
         } catch (Exception e) {

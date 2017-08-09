@@ -106,8 +106,18 @@ public class QuanminAnchorProcessor_old extends PandaProcessor {
             anchor.setPlat(Const.QUANMIN);
             anchor.setGame(Const.GAMEALL);
             anchor.setUrl(curUrl);
-            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                    .append("&par_d=").append(date).append(anchor.toString()).toString());
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+                            .append("&par_d=").append(date).append(anchor.toString()).toString());
+                }
+            }).start();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 //            anchors.add(anchor);
         }
     }

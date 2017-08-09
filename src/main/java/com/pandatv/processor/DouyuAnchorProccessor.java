@@ -15,7 +15,6 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,10 +35,10 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 //        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         String firstUrl = "https://www.douyu.com/directory/all";
         long start = System.currentTimeMillis();
-        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(10).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
+        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(3).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (Anchor anchor : anchorObjs) {
 //            anchors.add(anchor.toString());
 //        }
@@ -107,8 +106,14 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                     anchor.setPlat(Const.DOUYU);
                     anchor.setGame(Const.GAMEALL);
                     anchor.setUrl(curUrl);
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                            .append("&par_d=").append(date).append(anchor.toString()).toString());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+                                    .append("&par_d=").append(date).append(anchor.toString()).toString());
+                        }
+                    }).start();
+                    Thread.sleep(10);
 //                    anchorObjs.add(anchor);
                 }
             }
@@ -116,7 +121,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();
-            if (++exCnt % 10==0) {
+            if (++exCnt % 10 == 0) {
                 MailTools.sendAlarmmail("douyuanchor 异常请求个数过多", "url: " + failedUrl.toString());
 //                System.exit(1);
             }

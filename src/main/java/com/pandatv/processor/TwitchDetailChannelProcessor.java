@@ -210,9 +210,14 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
 //                        .append("&fol_ing=").append(tdc.getFollowing()).toString());
 
                 try {
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
-                            .append(Const.TWITCHDETAILCHAEVENT)
-                            .append("&par_d=").append(date).append(tdc.toString()).toString());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
+                                    .append(Const.TWITCHDETAILCHAEVENT)
+                                    .append("&par_d=").append(date).append(tdc.toString()).toString());
+                        }
+                    }).start();
                     Thread.sleep(10);
                 }catch (Exception e){
 

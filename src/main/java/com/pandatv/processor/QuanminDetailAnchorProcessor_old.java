@@ -97,8 +97,14 @@ public class QuanminDetailAnchorProcessor_old extends PandaProcessor {
                 detailAnchor.setLastStartTime(lastStartTime.substring(0, 16));
                 detailAnchor.setJob(job);
                 detailAnchor.setUrl(curUrl);
-                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                        .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+                                .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
+                    }
+                }).start();
+                Thread.sleep(10);
 //                detailAnchorObjs.add(detailAnchor);
             }
         } catch (Exception e) {

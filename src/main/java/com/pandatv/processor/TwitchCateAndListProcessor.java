@@ -154,8 +154,13 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     channel.setCurUrl(curUrl);
                     channel.setTask(job);
                     try {
-                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCHAEVENT)
-                                .append("&par_d=").append(date).append(channel.toString()).toString());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCHAEVENT)
+                                        .append("&par_d=").append(date).append(channel.toString()).toString());
+                            }
+                        }).start();
                         Thread.sleep(10);
                     } catch (Exception e) {
                         e.printStackTrace();

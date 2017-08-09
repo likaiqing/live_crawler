@@ -146,8 +146,14 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
 //            detailAnchors.add(map.get(rid).toString());
             DetailAnchor da = map.get(rid);
             try {
-                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                        .append("&par_d=").append(date).append(da.toString()).toString());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+                                .append("&par_d=").append(date).append(da.toString()).toString());
+                    }
+                }).start();
+                Thread.sleep(10);
 //                    .append("&rid=").append(rid)
 //                    .append("&nm=").append(CommonTools.getFormatStr(da.getName()))
 //                    .append("&tt=").append(CommonTools.getFormatStr(da.getTitle()))
@@ -161,7 +167,6 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
 //                    .append("&notice=&last_s_t=").append(da.getLastStartTime())
 //                    .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
 
-                Thread.sleep(10);
             } catch (Exception e) {
                 e.printStackTrace();
             }

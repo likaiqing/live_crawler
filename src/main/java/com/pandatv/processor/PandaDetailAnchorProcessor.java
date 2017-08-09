@@ -151,8 +151,13 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
 //                        .append("&notice=&last_s_t=").append(da.getLastStartTime())
 //                        .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
                 try {
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                            .append("&par_d=").append(date).append(da.toString()).toString());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+                                    .append("&par_d=").append(date).append(da.toString()).toString());
+                        }
+                    }).start();
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

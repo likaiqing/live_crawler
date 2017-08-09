@@ -499,8 +499,14 @@ public class IndexRecProcessor extends PandaProcessor {
         }
         for (IndexRec indexRec : indexRecObjes) {
             try {
-                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.INDEXRECEVENT)
-                        .append("&par_d=").append(date).append(indexRec.toString()).toString());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.INDEXRECEVENT)
+                                .append("&par_d=").append(date).append(indexRec.toString()).toString());
+                    }
+                }).start();
+
                 Thread.sleep(10);
             } catch (Exception e) {
                 e.printStackTrace();

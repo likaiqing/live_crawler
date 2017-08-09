@@ -147,8 +147,14 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DOUYUGIFTIDEVENT)
-                            .append("&par_d=").append(date).append(douyuGift.toString()).toString());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DOUYUGIFTIDEVENT)
+                                    .append("&par_d=").append(date).append(douyuGift.toString()).toString());
+                        }
+                    }).start();
+                    Thread.sleep(10);
 //                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DOUYUGIFTIDEVENT)
 //                            .append("&par_d=").append(date)
 //                            .append("&plat=").append(Const.DOUYU)
