@@ -187,6 +187,10 @@ public class CommonTools {
     }
 
     public static void write2Local(String dirFile, Set<String> set) {
+        logger.info("dirFile:{},set.size:{}",dirFile,set.size());
+        if (null==set || set.size()==0){
+            return;
+        }
         String dir = dirFile.substring(0,dirFile.lastIndexOf("/"));
         File file = new File(dir);
         if (!file.exists()){
@@ -201,6 +205,7 @@ public class CommonTools {
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
+            set.clear();
             IOTools.closeBw(bw);
         }
     }

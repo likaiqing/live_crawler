@@ -104,19 +104,19 @@ public class TwitchCategory {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-//        return sb.append(this.getId()).append(Const.SEP).append(this.getGiantBombId()).append(Const.SEP).append(this.getPlat()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getViewers()).append(Const.SEP).append(this.getChannels()).append(Const.SEP).append(this.getCurUrl()).append(Const.SEP).append(this.getNextUrl()).append(Const.SEP).append(this.getTask()).append(Const.SEP).append(createTime).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
-        sb.append("&id=").append(id)
-                .append("&g_b_id=").append(giantBombId)
-                .append("&plat=").append(this.getPlat())
-                .append("&nm=").append(DatatypeConverter.printBase64Binary(this.getName().getBytes()))
-                .append("&vies=").append(viewers)
-                .append("&chas=").append(channels)
-                .append("&cur_u=").append(curUrl)
-                .append("&next_u=").append(nextUrl)
-                .append("&task=").append(this.getTask())
-                .append("&c_time=").append(DatatypeConverter.printBase64Binary(createTime.getBytes()))
-                .append("&t_ran=").append(DatatypeConverter.printBase64Binary(PandaProcessor.getRandomStr().getBytes()));
-        return sb.toString();
+        return sb.append(this.getId()).append(Const.SEP).append(this.getGiantBombId()).append(Const.SEP).append(this.getPlat()).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getViewers()).append(Const.SEP).append(this.getChannels()).append(Const.SEP).append(this.getCurUrl()).append(Const.SEP).append(this.getNextUrl()).append(Const.SEP).append(this.getTask()).append(Const.SEP).append(createTime).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
+//        sb.append("&id=").append(id)
+//                .append("&g_b_id=").append(giantBombId)
+//                .append("&plat=").append(this.getPlat())
+//                .append("&nm=").append(DatatypeConverter.printBase64Binary(this.getName().getBytes()))
+//                .append("&vies=").append(viewers)
+//                .append("&chas=").append(channels)
+//                .append("&cur_u=").append(curUrl)
+//                .append("&next_u=").append(nextUrl)
+//                .append("&task=").append(this.getTask())
+//                .append("&c_time=").append(DatatypeConverter.printBase64Binary(createTime.getBytes()))
+//                .append("&t_ran=").append(DatatypeConverter.printBase64Binary(PandaProcessor.getRandomStr().getBytes()));
+//        return sb.toString();
     }
 
     @Override

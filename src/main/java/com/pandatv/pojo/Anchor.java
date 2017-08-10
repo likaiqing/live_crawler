@@ -1,5 +1,6 @@
 package com.pandatv.pojo;
 
+import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.tools.CommonTools;
 
@@ -118,20 +119,20 @@ public class Anchor {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-//        return sb.append(this.rid).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getTitle()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getPopularityStr()).append(Const.SEP).append(this.getPopularityNum()).append(Const.SEP).append(this.getJob()).append(Const.SEP).append(this.getPlat()).append(Const.SEP).append(this.getGame()).append(Const.SEP).append(createTime).append(Const.SEP).append(this.getUrl()).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
-        sb.append("&rid=").append(this.rid)
-                .append("&nm=").append(DatatypeConverter.printBase64Binary(this.getName().getBytes()))
-                .append("&tt=").append(DatatypeConverter.printBase64Binary(this.getTitle().getBytes()))
-                .append("&cate=").append(DatatypeConverter.printBase64Binary(this.getCategory().getBytes()))
-                .append("&pop_s=").append(DatatypeConverter.printBase64Binary(this.getPopularityStr().getBytes()))
-                .append("&pop_n=").append(this.getPopularityNum())
-                .append("&task=").append(this.getJob())
-                .append("&plat=").append(this.getPlat())
-                .append("&url_c=").append(this.getGame())
-                .append("&c_time=").append(DatatypeConverter.printBase64Binary(createTime.getBytes()))
-                .append("&url=").append(this.getUrl())
-                .append("&t_ran=").append(DatatypeConverter.printBase64Binary(PandaProcessor.getRandomStr().getBytes()));
-        return sb.toString();
+        return sb.append(this.rid).append(Const.SEP).append(this.getName()).append(Const.SEP).append(this.getTitle()).append(Const.SEP).append(this.getCategory()).append(Const.SEP).append(this.getPopularityStr()).append(Const.SEP).append(this.getPopularityNum()).append(Const.SEP).append(this.getJob()).append(Const.SEP).append(this.getPlat()).append(Const.SEP).append(this.getGame()).append(Const.SEP).append(createTime).append(Const.SEP).append(this.getUrl()).append(Const.SEP).append(PandaProcessor.getRandomStr()).toString();
+//        sb.append("&rid=").append(this.rid)
+//                .append("&nm=").append(DatatypeConverter.printBase64Binary(this.getName().getBytes()))
+//                .append("&tt=").append(DatatypeConverter.printBase64Binary(this.getTitle().getBytes()))
+//                .append("&cate=").append(DatatypeConverter.printBase64Binary(this.getCategory().getBytes()))
+//                .append("&pop_s=").append(DatatypeConverter.printBase64Binary(this.getPopularityStr().getBytes()))
+//                .append("&pop_n=").append(this.getPopularityNum())
+//                .append("&task=").append(this.getJob())
+//                .append("&plat=").append(this.getPlat())
+//                .append("&url_c=").append(this.getGame())
+//                .append("&c_time=").append(DatatypeConverter.printBase64Binary(createTime.getBytes()))
+//                .append("&url=").append(this.getUrl())
+//                .append("&t_ran=").append(DatatypeConverter.printBase64Binary(PandaProcessor.getRandomStr().getBytes()));
+//        return sb.toString();
     }
 
     @Override
