@@ -497,7 +497,7 @@ public class IndexRecProcessor extends PandaProcessor {
 //                    .append("&notice=&last_s_t=&t_ran=").append(getRandomStr())
 //                    .append("&loc=").append(indexRec.getLocation()).toString());
         }
-//        for (IndexRec indexRec : indexRecObjes) {
+        for (IndexRec indexRec : indexRecObjes) {
 //            try {
 //                new Thread(new Runnable() {
 //                    @Override
@@ -511,7 +511,8 @@ public class IndexRecProcessor extends PandaProcessor {
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
-//        }
+            resultSetStr.add(indexRec.toString());
+        }
         logger.info("indexrec,获取个数:" + resultSetStr.size());
 //        CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
 

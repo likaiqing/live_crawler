@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export JAVA_HOME=/usr/local/jdk1.8.0_60/
 date=$1
 hour=$2
 date=${date:=`date +%Y%m%d`}
@@ -34,6 +35,7 @@ rm -rf ${current_dir}crawler_category/*.gz
 rm -rf ${current_dir}crawler_indexrec/*.gz
 
 #抓取详情,斗鱼礼物id
+echo "ssh root@180.97.220.220 gzip"
 ssh root@180.97.220.220 "gzip ${remote_dir}${date}/${hour}/*.txt"
 scp -p root@180.97.220.220:${remote_dir}${date}/${hour}/*detailanchor*.gz ${current_dir}crawler_detail_anchor/
 scp -p root@180.97.220.220:${remote_dir}${date}/${hour}/douyugiftid*.gz ${current_dir}crawler_gift_id/
