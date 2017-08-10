@@ -12,13 +12,11 @@ import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -70,9 +68,15 @@ public class ChushouAnchorProcessor extends PandaProcessor {
                         anchor.setJob(job);
                         anchor.setPlat(Const.CHUSHOU);
                         anchor.setGame(Const.GAMEALL);
-                        anchor.setUrl(curUrl.replace("&","").replace("=",":"));
-//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-//                                        .append("&par_d=").append(date).append(anchor.toString()).toString());
+                        anchor.setUrl(curUrl.replace("&", "").replace("=", ":"));
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+                                        .append("&par_d=").append(date).append(anchor.toString()).toString());
+                            }
+                        }).start();
+                        Thread.sleep(3);
 //                        anchorObjs.add(anchor);
                     }
                 }
@@ -128,7 +132,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();
-            if (++exCnt % 10==0) {
+            if (++exCnt % 10 == 0) {
                 MailTools.sendAlarmmail("chushouanchor 异常请求个数过多", "url: " + failedUrl.toString());
 //                System.exit(1);
             }
@@ -153,7 +157,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
         Spider.create(new ChushouAnchorProcessor()).addUrl(firUrl).thread(1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (Anchor anchor : anchorObjs) {
 //            anchors.add(anchor.toString());
 //        }
