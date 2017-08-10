@@ -86,7 +86,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
 //                    }
-//                    twitchCatObjes.add(twitchCategory);
+                    twitchCatObjes.add(twitchCategory);
                     String encode = URLEncoder.encode(name, "utf-8").replace("%20", "+");
                     page.addTargetRequest(new Request(urlPre + encode + "&limit=20&offset=0").setPriority(1));
 //                    pageListurls.add(urlPre + encode + "&limit=20&offset=0");
@@ -166,7 +166,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
 //                    }
-//                    twitchListObjes.add(channel);
+                    twitchListObjes.add(channel);
                 }
                 int offSet = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf("=") + 1));
                 int newOffSet = 20;

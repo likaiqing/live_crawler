@@ -205,8 +205,8 @@ public class CommonTools {
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
-            set.clear();
             IOTools.closeBw(bw);
         }
+        set.clear();
     }
 }
