@@ -5,6 +5,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
@@ -150,22 +151,26 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
 //                        .append("&c_time=").append(createTimeFormat.format(new Date()))
 //                        .append("&notice=&last_s_t=").append(da.getLastStartTime())
 //                        .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
-                try {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                                    .append("&par_d=").append(date).append(da.toString()).toString());
-                        }
-                    }).start();
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+//                                    .append("&par_d=").append(date).append(da.toString()).toString());
+//                        }
+//                    }).start();
+//                    Thread.sleep(10);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                resultSetStr.add(map.get(rid).toString());
             } else {
                 System.out.println(rid);
             }
         }
 //        CommonTools.writeAndMail(hivePaht, Const.PANDAANCHORFINISHDETAIL, detailAnchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

@@ -5,6 +5,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
@@ -143,17 +144,17 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
         for (String rid : weightFollowRids) {
-//            detailAnchors.add(map.get(rid).toString());
-            DetailAnchor da = map.get(rid);
-            try {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                                .append("&par_d=").append(date).append(da.toString()).toString());
-                    }
-                }).start();
-                Thread.sleep(10);
+            resultSetStr.add(map.get(rid).toString());
+//            DetailAnchor da = map.get(rid);
+//            try {
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+//                                .append("&par_d=").append(date).append(da.toString()).toString());
+//                    }
+//                }).start();
+//                Thread.sleep(10);
 //                    .append("&rid=").append(rid)
 //                    .append("&nm=").append(CommonTools.getFormatStr(da.getName()))
 //                    .append("&tt=").append(CommonTools.getFormatStr(da.getTitle()))
@@ -167,10 +168,13 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
 //                    .append("&notice=&last_s_t=").append(da.getLastStartTime())
 //                    .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         }
 //        CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISHDETAIL, detailAnchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

@@ -6,6 +6,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.TwitchDetailChannel;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
@@ -184,7 +185,7 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
         for (Map.Entry<String, TwitchDetailChannel> entry : map.entrySet()) {
             TwitchDetailChannel tdc = entry.getValue();
             if (null != tdc.getTeamName() && null != tdc.getVideos() && null != tdc.getFollowing()) {
-//                twitchListStrs.add(entry.getValue().toString());
+                resultSetStr.add(entry.getValue().toString());
 //                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
 //                        .append(Const.TWITCHDETAILCHAEVENT)
 //                        .append("&par_d=").append(date)
@@ -209,22 +210,25 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
 //                        .append("&viedos=").append(tdc.getVideos())
 //                        .append("&fol_ing=").append(tdc.getFollowing()).toString());
 
-                try {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
-                                    .append(Const.TWITCHDETAILCHAEVENT)
-                                    .append("&par_d=").append(date).append(tdc.toString()).toString());
-                        }
-                    }).start();
-                    Thread.sleep(10);
-                }catch (Exception e){
-
-                }
+//                try {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
+//                                    .append(Const.TWITCHDETAILCHAEVENT)
+//                                    .append("&par_d=").append(date).append(tdc.toString()).toString());
+//                        }
+//                    }).start();
+//                    Thread.sleep(10);
+//                }catch (Exception e){
+//
+//                }
 
             }
         }
 //        CommonTools.writeAndMail(hivePath, Const.TWITCHDETAILCHANNELFINISH, twitchListStrs);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

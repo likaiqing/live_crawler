@@ -3,6 +3,7 @@ package com.pandatv.processor;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import org.slf4j.Logger;
@@ -95,28 +96,28 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
             StringBuffer sb = new StringBuffer();
             String url = urls.get(i);
             String name = names.get(i);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.CATEGORYEVENT)
-                            .append("&par_d=").append(date)
-                            .append("&p_id=").append(platIdEnum.platId)
-                            .append("&p_nm=").append(platIdEnum.paltName)
-                            .append("&e_n=").append(url.substring(url.lastIndexOf("/") + 1))
-                            .append("&c_n=").append(DatatypeConverter.printBase64Binary(name.getBytes()))
-                            .append("&url=").append(url)
-                            .append("&ent_url=").append(curUrl)
-                            .append("&t_ran=").append(DatatypeConverter.printBase64Binary(getRandomStr().getBytes())).toString());
-                }
-            }).start();
-            try {
-                Thread.sleep(3);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.CATEGORYEVENT)
+//                            .append("&par_d=").append(date)
+//                            .append("&p_id=").append(platIdEnum.platId)
+//                            .append("&p_nm=").append(platIdEnum.paltName)
+//                            .append("&e_n=").append(url.substring(url.lastIndexOf("/") + 1))
+//                            .append("&c_n=").append(DatatypeConverter.printBase64Binary(name.getBytes()))
+//                            .append("&url=").append(url)
+//                            .append("&ent_url=").append(curUrl)
+//                            .append("&t_ran=").append(DatatypeConverter.printBase64Binary(getRandomStr().getBytes())).toString());
+//                }
+//            }).start();
+//            try {
+//                Thread.sleep(3);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 
-//            sb.append(platIdEnum.platId).append(Const.SEP).append(platIdEnum.paltName).append(Const.SEP).append(url.substring(url.lastIndexOf("/") + 1)).append(Const.SEP).append(name).append(Const.SEP).append(url).append(Const.SEP).append(curUrl).append(Const.SEP).append(getRandomStr());
-//            categories.add(sb.toString());
+            sb.append(platIdEnum.platId).append(Const.SEP).append(platIdEnum.paltName).append(Const.SEP).append(url.substring(url.lastIndexOf("/") + 1)).append(Const.SEP).append(name).append(Const.SEP).append(url).append(Const.SEP).append(curUrl).append(Const.SEP).append(getRandomStr());
+            resultSetStr.add(sb.toString());
         }
     }
 
@@ -132,13 +133,16 @@ public class CategoryCrawlerProcessor extends PandaProcessor {
         if (args.length == 4 && args[3].contains(",")) {
             mailHours = args[3];
         }
-        String hivePaht = Const.COMPETITORDIR + "crawler_category/" + date;
+//        String hivePaht = Const.COMPETITORDIR + "crawler_category/" + date;
         long start = System.currentTimeMillis();
         Spider.create(new CategoryCrawlerProcessor()).addUrl(douyuCate, huyaCate, chuchouCate, zhanqiCate, longzhuCate, pandaCate, quanminCate /**+ new SimpleDateFormat("yyyyMMddHHmm").format(new Date())*/).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        CommonTools.writeAndMail(hivePaht, Const.CATEGORYFINISH, categories);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 
     public static enum PlatIdEnum {

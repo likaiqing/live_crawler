@@ -11,9 +11,7 @@ import sun.misc.BASE64Encoder;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Site;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -46,7 +44,7 @@ public class CommonTools {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result.replace("\n","").replace("\r","");
+        return result.replace("\n", "").replace("\r", "");
     }
 
     public static List<String> getUrls(ResultItems resultItems, String job, String plat, String gameCategory) {
@@ -156,7 +154,13 @@ public class CommonTools {
     }
 
     public static void main(String[] args) {
-        getMayiSite(new Site());
+        Set<String> set = new HashSet<>();
+        set.add("test1");
+        set.add("test2");
+        set.add("test3");
+        set.add("test4");
+        set.add("test5");
+        write2Local("/Users/likaiqing/Downloads/category_test/20170811/11/",set);
     }
 
     public static Site getAbuyunSite(Site site) {
@@ -179,6 +183,25 @@ public class CommonTools {
         }
         if (PandaProcessor.mailHours.contains(PandaProcessor.hour) && (mailMinute == 0 || mailMinute == 5)) {
             MailTools.sendTaskMail(douyufinish + PandaProcessor.date + PandaProcessor.hour, PandaProcessor.from + "<-->" + DateTools.getCurDate(), (System.currentTimeMillis() - PandaProcessor.s) + "毫秒;", list.size(), PandaProcessor.timeOutUrl, PandaProcessor.failedUrl);
+        }
+    }
+
+    public static void write2Local(String dirFile, Set<String> set) {
+        String dir = dirFile.substring(0,dirFile.lastIndexOf("/"));
+        File file = new File(dir);
+        if (!file.exists()){
+            file.mkdirs();
+        }
+        BufferedWriter bw = IOTools.getBW(dirFile+".txt");
+        try {
+            for (Object s : set) {
+                bw.write(s.toString());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            IOTools.closeBw(bw);
         }
     }
 }

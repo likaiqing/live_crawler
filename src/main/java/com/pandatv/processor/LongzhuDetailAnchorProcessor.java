@@ -5,6 +5,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
@@ -80,15 +81,16 @@ public class LongzhuDetailAnchorProcessor extends PandaProcessor {
                     detailAnchor.setLastStartTime(getLastStartTime((Long) JsonPath.read(room, "$.channel.broadcast_begin")));//broadcast_begin
                     detailAnchor.setJob(job);
                     detailAnchor.setUrl(curUrl);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                                    .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
-                        }
-                    }).start();
-                    Thread.sleep(10);
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+//                                    .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
+//                        }
+//                    }).start();
+//                    Thread.sleep(10);
 //                    detailAnchorObjs.add(detailAnchor);
+                    resultSetStr.add(detailAnchor.toString());
                 }
             }
             page.setSkip(true);
@@ -129,5 +131,8 @@ public class LongzhuDetailAnchorProcessor extends PandaProcessor {
 //            detailAnchors.add(detailAnchor.toString());
 //        }
 //        CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISHDETAIL, detailAnchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

@@ -4,6 +4,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import org.slf4j.Logger;
@@ -73,18 +74,19 @@ public class QuanminAnchorProcessor extends PandaProcessor {
             anchor.setPlat(Const.QUANMIN);
             anchor.setGame(Const.GAMEALL);
             anchor.setUrl(curUrl);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                            .append("&par_d=").append(date).append(anchor.toString()).toString());
-                }
-            }).start();
-            try {
-                Thread.sleep(3);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                            .append("&par_d=").append(date).append(anchor.toString()).toString());
+//                }
+//            }).start();
+//            try {
+//                Thread.sleep(3);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            resultSetStr.add(anchor.toString());
         }
     }
 
@@ -106,5 +108,8 @@ public class QuanminAnchorProcessor extends PandaProcessor {
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

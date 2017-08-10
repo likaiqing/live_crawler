@@ -112,15 +112,16 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setNotice("");
                 detailAnchor.setJob(job);
                 detailAnchor.setUrl(curUrl);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                                .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
-                    }
-                }).start();
-                Thread.sleep(3);
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+//                                .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
+//                    }
+//                }).start();
+//                Thread.sleep(3);
 //                detailAnchorObjs.add(detailAnchor);
+                resultSetStr.add(detailAnchor.toString());
                 page.setSkip(true);
             }
         } catch (Exception e) {
@@ -173,5 +174,8 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 //        }
 //        logger.info("时间:" + date + " " + hour + "");
 //        CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

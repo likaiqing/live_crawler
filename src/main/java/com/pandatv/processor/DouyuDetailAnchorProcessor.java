@@ -114,9 +114,9 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 detailAnchor.setUrl(curUrl);
                 detailAnchor.setLastStartTime(lastStartTime);
                 detailAnchor.setJob(job);
-                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                        .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
-//                detailAnchorObjs.add(detailAnchor);
+//                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+//                        .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
+                detailAnchorObjs.add(detailAnchor);
 //                if (douyuGiftHours.contains(hour)) {
                 JSONArray gifts = JsonPath.read(json, "$.data.gift");
                 for (int i = 0; i < gifts.size(); i++) {
@@ -147,14 +147,14 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DOUYUGIFTIDEVENT)
-                                    .append("&par_d=").append(date).append(douyuGift.toString()).toString());
-                        }
-                    }).start();
-                    Thread.sleep(5);
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DOUYUGIFTIDEVENT)
+//                                    .append("&par_d=").append(date).append(douyuGift.toString()).toString());
+//                        }
+//                    }).start();
+//                    Thread.sleep(5);
 //                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DOUYUGIFTIDEVENT)
 //                            .append("&par_d=").append(date)
 //                            .append("&plat=").append(Const.DOUYU)
@@ -167,7 +167,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 //                            .append("&exp=").append(gExp)
 //                            .append("&t_ran=").append(getRandomStr())
 //                            .append("&c_time=").append(createTimeFormat.format(new Date())).toString());
-//                    douyuGiftObjs.add(douyuGift);
+                    douyuGiftObjs.add(douyuGift);
+
                 }
             }
 //            }
@@ -209,14 +210,19 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
-//        for (DetailAnchor detailAnchor : detailAnchorObjs) {
-//            detailAnchors.add(detailAnchor.toString());
-//        }
-//        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
+        for (DetailAnchor detailAnchor : detailAnchorObjs) {
+            detailAnchors.add(detailAnchor.toString());
+        }
+        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
 //        String giftIdPath = Const.COMPETITORDIR + "crawler_gift_id/" + date;
-//        for (GiftInfo giftInfo : douyuGiftObjs) {
-//            douyuGifts.add(giftInfo.toString());
-//        }
+        for (GiftInfo giftInfo : douyuGiftObjs) {
+            douyuGifts.add(giftInfo.toString());
+        }
 //        CommonTools.writeAndMail(giftIdPath, Const.DOUYUGIFTIDFINISHDETAIL, douyuGifts);
+
+        String dirFile1 = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile1,detailAnchors);
+        String dirFile2 = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append("douyugiftid").append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile2,douyuGifts);
     }
 }

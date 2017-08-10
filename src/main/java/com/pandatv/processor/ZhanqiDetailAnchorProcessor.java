@@ -107,15 +107,15 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
                         detailAnchor.setFollowerNum(follows);
                         detailAnchor.setViewerNum(onlineNum);
                         detailAnchor.setWeightNum(fight);
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-                                        .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
-                            }
-                        }).start();
-                        Thread.sleep(10);
-//                        detailAnchorObjs.add(detailAnchor);
+//                        new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
+//                                        .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
+//                            }
+//                        }).start();
+//                        Thread.sleep(10);
+                        resultSetStr.add(detailAnchor.toString());
                     }
                 }
             }
@@ -159,5 +159,8 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
 //            detailAnchors.add(detailAnchor.toString());
 //        }
 //        CommonTools.writeAndMail(hivePaht, Const.ZHANQIFINISHDETAIL, detailAnchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

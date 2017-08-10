@@ -35,7 +35,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 //        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         String firstUrl = "https://www.douyu.com/directory/all";
         long start = System.currentTimeMillis();
-        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(6).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
+        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(2).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
@@ -43,6 +43,9 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 //            anchors.add(anchor.toString());
 //        }
 //        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISH, anchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 
     @Override
@@ -106,15 +109,16 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                     anchor.setPlat(Const.DOUYU);
                     anchor.setGame(Const.GAMEALL);
                     anchor.setUrl(curUrl);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                                    .append("&par_d=").append(date).append(anchor.toString()).toString());
-                        }
-                    }).start();
-                    Thread.sleep(5);
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                                    .append("&par_d=").append(date).append(anchor.toString()).toString());
+//                        }
+//                    }).start();
+//                    Thread.sleep(5);
 //                    anchorObjs.add(anchor);
+                    resultSetStr.add(anchor.toString());
                 }
             }
         } catch (Exception e) {

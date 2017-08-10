@@ -7,6 +7,7 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.TwitchCategory;
 import com.pandatv.pojo.TwitchChannel;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
@@ -78,13 +79,13 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     twitchCategory.setCurUrl(curUrl);
                     twitchCategory.setNextUrl(nextUrl);
                     twitchCategory.setTask(job);
-                    try {
-                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCATEEVENT)
-                                .append("&par_d=").append(date).append(twitchCategory.toString()).toString());
-                        Thread.sleep(10);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCATEEVENT)
+//                                .append("&par_d=").append(date).append(twitchCategory.toString()).toString());
+//                        Thread.sleep(10);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
 //                    twitchCatObjes.add(twitchCategory);
                     String encode = URLEncoder.encode(name, "utf-8").replace("%20", "+");
                     page.addTargetRequest(new Request(urlPre + encode + "&limit=20&offset=0").setPriority(1));
@@ -153,18 +154,18 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
                     channel.setFollowers(followers);
                     channel.setCurUrl(curUrl);
                     channel.setTask(job);
-                    try {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCHAEVENT)
-                                        .append("&par_d=").append(date).append(channel.toString()).toString());
-                            }
-                        }).start();
-                        Thread.sleep(5);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.TWITCHCHAEVENT)
+//                                        .append("&par_d=").append(date).append(channel.toString()).toString());
+//                            }
+//                        }).start();
+//                        Thread.sleep(5);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
 //                    twitchListObjes.add(channel);
                 }
                 int offSet = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf("=") + 1));
@@ -218,13 +219,18 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        System.out.println("end:" + format.format(new Date()));
 //        System.out.println(cnt);
-//        for (TwitchCategory obj : twitchCatObjes) {
-//            twitchCatStrs.add(obj.toString());
-//        }
-//        for (TwitchChannel obj : twitchListObjes) {
-//            twitchListStrs.add(obj.toString());
-//        }
+        for (TwitchCategory obj : twitchCatObjes) {
+            twitchCatStrs.add(obj.toString());
+        }
+        for (TwitchChannel obj : twitchListObjes) {
+            twitchListStrs.add(obj.toString());
+        }
 //        CommonTools.writeAndMail(twitchCateHivePaht, Const.TWITCHCATEFINISH, twitchCatStrs);
 //        CommonTools.writeAndMail(twitchListHivePaht, Const.TWITCHLISTFINISH, twitchListStrs);
+
+        String dirFile1 = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append("twitchcategory").append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile1,twitchCatStrs);
+        String dirFile2 = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append("twitchlist").append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile2,twitchListStrs);
     }
 }

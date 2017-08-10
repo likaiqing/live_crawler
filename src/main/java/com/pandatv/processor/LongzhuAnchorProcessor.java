@@ -81,15 +81,16 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
                     anchor.setPlat(Const.LONGZHU);
                     anchor.setGame(Const.GAMEALL);
                     anchor.setUrl(curUrl);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                                    .append("&par_d=").append(date).append(anchor.toString()).toString());
-                        }
-                    }).start();
-                    Thread.sleep(3);
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                                    .append("&par_d=").append(date).append(anchor.toString()).toString());
+//                        }
+//                    }).start();
+//                    Thread.sleep(10);
 //                    anchorObjs.add(anchor);
+                    resultSetStr.add(anchor.toString());
                 }
             }
             page.setSkip(true);
@@ -130,5 +131,8 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
 //            anchors.add(anchor.toString());
 //        }
 //        CommonTools.writeAndMail(hivePaht, Const.LONGZHUFINISH, anchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

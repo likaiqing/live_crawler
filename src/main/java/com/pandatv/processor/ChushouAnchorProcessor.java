@@ -69,15 +69,16 @@ public class ChushouAnchorProcessor extends PandaProcessor {
                         anchor.setPlat(Const.CHUSHOU);
                         anchor.setGame(Const.GAMEALL);
                         anchor.setUrl(curUrl.replace("&", "").replace("=", ":"));
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                                        .append("&par_d=").append(date).append(anchor.toString()).toString());
-                            }
-                        }).start();
-                        Thread.sleep(3);
+//                        new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                                        .append("&par_d=").append(date).append(anchor.toString()).toString());
+//                            }
+//                        }).start();
+//                        Thread.sleep(3);
 //                        anchorObjs.add(anchor);
+                        resultSetStr.add(anchor.toString());
                     }
                 }
             } else {
@@ -116,15 +117,16 @@ public class ChushouAnchorProcessor extends PandaProcessor {
                     anchor.setPlat(Const.CHUSHOU);
                     anchor.setGame(Const.GAMEALL);
                     anchor.setUrl(curUrl);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                                    .append("&par_d=").append(date).append(anchor.toString()).toString());
-                        }
-                    }).start();
-                    Thread.sleep(3);
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                                    .append("&par_d=").append(date).append(anchor.toString()).toString());
+//                        }
+//                    }).start();
+//                    Thread.sleep(3);
 //                    anchorObjs.add(anchor);
+                    resultSetStr.add(anchor.toString());
                 }
             }
             page.setSkip(true);
@@ -141,7 +143,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.setSleepTime(0).setHttpProxy(null);
+        return this.site.setSleepTime(0);
     }
 
     public static void crawler(String[] args) {
@@ -162,5 +164,8 @@ public class ChushouAnchorProcessor extends PandaProcessor {
 //            anchors.add(anchor.toString());
 //        }
 //        CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISH, anchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

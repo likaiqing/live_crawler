@@ -5,6 +5,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
@@ -75,15 +76,15 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
                 anchor.setPlat(Const.ZHANQI);
                 anchor.setGame(Const.GAMEALL);
                 anchor.setUrl(curUrl);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-                                .append("&par_d=").append(date).append(anchor.toString()).toString());
-                    }
-                }).start();
-                Thread.sleep(3);
-//                anchorObjs.add(anchor);
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
+//                                .append("&par_d=").append(date).append(anchor.toString()).toString());
+//                    }
+//                }).start();
+//                Thread.sleep(3);
+                resultSetStr.add(anchor.toString());
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
@@ -120,5 +121,8 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
 //            anchors.add(anchor.toString());
 //        }
 //        CommonTools.writeAndMail(hivePaht, Const.ZHANQIFINISH, anchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }

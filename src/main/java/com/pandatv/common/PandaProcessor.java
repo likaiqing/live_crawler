@@ -22,6 +22,7 @@ public abstract class PandaProcessor implements PageProcessor {
     protected static Set<String> douyuGifts = new HashSet<>();
     protected static Set<String> anchors = new HashSet<>();
     protected static Set<Anchor> anchorObjs = new HashSet<>();
+    protected static Set<String> resultSetStr = new HashSet<>();
     public static String job;
     public static StringBuffer failedUrl = new StringBuffer("failedUrl:");
     public static StringBuffer timeOutUrl = new StringBuffer("timeOutUrl:");
@@ -34,7 +35,7 @@ public abstract class PandaProcessor implements PageProcessor {
     public static String mailHours = "";
     public static String douyuGiftHours = "02,06,09,12,15,18,22";
 
-    private static String randomStr = RandomStringUtils.random(10, new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});
+    protected static String randomStr = RandomStringUtils.random(10, new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});
     private static String randomTime = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
     public static String mailMinuteStr = new SimpleDateFormat("mm").format(new Date());
 

@@ -483,7 +483,7 @@ public class IndexRecProcessor extends PandaProcessor {
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
         for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
-            indexRecObjes.add(entry.getValue());
+            resultSetStr.add(entry.getValue().toString());
 //                    .append("&rid=").append(indexRec.getRid())
 //                    .append("&nm=").append(indexRec.getName())
 //                    .append("&tt=").append(indexRec.getTitle())
@@ -497,22 +497,25 @@ public class IndexRecProcessor extends PandaProcessor {
 //                    .append("&notice=&last_s_t=&t_ran=").append(getRandomStr())
 //                    .append("&loc=").append(indexRec.getLocation()).toString());
         }
-        for (IndexRec indexRec : indexRecObjes) {
-            try {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.INDEXRECEVENT)
-                                .append("&par_d=").append(date).append(indexRec.toString()).toString());
-                    }
-                }).start();
-
-                Thread.sleep(3);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        logger.info("indexrec,获取个数:" + indexRecObjes.size());
+//        for (IndexRec indexRec : indexRecObjes) {
+//            try {
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.INDEXRECEVENT)
+//                                .append("&par_d=").append(date).append(indexRec.toString()).toString());
+//                    }
+//                }).start();
+//
+//                Thread.sleep(3);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+        logger.info("indexrec,获取个数:" + resultSetStr.size());
 //        CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
+
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile,resultSetStr);
     }
 }
