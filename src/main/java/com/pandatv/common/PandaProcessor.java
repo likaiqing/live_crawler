@@ -1,10 +1,13 @@
 package com.pandatv.common;
 
 import com.pandatv.pojo.*;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.HiveJDBCConnect;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.http.HttpHost;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Encoder;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
@@ -16,6 +19,7 @@ import java.util.*;
  * Created by likaiqing on 2016/11/7.
  */
 public abstract class PandaProcessor implements PageProcessor {
+    private static final Logger logger = LoggerFactory.getLogger(PandaProcessor.class);
     protected static Set<String> detailAnchors = new HashSet<>();
     protected static Set<DetailAnchor> detailAnchorObjs = new HashSet<>();
     protected static Set<GiftInfo> douyuGiftObjs = new HashSet<>();
@@ -34,6 +38,7 @@ public abstract class PandaProcessor implements PageProcessor {
     public static HiveJDBCConnect hive = new HiveJDBCConnect();
     public static String mailHours = "";
     public static String douyuGiftHours = "02,06,09,12,15,18,22";
+    public static boolean writeSuccess = false;
 
     protected static String randomStr = RandomStringUtils.random(10, new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});
     private static String randomTime = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
@@ -96,4 +101,21 @@ public abstract class PandaProcessor implements PageProcessor {
     public static String getRandomStr() {
         return randomTime + "-" + randomStr;
     }
+
+    protected static void executeResults() {
+        logger.info("executeResults resultSetStr.size:"+resultSetStr.size());
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile, resultSetStr);
+    }
+
+    public static class ShutDownHook implements Runnable {
+        @Override
+        public void run() {
+            logger.info("writeSuccess:"+writeSuccess);
+            if (!writeSuccess) {
+                executeResults();
+            }
+        }
+    }
+
 }

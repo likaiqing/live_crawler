@@ -478,12 +478,15 @@ public class IndexRecProcessor extends PandaProcessor {
         chushouindex = "https://chushou.tv/";
         String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex
         long start = System.currentTimeMillis();
+        //钩子
+        Runtime.getRuntime().addShutdownHook(new Thread(new IndexRecShutDownHook()));
+
         Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
-        for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
-            resultSetStr.add(entry.getValue().toString());
+
+//        for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
+//            resultSetStr.add(entry.getValue().toString());
 //                    .append("&rid=").append(indexRec.getRid())
 //                    .append("&nm=").append(indexRec.getName())
 //                    .append("&tt=").append(indexRec.getTitle())
@@ -496,8 +499,8 @@ public class IndexRecProcessor extends PandaProcessor {
 //                    .append("&c_time=").append(createTimeFormat.format(new Date()))
 //                    .append("&notice=&last_s_t=&t_ran=").append(getRandomStr())
 //                    .append("&loc=").append(indexRec.getLocation()).toString());
-        }
-        for (IndexRec indexRec : indexRecObjes) {
+//        }
+//        for (IndexRec indexRec : indexRecObjes) {
 //            try {
 //                new Thread(new Runnable() {
 //                    @Override
@@ -511,12 +514,33 @@ public class IndexRecProcessor extends PandaProcessor {
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
-            resultSetStr.add(indexRec.toString());
-        }
-        logger.info("indexrec,获取个数:" + resultSetStr.size());
+//            resultSetStr.add(indexRec.toString());
+//        }
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString()+",indexrec,获取个数:" + resultSetStr.size());
 //        CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
 
+        executeMapResults();
+    }
+
+    private static void executeMapResults() {
+        for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
+            resultSetStr.add(entry.getValue().toString());
+        }
+        for (IndexRec indexRec : indexRecObjes) {
+            resultSetStr.add(indexRec.toString());
+        }
+        logger.info("resultSetStr.size:"+resultSetStr.size());
         String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
         CommonTools.write2Local(dirFile,resultSetStr);
+    }
+
+    private static class IndexRecShutDownHook implements Runnable {
+        @Override
+        public void run() {
+            logger.info("writeSuccess:"+writeSuccess);
+            if (!writeSuccess){
+                executeMapResults();
+            }
+        }
     }
 }

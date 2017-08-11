@@ -208,5 +208,6 @@ public class CommonTools {
             IOTools.closeBw(bw);
         }
         set.clear();
+        PandaProcessor.writeSuccess = true;
     }
 }

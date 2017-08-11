@@ -6,7 +6,6 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.jsoup.nodes.Element;
@@ -107,7 +106,7 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (++exCnt % 500 ==0) {
+            if (++exCnt % 500 == 0) {
                 MailTools.sendAlarmmail("pandadetailanchor 异常请求个数过多", "url: " + failedUrl.toString());
 //                System.exit(1);
             }
@@ -128,15 +127,18 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
+        //钩子
+        Runtime.getRuntime().addShutdownHook(new Thread(new PandaDetailShutDownHook()));
+
         long start = System.currentTimeMillis();
         Spider.create(new PandaDetailAnchorProcessor()).thread(3).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
-        for (String rid : weightRids) {
-            if (followRids.contains(rid)) {
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+//        for (String rid : weightRids) {
+//            if (followRids.contains(rid)) {
 //                detailAnchors.add(map.get(rid).toString());
-                DetailAnchor da = map.get(rid);
+//                DetailAnchor da = map.get(rid);
 //                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
 //                        .append("&par_d=").append(date)
 //                        .append("&rid=").append(rid)
@@ -163,14 +165,36 @@ public class PandaDetailAnchorProcessor extends PandaProcessor {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
+//                resultSetStr.add(map.get(rid).toString());
+//            } else {
+//                System.out.println(rid);
+//            }
+//        }
+//        CommonTools.writeAndMail(hivePaht, Const.PANDAANCHORFINISHDETAIL, detailAnchors);
+
+        executeMapResults();
+
+    }
+
+    private static void executeMapResults() {
+        for (String rid : weightRids) {
+            if (followRids.contains(rid)) {
                 resultSetStr.add(map.get(rid).toString());
             } else {
                 System.out.println(rid);
             }
         }
-//        CommonTools.writeAndMail(hivePaht, Const.PANDAANCHORFINISHDETAIL, detailAnchors);
-
         String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
-        CommonTools.write2Local(dirFile,resultSetStr);
+        CommonTools.write2Local(dirFile, resultSetStr);
+    }
+
+    private static class PandaDetailShutDownHook implements Runnable {
+        @Override
+        public void run() {
+            logger.info("writeSuccess:"+writeSuccess);
+            if (!writeSuccess){
+                executeMapResults();
+            }
+        }
     }
 }

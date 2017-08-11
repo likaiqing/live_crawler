@@ -176,16 +176,17 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
         long start = System.currentTimeMillis();
-        Spider.create(new TwitchDetailChannelProcessor()).thread(25).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
+        Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));
+        Spider.create(new TwitchDetailChannelProcessor()).thread(20).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
         System.out.println("end:" + format.format(new Date()));
         System.out.println(cnt);
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
-        for (Map.Entry<String, TwitchDetailChannel> entry : map.entrySet()) {
-            TwitchDetailChannel tdc = entry.getValue();
-            if (null != tdc.getTeamName() && null != tdc.getVideos() && null != tdc.getFollowing()) {
-                resultSetStr.add(entry.getValue().toString());
+//        for (Map.Entry<String, TwitchDetailChannel> entry : map.entrySet()) {
+//            TwitchDetailChannel tdc = entry.getValue();
+//            if (null != tdc.getTeamName() && null != tdc.getVideos() && null != tdc.getFollowing()) {
+//                resultSetStr.add(entry.getValue().toString());
 //                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN)
 //                        .append(Const.TWITCHDETAILCHAEVENT)
 //                        .append("&par_d=").append(date)
@@ -224,11 +225,33 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
 //
 //                }
 
+//            }
+//        }
+//        CommonTools.writeAndMail(hivePath, Const.TWITCHDETAILCHANNELFINISH, twitchListStrs);
+        executeMapResults();
+
+    }
+
+    private static void executeMapResults() {
+        for (Map.Entry<String, TwitchDetailChannel> entry : map.entrySet()) {
+            TwitchDetailChannel tdc = entry.getValue();
+            if (null != tdc.getTeamName() && null != tdc.getVideos() && null != tdc.getFollowing()) {
+                resultSetStr.add(entry.getValue().toString());
             }
         }
-//        CommonTools.writeAndMail(hivePath, Const.TWITCHDETAILCHANNELFINISH, twitchListStrs);
-
+        logger.info("resultSetStr.size:"+resultSetStr.size());
         String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
         CommonTools.write2Local(dirFile,resultSetStr);
+    }
+
+    private static class ShutDownHook implements Runnable {
+
+        @Override
+        public void run() {
+            logger.info("writeSuccess:"+writeSuccess);
+            if (!writeSuccess){
+                executeMapResults();
+            }
+        }
     }
 }

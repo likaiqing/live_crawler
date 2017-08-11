@@ -17,9 +17,11 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.monitor.SpiderMonitor;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.scheduler.PriorityScheduler;
 
+import javax.management.JMException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -209,28 +211,53 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         Const.GENERATORPASS = "97CCB7E9284ACAF0";
         String twitchCateHivePaht = Const.COMPETITORDIR + "crawler_twitch_category/" + date;
         String twitchListHivePaht = Const.COMPETITORDIR + "crawler_twitch_channel/" + date;
+        //钩子
+        Runtime.getRuntime().addShutdownHook(new Thread(new TwitchCateAndListShutDownHook()));
+
         String firstUrl = "https://api.twitch.tv/kraken/games/top?limit=40&on_site=1";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
         long start = System.currentTimeMillis();
-        Spider.create(new TwitchCateAndListProcessor()).thread(18).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
+        Spider spider = Spider.create(new TwitchCateAndListProcessor()).thread(18).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler());//.run();
+        try {
+            SpiderMonitor.instance().register(spider);
+        } catch (JMException e) {
+            e.printStackTrace();
+        }
+        spider.start();
+
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        System.out.println("end:" + format.format(new Date()));
 //        System.out.println(cnt);
+
+//        CommonTools.writeAndMail(twitchCateHivePaht, Const.TWITCHCATEFINISH, twitchCatStrs);
+//        CommonTools.writeAndMail(twitchListHivePaht, Const.TWITCHLISTFINISH, twitchListStrs);
+
+        executeMapResults();
+    }
+
+    private static void executeMapResults() {
         for (TwitchCategory obj : twitchCatObjes) {
             twitchCatStrs.add(obj.toString());
         }
         for (TwitchChannel obj : twitchListObjes) {
             twitchListStrs.add(obj.toString());
         }
-//        CommonTools.writeAndMail(twitchCateHivePaht, Const.TWITCHCATEFINISH, twitchCatStrs);
-//        CommonTools.writeAndMail(twitchListHivePaht, Const.TWITCHLISTFINISH, twitchListStrs);
-
         String dirFile1 = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append("twitchcategory").append("_").append(date).append("_").append(hour).append(randomStr).toString();
         CommonTools.write2Local(dirFile1,twitchCatStrs);
         String dirFile2 = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append("twitchlist").append("_").append(date).append("_").append(hour).append(randomStr).toString();
         CommonTools.write2Local(dirFile2,twitchListStrs);
+    }
+
+    private static class TwitchCateAndListShutDownHook implements Runnable {
+        @Override
+        public void run() {
+            logger.info("writeSuccess:"+writeSuccess);
+            if (!writeSuccess){
+                executeMapResults();
+            }
+        }
     }
 }

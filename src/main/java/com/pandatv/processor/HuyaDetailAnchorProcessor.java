@@ -164,6 +164,9 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         }
         String firstUrl = "http://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=1";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
+        //钩子
+        Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));
+
         long start = System.currentTimeMillis();
         Spider.create(new HuyaDetailAnchorProcessor()).thread(thread).addUrl(tmpUrl + 1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
@@ -175,7 +178,6 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 //        logger.info("时间:" + date + " " + hour + "");
 //        CommonTools.writeAndMail(hivePaht, Const.HUYAFINISHDETAIL, detailAnchors);
 
-        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
-        CommonTools.write2Local(dirFile,resultSetStr);
+        executeResults();
     }
 }

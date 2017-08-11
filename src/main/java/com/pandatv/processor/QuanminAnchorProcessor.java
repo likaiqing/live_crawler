@@ -125,13 +125,15 @@ public class QuanminAnchorProcessor extends PandaProcessor {
         if (args.length == 4 && args[3].contains(",")) {
             mailHours = args[3];
         }
+        //钩子
+        Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));
+
         long start = System.currentTimeMillis();
         Spider.create(new QuanminAnchorProcessor()).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 
-        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
-        CommonTools.write2Local(dirFile, resultSetStr);
+        executeResults();
     }
 }

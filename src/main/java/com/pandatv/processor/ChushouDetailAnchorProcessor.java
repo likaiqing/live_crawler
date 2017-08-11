@@ -6,7 +6,6 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -116,7 +115,7 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();
-            if (++exCnt % 100==0) {
+            if (++exCnt % 100 == 0) {
                 MailTools.sendAlarmmail("huyadetailanchor 异常请求个数过多", "url: " + failedUrl.toString());
 //                System.exit(1);
             }
@@ -138,13 +137,16 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
             mailHours = args[3];
         }
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
+        //钩子
+        Runtime.getRuntime().addShutdownHook(new Thread(new ChushouDetailShutDownHook()));
+
         long start = System.currentTimeMillis();
         Spider.create(new ChushouDetailAnchorProcessor()).thread(4).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
-        for (String rid : weightFollowRids) {
-            resultSetStr.add(map.get(rid).toString());
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+//        for (String rid : weightFollowRids) {
+//            resultSetStr.add(map.get(rid).toString());
 //            DetailAnchor da = map.get(rid);
 //            try {
 //                new Thread(new Runnable() {
@@ -171,10 +173,28 @@ public class ChushouDetailAnchorProcessor extends PandaProcessor {
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
-        }
+//        }
 //        CommonTools.writeAndMail(hivePaht, Const.CHUSHOUFINISHDETAIL, detailAnchors);
 
+
+        executeMapResults();
+    }
+
+    private static void executeMapResults() {
+        for (String rid : weightFollowRids) {
+            resultSetStr.add(map.get(rid).toString());
+        }
         String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
-        CommonTools.write2Local(dirFile,resultSetStr);
+        CommonTools.write2Local(dirFile, resultSetStr);
+    }
+
+    private static class ChushouDetailShutDownHook implements Runnable {
+        @Override
+        public void run() {
+            logger.info("writeSuccess:"+writeSuccess);
+            if (!writeSuccess){
+                executeMapResults();
+            }
+        }
     }
 }

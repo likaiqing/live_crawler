@@ -205,24 +205,41 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         }
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
+        Runtime.getRuntime().addShutdownHook(new Thread(new DouyuDetailShutDownHook()));
         long start = System.currentTimeMillis();
         Spider.create(new DouyuDetailAnchorProcessor()).thread(thread).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
+
+//        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
+//        String giftIdPath = Const.COMPETITORDIR + "crawler_gift_id/" + date;
+
+//        CommonTools.writeAndMail(giftIdPath, Const.DOUYUGIFTIDFINISHDETAIL, douyuGifts);
+
+        executeMapResults();
+    }
+
+    private static void executeMapResults() {
         for (DetailAnchor detailAnchor : detailAnchorObjs) {
             detailAnchors.add(detailAnchor.toString());
         }
-        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);
-//        String giftIdPath = Const.COMPETITORDIR + "crawler_gift_id/" + date;
         for (GiftInfo giftInfo : douyuGiftObjs) {
             douyuGifts.add(giftInfo.toString());
         }
-//        CommonTools.writeAndMail(giftIdPath, Const.DOUYUGIFTIDFINISHDETAIL, douyuGifts);
-
         String dirFile1 = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
         CommonTools.write2Local(dirFile1,detailAnchors);
         String dirFile2 = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append("douyugiftid").append("_").append(date).append("_").append(hour).append(randomStr).toString();
         CommonTools.write2Local(dirFile2,douyuGifts);
+    }
+
+    private static class DouyuDetailShutDownHook implements Runnable {
+        @Override
+        public void run() {
+            logger.info("writeSuccess:"+writeSuccess);
+            if (!writeSuccess){
+                executeMapResults();
+            }
+        }
     }
 }
