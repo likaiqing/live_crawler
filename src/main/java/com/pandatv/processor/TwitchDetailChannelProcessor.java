@@ -176,7 +176,7 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
         long start = System.currentTimeMillis();
-        Spider.create(new TwitchDetailChannelProcessor()).thread(20).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
+        Spider.create(new TwitchDetailChannelProcessor()).thread(22).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
         System.out.println("end:" + format.format(new Date()));
         System.out.println(cnt);
         long end = System.currentTimeMillis();
