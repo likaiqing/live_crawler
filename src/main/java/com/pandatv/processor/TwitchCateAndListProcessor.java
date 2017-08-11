@@ -213,7 +213,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
         long start = System.currentTimeMillis();
-        Spider.create(new TwitchCateAndListProcessor()).thread(15).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
+        Spider.create(new TwitchCateAndListProcessor()).thread(18).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
