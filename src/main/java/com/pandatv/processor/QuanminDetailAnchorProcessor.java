@@ -1,5 +1,6 @@
 package com.pandatv.processor;
 
+import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
@@ -10,6 +11,7 @@ import com.pandatv.tools.MailTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
@@ -25,7 +27,7 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
     private static String urlTmp = "http://www.quanmin.tv/json/play/list_";
     private static final String urlJsonT = ".json?_t=";
-    private static final String detailUrlPre = "http://www.quanmin.tv/json/rooms/";
+    private static final String detailUrlPre = "https://www.quanmin.tv/json/rooms/";//https://www.quanmin.tv/json/rooms/8826645/noinfo4.json
     private static final String detailUrlSuf = "/noinfo4.json";
     private static final Logger logger = LoggerFactory.getLogger(QuanminDetailAnchorProcessor.class);
     private static int exCnt;
@@ -44,9 +46,15 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
                 if (maxPage > 1) {
                     IntStream.range(2, maxPage).forEach(p -> page.addTargetRequest(firUrl + "?p=" + p));
                 }
-                page.getHtml().xpath("//div[@class='list_w-videos'][2]/ul[@class='list_w-videos_video-list']/li/div/div/a[@class='common_w-card_href']/@href").all().stream().forEach(url -> page.addTargetRequest(url));
+                page.getHtml().xpath("//div[@class='list_w-videos'][2]/ul[@class='list_w-videos_video-list']/li/div/div/a[@class='common_w-card_href']/@href").all().stream().forEach(url -> {
+                    String rid = url.substring(url.lastIndexOf("/") + 1);
+                    page.addTargetRequest(new StringBuffer(detailUrlPre).append(rid).append(detailUrlSuf).toString());
+                });
             } else if (curUrl.startsWith(firUrl)) {
-                page.getHtml().xpath("//div[@class='list_w-videos'][2]/ul[@class='list_w-videos_video-list']/li/div/div/a[@class='common_w-card_href']/@href").all().stream().forEach(url -> page.addTargetRequest(url));
+                page.getHtml().xpath("//div[@class='list_w-videos'][2]/ul[@class='list_w-videos_video-list']/li/div/div/a[@class='common_w-card_href']/@href").all().stream().forEach(url -> {
+                    String rid = url.substring(url.lastIndexOf("/") + 1);
+                    page.addTargetRequest(new StringBuffer(detailUrlPre).append(rid).append(detailUrlSuf).toString());
+                });
             } else {
                 parseDetailAnchor(page, curUrl);
             }
@@ -62,23 +70,32 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
     }
 
     private void parseDetailAnchor(Page page, String curUrl) {
-        String rid = page.getHtml().xpath("//div[@class='room_w-title_right']/div/span[2]/span/text()").get();
-        String name = page.getHtml().xpath("//div[@class='room_w-title_right']/div/span[1]/h2/text()").get();
-        String viewers = page.getHtml().xpath("//div[@class='room_w-title_right']/div/span[3]/span/text()").get();
-        String weight = page.getHtml().xpath("//div[@class='room_w-title_right']/div/span[4]/span/text()").get();
-        String followers = page.getHtml().xpath("//div[@class='room_w-title-tool']/div[1]/span/text()").get();
-        String title = page.getHtml().xpath("//div[@class='room_w-title_right']/h2/span/text()").get();
-        String category = page.getHtml().xpath("//div[@class='room_w-title_right']/h2/a/text()").get();
-        DetailAnchor detailAnchor = new DetailAnchor();
-        detailAnchor.setRid(rid + "");
-        detailAnchor.setName(name);
-        detailAnchor.setTitle(title);
-        detailAnchor.setCategorySec(category);
-        detailAnchor.setViewerNum(Integer.parseInt(viewers));
-        detailAnchor.setFollowerNum(Integer.parseInt(followers.replace(",", "")));
-        detailAnchor.setWeightNum(getQuanminWeight(weight.replace(",", "").trim()));
-        detailAnchor.setJob(job);
-        detailAnchor.setUrl(curUrl);
+        try {
+            String json = page.getJson().get();
+//            String rid = page.getHtml().xpath("//div[@class='room_w-title_right']/div/span[2]/span/text()").get();
+            String rid = JsonPath.read(json,"$.uid").toString();
+//            String name = page.getHtml().xpath("//div[@class='room_w-title_right']/div/span[1]/h2/text()").get();
+            String name = JsonPath.read(json,"$.nick").toString();
+//            String viewers = page.getHtml().xpath("//div[@class='room_w-title_right']/div/span[3]/span/text()").get();
+            String viewers = JsonPath.read(json,"$.view").toString();
+//            String weight = page.getHtml().xpath("//div[@class='room_w-title_right']/div/span[4]/span/text()").get();
+            String weight = JsonPath.read(json,"$.weight").toString();
+//            String followers = page.getHtml().xpath("//div[@class='room_w-title-tool']/div[1]/span/text()").get();
+            String followers = JsonPath.read(json,"$.follow").toString();
+//            String title = page.getHtml().xpath("//div[@class='room_w-title_right']/h2/span/text()").get();
+            String title = JsonPath.read(json,"$.title").toString();
+//            String category = page.getHtml().xpath("//div[@class='room_w-title_right']/h2/a/text()").get();
+            String category = JsonPath.read(json,"$.category_name").toString();
+            DetailAnchor detailAnchor = new DetailAnchor();
+            detailAnchor.setRid(rid + "");
+            detailAnchor.setName(name);
+            detailAnchor.setTitle(title);
+            detailAnchor.setCategorySec(category);
+            detailAnchor.setViewerNum(Integer.parseInt(viewers));
+            detailAnchor.setFollowerNum(Integer.parseInt(followers.replace(",", "")));
+            detailAnchor.setWeightNum(getQuanminWeight(weight.replace(",", "").trim()));
+            detailAnchor.setJob(job);
+            detailAnchor.setUrl(curUrl);
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -91,7 +108,12 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        resultSetStr.add(detailAnchor.toString());
+            resultSetStr.add(detailAnchor.toString());
+        }catch (Exception e){
+            e.printStackTrace();
+//            String rid = curUrl.substring(curUrl.lastIndexOf("/") + 1);
+//            page.addTargetRequest(new Request());
+        }
     }
 
     private long getQuanminWeight(String weight) {
@@ -117,7 +139,7 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));
 
         long start = System.currentTimeMillis();
-        Spider.create(new QuanminDetailAnchorProcessor()).thread(2).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new QuanminDetailAnchorProcessor()).thread(2).addUrl(firUrl,"https://www.quanmin.tv/21408864").addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());

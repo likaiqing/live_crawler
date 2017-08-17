@@ -100,6 +100,10 @@ public class Work {
                 logger.info("TwitchDetailChannelProcessor.crawler start");
                 TwitchDetailChannelProcessor.crawler(args);
                 break;
+            case Const.ANJUKE:
+                logger.info("AnJuKeProcessor.crawler start");
+                AnJuKeProcessor.crawler(args);
+                break;
         }
     }
 }

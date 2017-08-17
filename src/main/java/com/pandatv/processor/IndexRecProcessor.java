@@ -49,7 +49,7 @@ public class IndexRecProcessor extends PandaProcessor {
     private static final String pandaV2DetailJsonPrefex = "http://www.panda.tv/api_room_v2?roomid=";
     private static final String longzhuDetailJsonPrefex = "http://roomapicdn.plu.cn/room/roomstatus?roomid=";
     private static final Logger logger = LoggerFactory.getLogger(IndexRecProcessor.class);
-    private static final String quanminDetailUrlPre = "http://www.quanmin.tv/json/rooms/";
+    private static final String quanminDetailUrlPre = "https://www.quanmin.tv/json/rooms/";
     private static final String quanminDetailUrlSuf = "/noinfo4.json";
     private static final String chushouDetailUrlPre = "https://chushou.tv/room/";
     private static final String chushouDetailUrlSuf = ".htm";
