@@ -69,34 +69,6 @@ public class AnJuKeLouPan {
                 .append(this.getUrl()).append(Const.SEP)
                 .append(PandaProcessor.getRandomStr()).toString();
 
-
-//        return "AnJuKeLouPan{" +
-//                "advantage='" + advantage + '\'' +
-//                ", id='" + id + '\'' +
-//                ", url='" + url + '\'' +
-//                ", city='" + city + '\'' +
-//                ", district='" + district + '\'' +
-//                ", index='" + index + '\'' +
-//                ", pageNo='" + pageNo + '\'' +
-//                ", name='" + name + '\'' +
-//                ", status='" + status + '\'' +
-//                ", priceText='" + priceText + '\'' +
-//                ", priceStr='" + priceStr + '\'' +
-//                ", otherPriceStr='" + otherPriceStr + '\'' +
-//                ", intPrice=" + intPrice +
-//                ", intOtherPrice=" + intOtherPrice +
-//                ", aroundPriceStr='" + aroundPriceStr + '\'' +
-//                ", intAroundPrice=" + intAroundPrice +
-//                ", ajust='" + ajust + '\'' +
-//                ", location='" + location + '\'' +
-//                ", openDate='" + openDate + '\'' +
-//                ", openDateFormat='" + openDateFormat + '\'' +
-//                ", closeDate='" + closeDate + '\'' +
-//                ", closeDateFormat='" + closeDateFormat + '\'' +
-//                ", lastActionTime='" + lastActionTime + '\'' +
-//                ", lastActionTitle='" + lastActionTitle + '\'' +
-//                ", lastActionContent='" + lastActionContent + '\'' +
-//                '}';
     }
 
     @Override

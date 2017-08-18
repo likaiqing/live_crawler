@@ -104,6 +104,10 @@ public class Work {
                 logger.info("AnJuKeProcessor.crawler start");
                 AnJuKeProcessor.crawler(args);
                 break;
+            case Const.LIANJIA:
+                logger.info("LianJiaProcessor.crawler start");
+                LianJiaProcessor.crawler(args);
+                break;
         }
     }
 }
