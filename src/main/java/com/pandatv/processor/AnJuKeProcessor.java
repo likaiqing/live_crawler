@@ -2,6 +2,7 @@ package com.pandatv.processor;
 
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
+import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.AnJuKeLouPan;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.MailTools;
@@ -12,6 +13,7 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
 import java.util.HashSet;
@@ -40,6 +42,8 @@ public class AnJuKeProcessor extends PandaProcessor {
         job = args[0];//chushouanchor
         date = args[1];//20161114
         hour = args[2];
+        Const.GENERATORKEY = "H7ABSOS1FI3M9I4P";
+        Const.GENERATORPASS = "97CCB7E9284ACAF0";
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
@@ -50,7 +54,7 @@ public class AnJuKeProcessor extends PandaProcessor {
             }
         }));
         long start = System.currentTimeMillis();
-        Spider.create(new AnJuKeProcessor()).thread(1).addUrl(firUrl).start();
+        Spider.create(new AnJuKeProcessor()).thread(10).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
@@ -58,7 +62,7 @@ public class AnJuKeProcessor extends PandaProcessor {
     }
 
     private static void executeMapResults() {
-        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        String dirFile = new StringBuffer("/home/likaiqing/data/anjuke/").append(date).append("_").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
         CommonTools.write2Local(dirFile, anjukeList);
     }
 
@@ -74,10 +78,16 @@ public class AnJuKeProcessor extends PandaProcessor {
                     List<String> as = new Html(dl).xpath("//dd/html()").all();
                     for (String a : as) {
                         Html aHtml = new Html(a);
-                        String soj = aHtml.xpath("//a/@soj").get();
-                        String href = aHtml.xpath("//a/@href").get();
-                        String city = aHtml.xpath("//a/text()").get();
-                        page.addTargetRequest(new Request(new StringBuffer(href).append(firPageUrlTmp).append(soj).toString()).putExtra(cityKeyParam, city));
+                        List<String> sojs = aHtml.xpath("//a/@soj").all();
+                        List<String> hrefs = aHtml.xpath("//a/@href").all();
+                        List<String> citys = aHtml.xpath("//a/text()").all();
+                        for (int i=0;i<hrefs.size();i++){
+                            String soj = sojs.get(i);
+                            String href = hrefs.get(i);
+                            String city = citys.get(i);
+                            page.addTargetRequest(new Request(new StringBuffer(href).append(firPageUrlTmp).append(soj).toString()).putExtra(cityKeyParam, city));
+                        }
+
                     }
 
                 }
@@ -135,9 +145,13 @@ public class AnJuKeProcessor extends PandaProcessor {
                 int intAroundPrice = 0;
                 String aroundPriceStr = "";
                 if (StringUtils.isNotEmpty(priceStr)) {
-                    intPrice = Integer.parseInt(priceStr);
-                    if (priceText.contains("万元")) {
-                        intPrice = intPrice * 10000;
+                    try {
+                        intPrice = Integer.parseInt(priceStr);
+                        if (priceText.contains("万元")) {
+                            intPrice = intPrice * 10000;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
                 } else {
                     aroundPriceStr = html.xpath("//dl[@class='basic-parms clearfix']/dd[@class='around-price']/text()").get();
@@ -242,6 +256,6 @@ public class AnJuKeProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.setHttpProxy(null);
+        return this.site;
     }
 }
