@@ -150,6 +150,7 @@ public class AnJuKeProcessor extends PandaProcessor {
                         intPrice = Integer.parseInt(priceStr);
                         if (priceText.contains("万元")) {
                             intPrice = intPrice * 10000;
+                            unit = "suite";
                         }
                     }catch (Exception e){
                         e.printStackTrace();
@@ -159,6 +160,7 @@ public class AnJuKeProcessor extends PandaProcessor {
                     intAroundPrice = Integer.parseInt(html.xpath("//dl[@class='basic-parms clearfix']/dd[@class='around-price']/span/text()").get());
                     if (aroundPriceStr.contains("万元")) {
                         intAroundPrice = intAroundPrice * 10000;
+                        unit = "suite";
                     }
                 }
                 String advantage = html.xpath("//dl[@class='basic-parms clearfix']//span[@class='lpAddr-text']/text()").get();

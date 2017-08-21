@@ -132,6 +132,7 @@ public class LianJiaProcessor extends PandaProcessor {
             String unit = "square";
             if (StringUtils.isNotEmpty(unitStr) && unitStr.contains("万")) {
                 price = price * 10000;
+                unit = "suite";
             }
             if (StringUtils.isNotEmpty(unitStr) && unitStr.contains("套")) {
                 unit = "suite";
