@@ -65,6 +65,7 @@ public class LianJiaProcessor extends PandaProcessor {
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
+        logger.info("process url:{}", curUrl);
         if (curUrl.equals(firUrl)) {
             /**
              * 获取所有城市第一页url放入队列
@@ -91,6 +92,7 @@ public class LianJiaProcessor extends PandaProcessor {
                 totalPage = (int) jsonObject.get("totalPage");
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.info("解析页数出错,url:" + curUrl);
                 totalPage = Integer.parseInt(html.xpath("//div[@id='list-pagination']/@data-totalPage").get());
             }
             //将其他页url放入队列
@@ -110,7 +112,7 @@ public class LianJiaProcessor extends PandaProcessor {
              * 解析详情页数据
              */
             Request request = page.getRequest();
-            String id = curUrl.substring(curUrl.indexOf("/", curUrl.indexOf("loupan") + 1), curUrl.lastIndexOf("/"));
+            String id = curUrl.substring(curUrl.indexOf("/", curUrl.indexOf("loupan"))+ 1, curUrl.lastIndexOf("/"));
             String city = request.getExtra(cityKeyParam).toString();
             String index = request.getExtra(indexKeyParam).toString();
             String pageNo = request.getExtra(pageKeyParam).toString();
@@ -123,6 +125,7 @@ public class LianJiaProcessor extends PandaProcessor {
             try {
                 price = Integer.parseInt(html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='jiage']/span[@class='junjia']/text()").get().trim());
             } catch (Exception e) {
+                logger.info("解析价格出错,url:" + curUrl);
                 e.printStackTrace();
             }
             String unitStr = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='jiage']/span[@class='yuan']/text()").get();
@@ -167,6 +170,7 @@ public class LianJiaProcessor extends PandaProcessor {
                     openDate = html.xpath("//div[@class='bottom-info']/p[@class='when ']/span/text()").all().get(1).replaceAll("年|月|日", "").trim();
                 }
             } catch (Exception e) {
+                location.indexOf("解析开盘日期出错,url:" + curUrl);
                 e.printStackTrace();
             }
             String lastActionTime = "";
@@ -179,6 +183,7 @@ public class LianJiaProcessor extends PandaProcessor {
                 lastActionContent = dynamicHtml.xpath("//a/text()").get().replace(" ", "").trim();
                 lastActionTime = dynamicHtml.xpath("//div[@class='dynamic-detail-time']/span/text()").get().replaceAll("年|月|日", "").trim();
             } catch (Exception e) {
+                location.indexOf("解析动态报错,url:" + curUrl);
                 e.printStackTrace();
             }
             LianJiaLouPan lianJiaLouPan = new LianJiaLouPan();
@@ -214,6 +219,7 @@ public class LianJiaProcessor extends PandaProcessor {
             lianJiaLouPan.setHourseType(hourseType);
             lianJiaList.add(lianJiaLouPan.toString());
         }
+        page.setSkip(true);
     }
 
     /**
@@ -231,7 +237,7 @@ public class LianJiaProcessor extends PandaProcessor {
         for (String a : all) {
             Html aHtml = new Html(a);
             String detailUrl = aHtml.xpath("//a/@href").get();
-            String index = aHtml.xpath("//a/@data-el").get();
+            String index = aHtml.xpath("//a/@data-index").get();
             page.addTargetRequest(new Request(detailUrl).putExtra(cityKeyParam, page.getRequest().getExtra(cityKeyParam)).putExtra(indexKeyParam, index).putExtra(pageKeyParam, curPageNo));
         }
 
@@ -239,7 +245,7 @@ public class LianJiaProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.setSleepTime(100);
+        return this.site.setSleepTime(80).setHttpProxy(null);
     }
 
     private static void executeMapResults() {

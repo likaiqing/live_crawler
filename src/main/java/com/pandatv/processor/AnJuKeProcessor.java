@@ -69,6 +69,7 @@ public class AnJuKeProcessor extends PandaProcessor {
     @Override
     public void process(Page page) {
         String curUrl = page.getUrl().get();
+        logger.info("process url:{}", curUrl);
         try {
             requests++;
             if (curUrl.equals(firUrl)) {
@@ -232,6 +233,7 @@ public class AnJuKeProcessor extends PandaProcessor {
 //                System.exit(1);
             }
         }
+        page.setSkip(true);
     }
 
     private void addNextListPageUrl(String curUrl, Page page) {
