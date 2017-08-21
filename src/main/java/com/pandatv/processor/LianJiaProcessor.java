@@ -43,8 +43,8 @@ public class LianJiaProcessor extends PandaProcessor {
         job = args[0];//lianjia
         date = args[1];//20161114
         hour = args[2];
-        Const.GENERATORKEY = "H7ABSOS1FI3M9I4P";
-        Const.GENERATORPASS = "97CCB7E9284ACAF0";
+        Const.GENERATORKEY = "H05972909IM78TAP";
+        Const.GENERATORPASS = "36F7B5D8703A39C5";
         long start = System.currentTimeMillis();
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
@@ -133,17 +133,17 @@ public class LianJiaProcessor extends PandaProcessor {
             if (StringUtils.isNotEmpty(unitStr) && unitStr.contains("套")) {
                 unit = "suite";
             }
-            String otherName = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/div[@class='name-box']/p[@class='jiage']/span[@class='other-name']/text()").get();
+            String otherName = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='jiage']/span[@class='other-name']/text()").get();
             otherName = StringUtils.isNotEmpty(otherName) ? otherName.trim() : "";
-            String updateTimeStr = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/div[@class='name-box']/p[@class='update']/span/text()").get();
+            String updateTimeStr = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='update']/span/text()").get();
             int daysAgo = 1;
-            if (updateTimeStr.contains("月")) {
+            if (StringUtils.isNotEmpty(updateTimeStr) && updateTimeStr.contains("月")) {
                 String trim = updateTimeStr.substring(updateTimeStr.indexOf("：") + 1).replaceAll("年|月|日", "").trim();
                 if (trim.length() == 4) {
                     updateTimeStr = stf.print(stf.parseDateTime(trim));
                     daysAgo = (new DateTime().dayOfYear().get()) - (stf.parseDateTime(trim).dayOfYear().get());
                 }
-            } else if (updateTimeStr.contains("天前")) {
+            } else if (StringUtils.isNotEmpty(updateTimeStr) && updateTimeStr.contains("天前")) {
                 daysAgo = Integer.parseInt(updateTimeStr.substring(updateTimeStr.indexOf("：") + 1).replace("天前", "").trim());
                 updateTimeStr = stf.print(new DateTime().minusDays(daysAgo));
             }
@@ -173,7 +173,7 @@ public class LianJiaProcessor extends PandaProcessor {
             String lastActionTitle = "";
             String lastActionContent = "";
             try {
-                String dynamic = html.xpath("//div[@class='dynamic-wrap-left pull-left']/div[@class='dynamic-wrap-block clearfix'][1]/div[@class='dynamic-block-detail pull-right']/html()").get();
+                String dynamic = html.xpath("//div[@class='dynamic-wrap-left pull-left']/div[@class='dynamic-wrap-block clearfix']/div[@class='dynamic-block-detail pull-right']/html()").get();
                 Html dynamicHtml = new Html(dynamic);
                 lastActionTitle = dynamicHtml.xpath("//div[@class='dongtai-title']/text()").get();
                 lastActionContent = dynamicHtml.xpath("//a/text()").get().replace(" ", "").trim();

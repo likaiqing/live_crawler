@@ -1,5 +1,6 @@
 package com.pandatv.processor;
 
+import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.tools.DateTools;
@@ -25,8 +26,10 @@ public class DouyuAnchor2FileProccessor extends PandaProcessor {
     private static int exCnt;
     public static void crawler(String[] args) {
         String destFile = args[1];
+        Const.GENERATORKEY = "H05972909IM78TAP";
+        Const.GENERATORPASS = "36F7B5D8703A39C5";
         String firstUrl = "https://www.douyu.com/directory/all";
-        Spider.create(new DouyuAnchor2FileProccessor()).addUrl(firstUrl).thread(4).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
+        Spider.create(new DouyuAnchor2FileProccessor()).addUrl(firstUrl).thread(1).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
         List<String> rids = new ArrayList<>();
         String pre = "room.url.";
         String suf = "=https://www.douyu.com/";
