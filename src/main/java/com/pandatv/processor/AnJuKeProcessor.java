@@ -4,8 +4,8 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.AnJuKeLouPan;
-import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.MailTools;
+import com.pandatv.tools.PGTools;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class AnJuKeProcessor extends PandaProcessor {
     private static final String indexKeyParam = "index";
     private static final String pageKeyParam = "page";
     private static final String sojPre = "AF_RANK_";
-    private static Set<String> anjukeList = new HashSet<>();
+    private static Set<AnJuKeLouPan> anjukeList = new HashSet<>();
     private static int exCnt;
 
 
@@ -62,8 +62,9 @@ public class AnJuKeProcessor extends PandaProcessor {
     }
 
     private static void executeMapResults() {
-        String dirFile = new StringBuffer("/home/likaiqing/data/anjuke/").append(date).append("_").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
-        CommonTools.write2Local(dirFile, anjukeList);
+//        String dirFile = new StringBuffer("/home/likaiqing/data/anjuke/").append(date).append("_").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+//        CommonTools.write2Local(dirFile, anjukeList);
+        PGTools.insertAnJuKeLouPan(anjukeList);
     }
 
     @Override
@@ -231,7 +232,9 @@ public class AnJuKeProcessor extends PandaProcessor {
                 anJuKeLouPan.setLastActionTitle(lastActionTitle);
                 anJuKeLouPan.setLastActionContent(lastActionContent);
                 anJuKeLouPan.setUrl(url);
-                anjukeList.add(anJuKeLouPan.toString() + Const.TAB + date);
+                anJuKeLouPan.setParDate(date);
+//                anjukeList.add(anJuKeLouPan.toString() + Const.TAB + date);
+                anjukeList.add(anJuKeLouPan);
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");

@@ -4,7 +4,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.LianJiaLouPan;
-import com.pandatv.tools.CommonTools;
+import com.pandatv.tools.PGTools;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -34,7 +34,7 @@ public class LianJiaProcessor extends PandaProcessor {
     private static final String cityKeyParam = "city";
     private static final String indexKeyParam = "index";
     private static final String pageKeyParam = "page";
-    private static Set<String> lianJiaList = new HashSet<>();
+    private static Set<LianJiaLouPan> lianJiaList = new HashSet<>();
     private static int exCnt;
 
     private static final DateTimeFormatter stf = DateTimeFormat.forPattern("MMdd");
@@ -227,7 +227,9 @@ public class LianJiaProcessor extends PandaProcessor {
                 lianJiaLouPan.setUpdateTimeStr(updateTimeStr);
                 lianJiaLouPan.setDaysAgo(daysAgo);
                 lianJiaLouPan.setHourseType(hourseType);
-                lianJiaList.add(lianJiaLouPan.toString() + Const.TAB + date);
+                lianJiaLouPan.setParDate(date);
+//                lianJiaList.add(lianJiaLouPan.toString() + Const.TAB + date);
+                lianJiaList.add(lianJiaLouPan);
             }
             page.setSkip(true);
         } catch (Exception e) {
@@ -263,7 +265,8 @@ public class LianJiaProcessor extends PandaProcessor {
     }
 
     private static void executeMapResults() {
-        String dirFile = new StringBuffer("/home/likaiqing/data/lianjia/").append(date).append("_").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
-        CommonTools.write2Local(dirFile, lianJiaList);
+//        String dirFile = new StringBuffer("/home/likaiqing/data/lianjia/").append(date).append("_").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+//        CommonTools.write2Local(dirFile, lianJiaList);
+        PGTools.insertLianJiaLouPan(lianJiaList);
     }
 }

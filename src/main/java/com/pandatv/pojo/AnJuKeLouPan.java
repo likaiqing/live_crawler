@@ -53,6 +53,26 @@ public class AnJuKeLouPan {
     private String lastActionTitle;//最后动态标题
     private String lastActionContent;//最后动态内容
     private String url;
+    private String randomStr;
+    private String parDate;
+
+    public String getRandomStr() {
+        return randomStr;
+    }
+
+    public void setRandomStr(String randomStr) {
+        this.randomStr = randomStr;
+    }
+
+    public String getParDate() {
+        return parDate;
+    }
+
+    public void setParDate(String parDate) {
+        this.parDate = parDate;
+    }
+
+
 
     @Override
     public String toString() {
