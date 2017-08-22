@@ -193,8 +193,15 @@ public class LianJiaProcessor extends PandaProcessor {
                 lianJiaLouPan.setId(id);
                 lianJiaLouPan.setCity(city);
                 lianJiaLouPan.setDistrict(district);
-                lianJiaLouPan.setIndex(index);
-                lianJiaLouPan.setPageNo(pageNo);
+                try {
+                    lianJiaLouPan.setIndex(Integer.parseInt(index));
+                    lianJiaLouPan.setPageNo(Integer.parseInt(pageNo));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    lianJiaLouPan.setIndex(0);
+                    lianJiaLouPan.setPageNo(0);
+                    logger.error("解析下标或者页数出错,url:" + curUrl);
+                }
                 lianJiaLouPan.setName(name);
                 lianJiaLouPan.setStatus(status);
                 lianJiaLouPan.setPriceText("");
@@ -220,11 +227,12 @@ public class LianJiaProcessor extends PandaProcessor {
                 lianJiaLouPan.setUpdateTimeStr(updateTimeStr);
                 lianJiaLouPan.setDaysAgo(daysAgo);
                 lianJiaLouPan.setHourseType(hourseType);
-                lianJiaList.add(lianJiaLouPan.toString());
+                lianJiaList.add(lianJiaLouPan.toString() + Const.TAB + date);
             }
             page.setSkip(true);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.info("process error:curUrl:" + curUrl);
         }
     }
 

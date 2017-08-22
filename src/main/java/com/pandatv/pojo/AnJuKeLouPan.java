@@ -13,8 +13,25 @@ public class AnJuKeLouPan {
     private String id;
     private String city;
     private String district;//区
-    private String index;//当前页第几个
-    private String pageNo;//出现在第几页
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    private int index;//当前页第几个
+    private int pageNo;//出现在第几页
     private String name;//小区或楼盘名称
     private String status;//售卖状态
     private String priceText;//文本形式价格
@@ -41,32 +58,32 @@ public class AnJuKeLouPan {
     public String toString() {
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         StringBuffer sb = new StringBuffer();
-        return sb.append(this.getId()).append(Const.SEP)
-                .append(this.getCity()).append(Const.SEP)
-                .append(this.getDistrict()).append(Const.SEP)
-                .append(this.getIndex()).append(Const.SEP)
-                .append(this.getPageNo()).append(Const.SEP)
-                .append(this.getName()).append(Const.SEP)
-                .append(this.getStatus()).append(Const.SEP)
-                .append(this.getPriceText()).append(Const.SEP)
-                .append(this.getPriceStr()).append(Const.SEP)
-                .append(this.getOtherPriceStr()).append(Const.SEP)
-                .append(this.getUnit()).append(Const.SEP)
-                .append(this.getIntPrice()).append(Const.SEP)
-                .append(this.getIntOtherPrice()).append(Const.SEP)
-                .append(this.getAroundPriceStr()).append(Const.SEP)
-                .append(this.getIntAroundPrice()).append(Const.SEP)
-                .append(this.getAdvantage()).append(Const.SEP)
-                .append(this.getAjust()).append(Const.SEP)
-                .append(this.getLocation()).append(Const.SEP)
-                .append(this.getOpenDate()).append(Const.SEP)
-                .append(this.getOpenDateFormat()).append(Const.SEP)
-                .append(this.getCloseDate()).append(Const.SEP)
-                .append(this.getCloseDateFormat()).append(Const.SEP)
-                .append(this.getLastActionTime()).append(Const.SEP)
-                .append(this.getLastActionTitle()).append(Const.SEP)
-                .append(this.getLastActionContent()).append(Const.SEP)
-                .append(this.getUrl()).append(Const.SEP)
+        return sb.append(this.getId()).append(Const.TAB)
+                .append(this.getCity()).append(Const.TAB)
+                .append(this.getDistrict()).append(Const.TAB)
+                .append(this.getIndex()).append(Const.TAB)
+                .append(this.getPageNo()).append(Const.TAB)
+                .append(this.getName()).append(Const.TAB)
+                .append(this.getStatus()).append(Const.TAB)
+                .append(this.getPriceText()).append(Const.TAB)
+                .append(this.getPriceStr()).append(Const.TAB)
+                .append(this.getOtherPriceStr()).append(Const.TAB)
+                .append(this.getUnit()).append(Const.TAB)
+                .append(this.getIntPrice()).append(Const.TAB)
+                .append(this.getIntOtherPrice()).append(Const.TAB)
+                .append(this.getAroundPriceStr()).append(Const.TAB)
+                .append(this.getIntAroundPrice()).append(Const.TAB)
+                .append(this.getAdvantage()).append(Const.TAB)
+                .append(this.getAjust()).append(Const.TAB)
+                .append(this.getLocation()).append(Const.TAB)
+                .append(this.getOpenDate()).append(Const.TAB)
+                .append(this.getOpenDateFormat()).append(Const.TAB)
+                .append(this.getCloseDate()).append(Const.TAB)
+                .append(this.getCloseDateFormat()).append(Const.TAB)
+                .append(this.getLastActionTime()).append(Const.TAB)
+                .append(this.getLastActionTitle()).append(Const.TAB)
+                .append(this.getLastActionContent()).append(Const.TAB)
+                .append(this.getUrl()).append(Const.TAB)
                 .append(PandaProcessor.getRandomStr()).toString();
 
     }
@@ -141,14 +158,6 @@ public class AnJuKeLouPan {
 
     public void setDistrict(String district) {
         this.district = district;
-    }
-
-    public String getIndex() {
-        return index;
-    }
-
-    public void setIndex(String index) {
-        this.index = index;
     }
 
     public int getIntAroundPrice() {
@@ -238,14 +247,6 @@ public class AnJuKeLouPan {
 
     public void setOtherPriceStr(String otherPriceStr) {
         this.otherPriceStr = otherPriceStr;
-    }
-
-    public String getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(String pageNo) {
-        this.pageNo = pageNo;
     }
 
     public String getPriceStr() {

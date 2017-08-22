@@ -201,8 +201,15 @@ public class AnJuKeProcessor extends PandaProcessor {
                 anJuKeLouPan.setId(id);
                 anJuKeLouPan.setCity(city);
                 anJuKeLouPan.setDistrict(district);
-                anJuKeLouPan.setIndex(index);
-                anJuKeLouPan.setPageNo(pageNo);
+                try {
+                    anJuKeLouPan.setIndex(Integer.parseInt(index));
+                    anJuKeLouPan.setPageNo(Integer.parseInt(pageNo));
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.error("解析下标或者页数出错,url:"+curUrl);
+                    anJuKeLouPan.setIndex(0);
+                    anJuKeLouPan.setPageNo(0);
+                }
                 anJuKeLouPan.setName(name);
                 anJuKeLouPan.setStatus(status);
                 anJuKeLouPan.setPriceText(priceText);
@@ -224,7 +231,7 @@ public class AnJuKeProcessor extends PandaProcessor {
                 anJuKeLouPan.setLastActionTitle(lastActionTitle);
                 anJuKeLouPan.setLastActionContent(lastActionContent);
                 anJuKeLouPan.setUrl(url);
-                anjukeList.add(anJuKeLouPan.toString());
+                anjukeList.add(anJuKeLouPan.toString() + Const.TAB + date);
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");

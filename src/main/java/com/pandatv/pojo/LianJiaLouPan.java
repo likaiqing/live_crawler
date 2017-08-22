@@ -46,10 +46,10 @@ public class LianJiaLouPan extends AnJuKeLouPan {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        return sb.append(super.toString()).append(Const.SEP)
-                .append(this.getOtherName()).append(Const.SEP)
-                .append(this.getUpdateTimeStr()).append(Const.SEP)
-                .append(this.getDaysAgo()).append(Const.SEP)
+        return sb.append(super.toString()).append(Const.TAB)
+                .append(this.getOtherName()).append(Const.TAB)
+                .append(this.getUpdateTimeStr()).append(Const.TAB)
+                .append(this.getDaysAgo()).append(Const.TAB)
                 .append(this.getHourseType()).toString();
     }
 }

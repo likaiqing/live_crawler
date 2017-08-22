@@ -39,6 +39,7 @@ public class Const {
     public static final String CRAWLER_DATA_DIR = "/home/crawler_data/";
     public static final String ANJUKE = "anjuke";
     public static final String LIANJIA = "lianjia";
+    public static final String TAB = "\t";
     //    public static final String CRAWLER_DATA_DIR = "/Users/likaiqing/Downloads/category_test/";
     public static String GENERATORKEY = "H04Y776P798V9KWP";//PandaHttpClientGenerator设置代理验证的常量
     public static String GENERATORPASS = "680DB7FCBC8D123C";
