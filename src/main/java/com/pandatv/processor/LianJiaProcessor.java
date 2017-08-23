@@ -58,7 +58,7 @@ public class LianJiaProcessor extends PandaProcessor {
         Spider.create(new LianJiaProcessor()).thread(1).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString() + ",房间数:" + lianJiaList.size());
         executeMapResults();
     }
 
@@ -67,7 +67,7 @@ public class LianJiaProcessor extends PandaProcessor {
         String curUrl = page.getUrl().get();
         logger.info("process url:{}", curUrl);
         try {
-
+            requests++;
             if (curUrl.equals(firUrl)) {
                 /**
                  * 获取所有城市第一页url放入队列
@@ -261,7 +261,7 @@ public class LianJiaProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.setSleepTime(80);
+        return this.site.setSleepTime(100);
     }
 
     private static void executeMapResults() {
