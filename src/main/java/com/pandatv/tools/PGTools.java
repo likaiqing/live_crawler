@@ -12,10 +12,8 @@ import java.util.Set;
  */
 public class PGTools {
 
-    public static void main(String[] args) throws SQLException {
+    public static void testConn(String[] args) {
         Connection conn = getConn();
-        Statement statement = conn.createStatement();
-
         System.out.println(conn);
     }
 
@@ -23,10 +21,10 @@ public class PGTools {
         Connection conn = null;
         try {
             Class.forName("org.postgresql.Driver");
-            String url = "jdbc:postgresql://:5432/";
-//            String url = "jdbc:postgresql://localhost:5432/";
+            String url = "jdbc:postgresql://172.17.235.86:5432/crawler";
+//            String url = "jdbc:postgresql://localhost:5432/crawler";
             try {
-                conn = DriverManager.getConnection(url, "", "");
+                conn = DriverManager.getConnection(url, "likaiqing", "ff3atkrrr0YThgcjqkdyvzijnpicyb");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -80,6 +78,8 @@ public class PGTools {
         } finally {
             close(conn, ps);
         }
+        set.clear();
+        PandaProcessor.writeSuccess = true;
     }
 
     public static void insertLianJiaLouPan(Set<LianJiaLouPan> set) {
@@ -130,6 +130,8 @@ public class PGTools {
         } finally {
             close(conn, ps);
         }
+        set.clear();
+        PandaProcessor.writeSuccess = true;
     }
 
     private static void close(Connection conn, PreparedStatement ps) {
