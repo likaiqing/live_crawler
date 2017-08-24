@@ -250,6 +250,9 @@ public class LianJiaProcessor extends PandaProcessor {
             curPageNo = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf("pg") + 2, curUrl.lastIndexOf("/")));
         }
         List<String> all = page.getHtml().xpath("//div[@class='list-wrap']/ul/li/div[@class='pic-panel']/html()").all();
+        if (null==all || all.size()==0){
+            all = page.getHtml().xpath("//div[@class='house-lst']/ul/li/div[@class='pic-panel']/html()").all();
+        }
         for (String a : all) {
             Html aHtml = new Html(a);
             String detailUrl = aHtml.xpath("//a/@href").get();
