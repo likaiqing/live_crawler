@@ -55,7 +55,7 @@ public class LianJiaProcessor extends PandaProcessor {
                 }
             }
         }));
-        Spider.create(new LianJiaProcessor()).thread(1).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new LianJiaProcessor()).thread(1).addUrl("http://hk.lianjia.com/","http://sh.fang.lianjia.com/").addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString() + ",房间数:" + lianJiaList.size());
@@ -77,9 +77,10 @@ public class LianJiaProcessor extends PandaProcessor {
                     Html aHtml = new Html(a);
                     List<String> hrefs = aHtml.xpath("//a/@href").all();
                     List<String> citys = aHtml.xpath("//a/text()").all();
-                    for (int i = 0; i < hrefs.size(); i++) {
-                        page.addTargetRequest(new Request(hrefs.get(i) + firListUrlEndTmp).putExtra(cityKeyParam, citys.get(i)));
-                    }
+//                    for (int i = 0; i < hrefs.size(); i++) {
+//                        page.addTargetRequest(new Request(hrefs.get(i) + firListUrlEndTmp).putExtra(cityKeyParam, citys.get(i)));
+//                    }
+                    System.out.println();
                 }
             } else if (curUrl.endsWith(firListUrlEndTmp)) {
                 /**
