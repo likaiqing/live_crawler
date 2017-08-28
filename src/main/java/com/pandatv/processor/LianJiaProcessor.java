@@ -55,7 +55,7 @@ public class LianJiaProcessor extends PandaProcessor {
                 }
             }
         }));
-        Spider.create(new LianJiaProcessor()).thread(1).addUrl("http://hk.lianjia.com/","http://sh.fang.lianjia.com/").addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new LianJiaProcessor()).thread(1).addUrl("http://hk.lianjia.com/loupan/", "http://sh.fang.lianjia.com/loupan/").addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString() + ",房间数:" + lianJiaList.size());
@@ -77,9 +77,9 @@ public class LianJiaProcessor extends PandaProcessor {
                     Html aHtml = new Html(a);
                     List<String> hrefs = aHtml.xpath("//a/@href").all();
                     List<String> citys = aHtml.xpath("//a/text()").all();
-//                    for (int i = 0; i < hrefs.size(); i++) {
-//                        page.addTargetRequest(new Request(hrefs.get(i) + firListUrlEndTmp).putExtra(cityKeyParam, citys.get(i)));
-//                    }
+                    for (int i = 0; i < hrefs.size(); i++) {
+                        page.addTargetRequest(new Request(hrefs.get(i) + firListUrlEndTmp).putExtra(cityKeyParam, citys.get(i)));
+                    }
                     System.out.println();
                 }
             } else if (curUrl.endsWith(firListUrlEndTmp)) {
@@ -90,9 +90,20 @@ public class LianJiaProcessor extends PandaProcessor {
                 int totalPage = 2;
                 try {
                     String pageData = html.xpath("//div[@class='page-box house-lst-page-box']/@page-data").get();
-                    String pageJson = pageData.substring(pageData.indexOf("{"), pageData.lastIndexOf("}") + 1);
-                    JSONObject jsonObject = new JSONObject(pageJson);
-                    totalPage = (int) jsonObject.get("totalPage");
+                    if (StringUtils.isEmpty(pageData)) {
+                        try {
+                            totalPage = Integer.parseInt(html.xpath("//div[@id='list-pagination']/@data-totalPage").get());
+                        } catch (Exception e) {
+                            List<String> pages = html.xpath("//div[@class='page_box']/a/text()").all();
+                            if (pages.size() > 2) {
+                                totalPage = Integer.parseInt(pages.get(pages.size() - 2));
+                            }
+                        }
+                    } else {
+                        String pageJson = pageData.substring(pageData.indexOf("{"), pageData.lastIndexOf("}") + 1);
+                        JSONObject jsonObject = new JSONObject(pageJson);
+                        totalPage = (int) jsonObject.get("totalPage");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.info("解析页数出错,url:" + curUrl);
@@ -114,120 +125,35 @@ public class LianJiaProcessor extends PandaProcessor {
                 /**
                  * 解析详情页数据
                  */
+
                 Request request = page.getRequest();
                 String id = curUrl.substring(curUrl.indexOf("/", curUrl.indexOf("loupan")) + 1, curUrl.lastIndexOf("/"));
-                String city = request.getExtra(cityKeyParam).toString();
-                String index = request.getExtra(indexKeyParam).toString();
-                String pageNo = request.getExtra(pageKeyParam).toString();
+//                String city = request.getExtra(cityKeyParam).toString();
+//                String index = request.getExtra(indexKeyParam).toString();
+//                String pageNo = request.getExtra(pageKeyParam).toString();
                 Html html = page.getHtml();
                 List<String> as = html.xpath("//div[@class='breadcrumbs']/a/text()").all();
                 String district = as.size() == 4 ? as.get(3).trim() : "";//区
-                String status = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/div[@class='name-box']/div[@class='state-div']/span[@class='state']/text()").get();
-                String name = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/div[@class='name-box']/a[@class='clear']/@title").get();
-                int price = 0;
-                try {
-                    price = Integer.parseInt(html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='jiage']/span[@class='junjia']/text()").get().trim());
-                } catch (Exception e) {
-                    logger.info("解析价格出错,url:" + curUrl);
-                    e.printStackTrace();
-                }
-                String unitStr = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='jiage']/span[@class='yuan']/text()").get();
-                String unit = "square";
-                if (StringUtils.isNotEmpty(unitStr) && unitStr.contains("万")) {
-                    price = price * 10000;
-                    unit = "suite";
-                }
-                if (StringUtils.isNotEmpty(unitStr) && unitStr.contains("套")) {
-                    unit = "suite";
-                }
-                String otherName = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='jiage']/span[@class='other-name']/text()").get();
-                otherName = StringUtils.isNotEmpty(otherName) ? otherName.trim() : "";
-                String updateTimeStr = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='update']/span/text()").get();
-                int daysAgo = 1;
-                if (StringUtils.isNotEmpty(updateTimeStr) && updateTimeStr.contains("月")) {
-                    String trim = updateTimeStr.substring(updateTimeStr.indexOf("：") + 1).replaceAll("年|月|日", "").trim();
-                    if (trim.length() == 4) {
-                        updateTimeStr = stf.print(stf.parseDateTime(trim));
-                        daysAgo = (new DateTime().dayOfYear().get()) - (stf.parseDateTime(trim).dayOfYear().get());
-                    }
-                } else if (StringUtils.isNotEmpty(updateTimeStr) && updateTimeStr.contains("天前")) {
-                    daysAgo = Integer.parseInt(updateTimeStr.substring(updateTimeStr.indexOf("：") + 1).replace("天前", "").trim());
-                    updateTimeStr = stf.print(new DateTime().minusDays(daysAgo));
-                }
-                String hourseType = "";
-                List<String> all = html.xpath("//div[@class='bottom-info']/p[@class='wu-type manager']/span/text()").all();
-                if (null != all && all.size() == 2) {
-                    hourseType = all.get(1);
-                } else {
-                    hourseType = html.xpath("//div[@class='bottom-info']/p[@class='wu-type ']/span/text()").all().get(1);
-                }
-                String location = html.xpath("//div[@class='bottom-info']/p[@class='where manager']/span/@title").get();
-                if (StringUtils.isEmpty(location)) {
-                    location = html.xpath("//div[@class='bottom-info']/p[@class='where ']/span/@title").get();
-                }
-                String openDate = "";
-                try {
-                    List<String> whenAll = html.xpath("//div[@class='bottom-info']/p[@class='when manager']/span/text()").all();
-                    if (null != whenAll && whenAll.size() == 2) {
-                        openDate = whenAll.get(1).replaceAll("年|月|日", "").trim();
-                    } else {
-                        openDate = html.xpath("//div[@class='bottom-info']/p[@class='when ']/span/text()").all().get(1).replaceAll("年|月|日", "").trim();
-                    }
-                } catch (Exception e) {
-                    location.indexOf("解析开盘日期出错,url:" + curUrl);
-                    e.printStackTrace();
-                }
-                String lastActionTime = "";
-                String lastActionTitle = "";
-                String lastActionContent = "";
-                try {
-                    String dynamic = html.xpath("//div[@class='dynamic-wrap-left pull-left']/div[@class='dynamic-wrap-block clearfix']/div[@class='dynamic-block-detail pull-right']/html()").get();
-                    Html dynamicHtml = new Html(dynamic);
-                    lastActionTitle = dynamicHtml.xpath("//div[@class='dongtai-title']/text()").get();
-                    lastActionContent = dynamicHtml.xpath("//a/text()").get().replace(" ", "").trim();
-                    lastActionTime = dynamicHtml.xpath("//div[@class='dynamic-detail-time']/span/text()").get().replaceAll("年|月|日", "").trim();
-                } catch (Exception e) {
-                    location.indexOf("解析动态报错,url:" + curUrl);
-                    e.printStackTrace();
-                }
+                String check = html.xpath("//div[@class='box-left']/html()").get();
                 LianJiaLouPan lianJiaLouPan = new LianJiaLouPan();
                 lianJiaLouPan.setId(id);
-                lianJiaLouPan.setCity(city);
-                lianJiaLouPan.setDistrict(district);
+//                lianJiaLouPan.setCity(city);
                 try {
-                    lianJiaLouPan.setIndex(Integer.parseInt(index));
-                    lianJiaLouPan.setPageNo(Integer.parseInt(pageNo));
+//                    lianJiaLouPan.setIndex(Integer.parseInt(index));
+//                    lianJiaLouPan.setPageNo(Integer.parseInt(pageNo));
                 } catch (Exception e) {
                     e.printStackTrace();
                     lianJiaLouPan.setIndex(0);
                     lianJiaLouPan.setPageNo(0);
                     logger.error("解析下标或者页数出错,url:" + curUrl);
                 }
-                lianJiaLouPan.setName(name);
-                lianJiaLouPan.setStatus(status);
-                lianJiaLouPan.setPriceText("");
-                lianJiaLouPan.setPriceStr("");
-                lianJiaLouPan.setOtherPriceStr("");
-                lianJiaLouPan.setUnit(unit);
-                lianJiaLouPan.setIntPrice(price);
-                lianJiaLouPan.setIntOtherPrice(0);
-                lianJiaLouPan.setAroundPriceStr("");
-                lianJiaLouPan.setIntAroundPrice(0);
-                lianJiaLouPan.setAdvantage("");
-                lianJiaLouPan.setAjust("");
-                lianJiaLouPan.setLocation(location);
-                lianJiaLouPan.setOpenDate(openDate);
-                lianJiaLouPan.setOpenDateFormat(openDate);
-                lianJiaLouPan.setCloseDate("");
-                lianJiaLouPan.setCloseDateFormat("");
-                lianJiaLouPan.setLastActionTime(lastActionTime);
-                lianJiaLouPan.setLastActionTitle(lastActionTitle);
-                lianJiaLouPan.setLastActionContent(lastActionContent);
-                lianJiaLouPan.setUrl(curUrl);
-                lianJiaLouPan.setOtherName(otherName);
-                lianJiaLouPan.setUpdateTimeStr(updateTimeStr);
-                lianJiaLouPan.setDaysAgo(daysAgo);
-                lianJiaLouPan.setHourseType(hourseType);
+                lianJiaLouPan.setDistrict(district);
+
+                if (StringUtils.isEmpty(check)) {
+                    setSpecialLianjia(lianJiaLouPan, html, curUrl);
+                } else {
+                    setNormalLianjia(lianJiaLouPan, html, curUrl);
+                }
                 lianJiaLouPan.setParDate(date);
 //                lianJiaList.add(lianJiaLouPan.toString() + Const.TAB + date);
                 lianJiaList.add(lianJiaLouPan);
@@ -237,6 +163,185 @@ public class LianJiaProcessor extends PandaProcessor {
             e.printStackTrace();
             logger.info("process error:curUrl:" + curUrl);
         }
+    }
+
+    private void setSpecialLianjia(LianJiaLouPan lianJiaLouPan, Html html, String curUrl) {
+        String name = html.xpath("//div[@class='title-row']/h1/text()").get();
+        String otherName = html.xpath("//div[@class='alias-row']/span/text()").get();
+        if (StringUtils.isNotEmpty(otherName)) {
+            otherName = otherName.replace("别名：", "");
+        }
+        String status = html.xpath("//div[@class='title-row']/span[@class='status label']/text()").get();
+        String hourseType = html.xpath("//div[@class='title-row']/span[@class='type label']/text()").get();
+        String priceStr = html.xpath("//div[@class='price-row']/div[@class='left']/span[@class='row']/span[@class='num price']/text()").get();
+        int price = 0;
+        String unit = html.xpath("//div[@class='price-row']/div[@class='left']/span[@class='row']/span[@class='unit price']/text()").get();
+        if (null != unit && unit.contains("元") && unit.contains("")) {
+            unit = "square";
+            try {
+                price = Integer.parseInt(priceStr);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.info("setSpecialLianjia 解析价格出错,curlUrl:" + curUrl);
+            }
+        } else if (null != unit && unit.contains("万")) {
+            unit = "suite";
+            try {
+                price = Integer.parseInt(priceStr) * 10000;
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.info("setSpecialLianjia 解析价格出错,curlUrl:" + curUrl);
+            }
+        }
+        String locationHtml = html.xpath("//div[@class='address-row']/table/tbody/tr[1]/html()").get();
+        String location = "";
+        if (StringUtils.isNotEmpty(locationHtml)) {
+            String location1 = new Html(locationHtml).xpath("//a/text()").all().stream().reduce((a, b) -> a.trim() + " " + b.trim()).get();
+            String location2 = new Html(locationHtml).xpath("//a[@class='address anchor-link']/span/text()").get();
+            location = location1 + location2;
+        }
+        String openDate = html.xpath("//div[@class='address-row']/table/tbody/tr[3]/td[@class='info']/text()").get();
+        if (StringUtils.isNotEmpty(openDate)) {
+            openDate = openDate.replaceAll("年|月|日", "");
+        }
+        String closeDate = html.xpath("//div[@class='address-row']/table/tbody/tr[@id='submitTime']/td[2]/text()").get();
+        if (StringUtils.isNotEmpty(closeDate)) {
+            closeDate = closeDate.replaceAll("年|月|日", "");
+        }
+        String lastActionTitle = html.xpath("//div[@class='dynamicInfoEntry']/div[@class='di-title-line']/p[@class='di-title']/a/text()").get();
+        String lastActionTime = html.xpath("//div[@class='dynamicInfoEntry']/div[@class='di-title-line']/p[@class='di-date']/text()").get();
+        String lastActionContent = html.xpath("//div[@class='dynamicInfoEntry']/div[@class='di-content']/text()").get();
+        if (StringUtils.isNotEmpty(lastActionTime)) {
+            lastActionTime = lastActionTime.trim().replaceAll("-", "");
+        }
+        int daysAgo = 1;
+        if (StringUtils.isNotEmpty(lastActionTime.trim())) {
+            daysAgo = (new DateTime().dayOfYear().get()) - (stf.parseDateTime(lastActionTime.trim().substring(lastActionTime.indexOf("-") + 1).replace("-", "")).dayOfYear().get());
+        }
+        lianJiaLouPan.setName(name);
+        lianJiaLouPan.setStatus(status);
+        lianJiaLouPan.setPriceText("");
+        lianJiaLouPan.setPriceStr("");
+        lianJiaLouPan.setOtherPriceStr("");
+        lianJiaLouPan.setUnit(unit);
+        lianJiaLouPan.setIntPrice(price);
+        lianJiaLouPan.setIntOtherPrice(0);
+        lianJiaLouPan.setAroundPriceStr("");
+        lianJiaLouPan.setIntAroundPrice(0);
+        lianJiaLouPan.setAdvantage("");
+        lianJiaLouPan.setAjust("");
+        lianJiaLouPan.setLocation(location);
+        lianJiaLouPan.setOpenDate(openDate);
+        lianJiaLouPan.setOpenDateFormat(openDate);
+        lianJiaLouPan.setCloseDate("");
+        lianJiaLouPan.setCloseDateFormat(closeDate);
+        lianJiaLouPan.setLastActionTime(lastActionTime);
+        lianJiaLouPan.setLastActionTitle(lastActionTitle);
+        lianJiaLouPan.setLastActionContent(lastActionContent);
+        lianJiaLouPan.setUrl(curUrl);
+        lianJiaLouPan.setOtherName(otherName);
+        lianJiaLouPan.setUpdateTimeStr(lastActionTime);
+        lianJiaLouPan.setDaysAgo(daysAgo);
+        lianJiaLouPan.setHourseType(hourseType);
+    }
+
+    private void setNormalLianjia(LianJiaLouPan lianJiaLouPan, Html html, String curUrl) {
+        String status = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/div[@class='name-box']/div[@class='state-div']/span[@class='state']/text()").get();
+        String name = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/div[@class='name-box']/a[@class='clear']/@title").get();
+        int price = 0;
+        try {
+            price = Integer.parseInt(html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='jiage']/span[@class='junjia']/text()").get().trim());
+        } catch (Exception e) {
+            logger.info("解析价格出错,url:" + curUrl);
+            e.printStackTrace();
+        }
+        String unitStr = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='jiage']/span[@class='yuan']/text()").get();
+        String unit = "square";
+        if (StringUtils.isNotEmpty(unitStr) && unitStr.contains("万")) {
+            price = price * 10000;
+            unit = "suite";
+        }
+        if (StringUtils.isNotEmpty(unitStr) && unitStr.contains("套")) {
+            unit = "suite";
+        }
+        String otherName = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='jiage']/span[@class='other-name']/text()").get();
+        otherName = StringUtils.isNotEmpty(otherName) ? otherName.trim() : "";
+        String updateTimeStr = html.xpath("//div[@class='box-left']/div[@class='box-left-top']/p[@class='update']/span/text()").get();
+        int daysAgo = 1;
+        if (StringUtils.isNotEmpty(updateTimeStr) && updateTimeStr.contains("月")) {
+            String trim = updateTimeStr.substring(updateTimeStr.indexOf("：") + 1).replaceAll("年|月|日", "").trim();
+            if (trim.length() == 4) {
+                updateTimeStr = stf.print(stf.parseDateTime(trim));
+                daysAgo = (new DateTime().dayOfYear().get()) - (stf.parseDateTime(trim).dayOfYear().get());
+            }
+        } else if (StringUtils.isNotEmpty(updateTimeStr) && updateTimeStr.contains("天前")) {
+            daysAgo = Integer.parseInt(updateTimeStr.substring(updateTimeStr.indexOf("：") + 1).replace("天前", "").trim());
+            updateTimeStr = stf.print(new DateTime().minusDays(daysAgo));
+        } else if (StringUtils.isNotEmpty(updateTimeStr) && (updateTimeStr.contains("小时前") || updateTimeStr.contains("分钟前"))) {
+            daysAgo = 1;
+            updateTimeStr = stf.print(new DateTime().minusDays(1));
+        }
+        String hourseType = "";
+        List<String> all = html.xpath("//div[@class='bottom-info']/p[@class='wu-type manager']/span/text()").all();
+        if (null != all && all.size() == 2) {
+            hourseType = all.get(1);
+        } else {
+            hourseType = html.xpath("//div[@class='bottom-info']/p[@class='wu-type ']/span/text()").all().get(1);
+        }
+        String location = html.xpath("//div[@class='bottom-info']/p[@class='where manager']/span/@title").get();
+        if (StringUtils.isEmpty(location)) {
+            location = html.xpath("//div[@class='bottom-info']/p[@class='where ']/span/@title").get();
+        }
+        String openDate = "";
+        try {
+            List<String> whenAll = html.xpath("//div[@class='bottom-info']/p[@class='when manager']/span/text()").all();
+            if (null != whenAll && whenAll.size() == 2) {
+                openDate = whenAll.get(1).replaceAll("年|月|日", "").trim();
+            } else {
+                openDate = html.xpath("//div[@class='bottom-info']/p[@class='when ']/span/text()").all().get(1).replaceAll("年|月|日", "").trim();
+            }
+        } catch (Exception e) {
+            location.indexOf("解析开盘日期出错,url:" + curUrl);
+            e.printStackTrace();
+        }
+        String lastActionTime = "";
+        String lastActionTitle = "";
+        String lastActionContent = "";
+        try {
+            String dynamic = html.xpath("//div[@class='dynamic-wrap-left pull-left']/div[@class='dynamic-wrap-block clearfix']/div[@class='dynamic-block-detail pull-right']/html()").get();
+            Html dynamicHtml = new Html(dynamic);
+            lastActionTitle = dynamicHtml.xpath("//div[@class='dongtai-title']/text()").get();
+            lastActionContent = dynamicHtml.xpath("//a/text()").get().replace(" ", "").trim();
+            lastActionTime = dynamicHtml.xpath("//div[@class='dynamic-detail-time']/span/text()").get().replaceAll("年|月|日", "").trim();
+        } catch (Exception e) {
+            location.indexOf("解析动态报错,url:" + curUrl);
+            e.printStackTrace();
+        }
+        lianJiaLouPan.setName(name);
+        lianJiaLouPan.setStatus(status);
+        lianJiaLouPan.setPriceText("");
+        lianJiaLouPan.setPriceStr("");
+        lianJiaLouPan.setOtherPriceStr("");
+        lianJiaLouPan.setUnit(unit);
+        lianJiaLouPan.setIntPrice(price);
+        lianJiaLouPan.setIntOtherPrice(0);
+        lianJiaLouPan.setAroundPriceStr("");
+        lianJiaLouPan.setIntAroundPrice(0);
+        lianJiaLouPan.setAdvantage("");
+        lianJiaLouPan.setAjust("");
+        lianJiaLouPan.setLocation(location);
+        lianJiaLouPan.setOpenDate(openDate);
+        lianJiaLouPan.setOpenDateFormat(openDate);
+        lianJiaLouPan.setCloseDate("");
+        lianJiaLouPan.setCloseDateFormat("");
+        lianJiaLouPan.setLastActionTime(lastActionTime);
+        lianJiaLouPan.setLastActionTitle(lastActionTitle);
+        lianJiaLouPan.setLastActionContent(lastActionContent);
+        lianJiaLouPan.setUrl(curUrl);
+        lianJiaLouPan.setOtherName(otherName);
+        lianJiaLouPan.setUpdateTimeStr(updateTimeStr);
+        lianJiaLouPan.setDaysAgo(daysAgo);
+        lianJiaLouPan.setHourseType(hourseType);
     }
 
     /**
@@ -251,7 +356,7 @@ public class LianJiaProcessor extends PandaProcessor {
             curPageNo = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf("pg") + 2, curUrl.lastIndexOf("/")));
         }
         List<String> all = page.getHtml().xpath("//div[@class='list-wrap']/ul/li/div[@class='pic-panel']/html()").all();
-        if (null==all || all.size()==0){
+        if (null == all || all.size() == 0) {
             all = page.getHtml().xpath("//div[@class='house-lst']/ul/li/div[@class='pic-panel']/html()").all();
         }
         for (String a : all) {
