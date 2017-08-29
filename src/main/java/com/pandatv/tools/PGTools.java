@@ -41,6 +41,7 @@ public class PGTools {
         try {
             conn = getConn();
             ps = conn.prepareStatement(sql);
+            int i=1;
             for (AnJuKeLouPan obj : set) {
                 ps.setString(1, obj.getId());
                 ps.setString(2, obj.getCity());
@@ -71,6 +72,10 @@ public class PGTools {
                 ps.setString(27, PandaProcessor.getRandomStr());
                 ps.setString(28, PandaProcessor.date);
                 ps.addBatch();
+                if (i++%100==0){
+                    ps.executeBatch();
+                    ps.clearBatch();
+                }
             }
             ps.executeBatch();
         } catch (SQLException e) {
@@ -88,6 +93,7 @@ public class PGTools {
         PreparedStatement ps = null;
         try {
             conn = getConn();
+            int i=1;
             ps = conn.prepareStatement(sql);
             for (LianJiaLouPan obj : set) {
                 ps.setString(1, obj.getId());
@@ -123,6 +129,10 @@ public class PGTools {
                 ps.setString(31, obj.getHourseType());
                 ps.setString(32, PandaProcessor.date);
                 ps.addBatch();
+                if (i++%100==0){
+                    ps.executeBatch();
+                    ps.clearBatch();
+                }
             }
             ps.executeBatch();
         } catch (SQLException e) {

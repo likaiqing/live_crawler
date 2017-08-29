@@ -55,7 +55,7 @@ public class LianJiaProcessor extends PandaProcessor {
                 }
             }
         }));
-        Spider.create(new LianJiaProcessor()).thread(1).addUrl("http://hk.lianjia.com/loupan/", "http://sh.fang.lianjia.com/loupan/").addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new LianJiaProcessor()).thread(1).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString() + ",房间数:" + lianJiaList.size());
@@ -128,9 +128,9 @@ public class LianJiaProcessor extends PandaProcessor {
 
                 Request request = page.getRequest();
                 String id = curUrl.substring(curUrl.indexOf("/", curUrl.indexOf("loupan")) + 1, curUrl.lastIndexOf("/"));
-//                String city = request.getExtra(cityKeyParam).toString();
-//                String index = request.getExtra(indexKeyParam).toString();
-//                String pageNo = request.getExtra(pageKeyParam).toString();
+                String city = request.getExtra(cityKeyParam).toString();
+                String index = request.getExtra(indexKeyParam).toString();
+                String pageNo = request.getExtra(pageKeyParam).toString();
                 Html html = page.getHtml();
                 List<String> as = html.xpath("//div[@class='breadcrumbs']/a/text()").all();
                 String district = as.size() == 4 ? as.get(3).trim() : "";//区
@@ -166,6 +166,7 @@ public class LianJiaProcessor extends PandaProcessor {
     }
 
     private void setSpecialLianjia(LianJiaLouPan lianJiaLouPan, Html html, String curUrl) {
+        String id = curUrl.substring(curUrl.indexOf("/", curUrl.indexOf("detail")) + 1, curUrl.lastIndexOf("/"));
         String name = html.xpath("//div[@class='title-row']/h1/text()").get();
         String otherName = html.xpath("//div[@class='alias-row']/span/text()").get();
         if (StringUtils.isNotEmpty(otherName)) {
@@ -216,8 +217,14 @@ public class LianJiaProcessor extends PandaProcessor {
         }
         int daysAgo = 1;
         if (StringUtils.isNotEmpty(lastActionTime.trim())) {
-            daysAgo = (new DateTime().dayOfYear().get()) - (stf.parseDateTime(lastActionTime.trim().substring(lastActionTime.indexOf("-") + 1).replace("-", "")).dayOfYear().get());
+            try {
+                String trim = lastActionTime.trim().replaceAll("-","").substring(4);
+                daysAgo = (new DateTime().dayOfYear().get()) - (stf.parseDateTime(trim).dayOfYear().get());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
+        lianJiaLouPan.setId(id);
         lianJiaLouPan.setName(name);
         lianJiaLouPan.setStatus(status);
         lianJiaLouPan.setPriceText("");
