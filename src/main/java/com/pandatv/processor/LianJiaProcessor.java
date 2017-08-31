@@ -137,10 +137,10 @@ public class LianJiaProcessor extends PandaProcessor {
                 String check = html.xpath("//div[@class='box-left']/html()").get();
                 LianJiaLouPan lianJiaLouPan = new LianJiaLouPan();
                 lianJiaLouPan.setId(id);
-//                lianJiaLouPan.setCity(city);
+                lianJiaLouPan.setCity(city);
                 try {
-//                    lianJiaLouPan.setIndex(Integer.parseInt(index));
-//                    lianJiaLouPan.setPageNo(Integer.parseInt(pageNo));
+                    lianJiaLouPan.setIndex(Integer.parseInt(index));
+                    lianJiaLouPan.setPageNo(Integer.parseInt(pageNo));
                 } catch (Exception e) {
                     e.printStackTrace();
                     lianJiaLouPan.setIndex(0);
@@ -377,7 +377,7 @@ public class LianJiaProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.setSleepTime(100);
+        return this.site.setSleepTime(120);
     }
 
     private static void executeMapResults() {
