@@ -108,6 +108,10 @@ public class Work {
                 logger.info("LianJiaProcessor.crawler start");
                 LianJiaProcessor.crawler(args);
                 break;
+            case Const.DOUYUFULLCATE:
+                logger.info("DouyuFullCateProcessor.crawler start");
+                DouyuFullCateProcessor.crawler(args);
+                break;
         }
     }
 }
