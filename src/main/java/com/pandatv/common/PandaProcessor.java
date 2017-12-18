@@ -135,15 +135,16 @@ public abstract class PandaProcessor implements PageProcessor {
         if (!useProxy) {
             site.setHttpProxy(null);
         }
-//        int i = (int) Math.random() * 7;
-//        HttpHost httpHost = new HttpHost("180.97.220.231", 9997);
-//        try {
-//            httpHost = new HttpHost(httpProxyList.get(i)[0],Integer.parseInt(httpProxyList.get(i)[1]));
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        return site.setHttpProxy(httpHost);
-        return site;
+        //需要修改Const.GENERATORKEY="panda";Const.GENERATORPASS="pandatvpassw0rd";
+        int i = (int) ((Math.random()) * 7);
+        HttpHost httpHost = new HttpHost("180.97.220.231", 9997);
+        try {
+            httpHost = new HttpHost(httpProxyList.get(i)[0],Integer.parseInt(httpProxyList.get(i)[1]));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return site.setHttpProxy(httpHost);
+//        return site;
     }
 
     protected static void initParam(String[] args){

@@ -482,7 +482,7 @@ public class IndexRecProcessor extends PandaProcessor {
 
         Spider.create(new IndexRecProcessor()).thread(thread).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
-        long secs = (end - start) / 1000;
+        long secs = (end - start) / 1000 + 1;
 
 //        for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
 //            resultSetStr.add(entry.getValue().toString());

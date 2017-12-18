@@ -228,7 +228,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         spider.start();
 
         long end = System.currentTimeMillis();
-        long secs = (end - start) / 1000;
+        long secs = (end - start) / 1000 + 1;
         try {
             logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / (0 == secs ? 1 : secs))+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
         }catch (Exception e){

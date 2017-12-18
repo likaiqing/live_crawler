@@ -5,8 +5,6 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
-import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -30,6 +28,7 @@ public class HuyaAnchorProcessor extends PandaProcessor {
 
     @Override
     public void process(Page page) {
+        super.getSite();
         requests++;
         String url = page.getUrl().toString();
         try {
@@ -47,7 +46,7 @@ public class HuyaAnchorProcessor extends PandaProcessor {
             failedUrl.append(url + ";  ");
             logger.info("process exception,url:{}" + url);
             e.printStackTrace();
-            if (++exCnt % 10==0) {
+            if (++exCnt % 10 == 0) {
                 MailTools.sendAlarmmail("huyaanchor 异常请求个数过多", "url: " + failedUrl.toString());
 //                System.exit(1);
             }
@@ -129,8 +128,8 @@ public class HuyaAnchorProcessor extends PandaProcessor {
         long start = System.currentTimeMillis();
         Spider.create(new HuyaAnchorProcessor()).thread(thread).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
-        long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+        long secs = (end - start) / 1000 + 1;
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (Anchor anchor : anchorObjs) {
 //            anchors.add(anchor.toString());
 //        }

@@ -208,7 +208,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         long start = System.currentTimeMillis();
         Spider.create(new DouyuDetailAnchorProcessor()).thread(thread).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new SeleniumDownloader(Const.CHROMEDRIVER))
         long end = System.currentTimeMillis();
-        long secs = (end - start) / 1000;
+        long secs = (end - start) / 1000 + 1;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs));
 
 //        CommonTools.writeAndMail(hivePaht, Const.DOUYUFINISHDETAIL, detailAnchors);

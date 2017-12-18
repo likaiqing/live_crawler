@@ -42,11 +42,13 @@ public class Const {
     public static final String TAB = "\t";
     public static final String DOUYUFULLCATE = "douyufullcate";
     //    public static final String CRAWLER_DATA_DIR = "/Users/likaiqing/Downloads/category_test/";
-    public static String GENERATORKEY = "H05972909IM78TAP";//PandaHttpClientGenerator设置代理验证的常量
-    public static String GENERATORPASS = "36F7B5D8703A39C5";
+//    public static String GENERATORKEY = "H05972909IM78TAP";//PandaHttpClientGenerator设置代理验证的常量
+//    public static String GENERATORPASS = "36F7B5D8703A39C5";
+    public static String GENERATORKEY = "panda";
+    public static String GENERATORPASS = "pandatvpassw0rd";
 
     public static final String HIVEDIR = "/bigdata/hive/panda_realtime/";
-//        public static final String HIVEDIR = "/tmp/hive/likaiqing/panda_realtime/";
+    //        public static final String HIVEDIR = "/tmp/hive/likaiqing/panda_realtime/";
     public static final String DOUYUEXFLAG = "斗鱼抓取异常";
     public static final String HUYAEXFLAG = "虎牙抓取异常";
     public static final String DOUYUEXIT = "斗鱼process异常过多退出";
@@ -65,7 +67,7 @@ public class Const {
     public static final String INDEXRECEXIT = "首页推荐抓取退出";
     public static final String DOUYUNEWLIVEFINISH = "斗鱼新秀抓取退出";
     public static final String EXPORT2EXCEL = "export2excel";
-//    public static final String EXPORTEXCELDIR = "/home/likaiqing/shell/crawler_ana/crawler_report/";
+    //    public static final String EXPORTEXCELDIR = "/home/likaiqing/shell/crawler_ana/crawler_report/";
     public static final String EXPORTEXCELDIR = "/Users/likaiqing/Downloads/analyse/";
     public static final String DOUYUINDEXRECEXIT = "首页推荐抓取退出(douyu)";
     public static final String HUYAINDEXRECEXIT = "首页推荐抓取退出(huya)";
@@ -74,7 +76,7 @@ public class Const {
     public static final String LONGZHUFINISH = "龙珠抓取退出";
     public static final String QUANMINFINISH = "全民抓取退出";
     public static final String COMPETITORDIR = "/bigdata/hive/panda_competitor/";
-//    public static final String COMPETITORDIR = "/tmp/hive/likaiqing/panda_realtime/";
+    //    public static final String COMPETITORDIR = "/tmp/hive/likaiqing/panda_realtime/";
     public static final String CATEGORYFINISH = "板块抓取退出";
     public static final String CATEGORYCRAWLER = "categorycrawler";
     public static final String PANDAANCHOR = "pandaanchor";

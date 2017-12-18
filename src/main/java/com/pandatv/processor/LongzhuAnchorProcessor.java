@@ -128,7 +128,7 @@ public class LongzhuAnchorProcessor extends PandaProcessor {
         long start = System.currentTimeMillis();
         Spider.create(new LongzhuAnchorProcessor()).thread(thread).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
-        long secs = (end - start) / 1000;
+        long secs = (end - start) / 1000 + 1;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (Anchor anchor : anchorObjs) {
 //            anchors.add(anchor.toString());

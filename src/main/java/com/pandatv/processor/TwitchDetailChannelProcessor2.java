@@ -92,7 +92,7 @@ public class TwitchDetailChannelProcessor2 extends PandaProcessor {
         System.out.println("end:" + format.format(new Date()));
         System.out.println(cnt);
         long end = System.currentTimeMillis();
-        long secs = (end - start) / 1000;
+        long secs = (end - start) / 1000 + 1;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / (0 == secs ? 1 : secs)) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
         executeMapResults();
 

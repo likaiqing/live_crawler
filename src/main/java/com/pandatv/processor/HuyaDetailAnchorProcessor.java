@@ -166,7 +166,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         long start = System.currentTimeMillis();
         Spider.create(new HuyaDetailAnchorProcessor()).thread(thread).addUrl(tmpUrl + 1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
-        long secs = (end - start) / 1000;
+        long secs = (end - start) / 1000 + 1;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / (0 == secs ? 1 : secs)) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (DetailAnchor detailAnchor : detailAnchorObjs) {
 //            detailAnchors.add(detailAnchor.toString());
