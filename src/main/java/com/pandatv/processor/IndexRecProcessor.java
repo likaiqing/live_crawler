@@ -465,9 +465,8 @@ public class IndexRecProcessor extends PandaProcessor {
         job = args[0];
         date = args[1];
         hour = args[2];
-        if (args.length == 4 && args[3].contains(",")) {
-            mailHours = args[3];
-        }
+        thread = 2;
+        initParam(args);
         douyuIndex = "https://www.douyu.com/";
         huyaIndex = "http://www.huya.com/";
         pandaIndex = "http://www.panda.tv/";
@@ -481,7 +480,7 @@ public class IndexRecProcessor extends PandaProcessor {
         //钩子
         Runtime.getRuntime().addShutdownHook(new Thread(new IndexRecShutDownHook()));
 
-        Spider.create(new IndexRecProcessor()).thread(2).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new IndexRecProcessor()).thread(thread).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
 

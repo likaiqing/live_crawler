@@ -7,7 +7,6 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.TwitchDetailChannel;
 import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -40,6 +39,7 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
     private static String followingPre = "https://api.twitch.tv/kraken/users/";
     private static String followingSuf = "/follows/channels?offset=0&on_site=1&on_site=1";
     private static int exCnt;
+
     @Override
     public void process(Page page) {
         requests++;
@@ -159,30 +159,33 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.addHeader("client-id", "jzkbprff40iqj646a697cyrvl0zt2m6");
+        site.addHeader("client-id", "jzkbprff40iqj646a697cyrvl0zt2m6");
+        super.getSite();
+        return site;
     }
 
     public static void crawler(String[] args) {
         job = args[0];
         date = args[1];
         hour = args[2];
-        if (args.length == 4 && args[3].contains(",")) {
-            mailHours = args[3];
-        }
-        Const.GENERATORKEY = "H7ABSOS1FI3M9I4P";
-        Const.GENERATORPASS = "97CCB7E9284ACAF0";
+        thread = 22;
+        initParam(args);
+//        Const.GENERATORKEY = "H7ABSOS1FI3M9I4P";
+//        Const.GENERATORPASS = "97CCB7E9284ACAF0";
+//        Const.GENERATORKEY = "panda";
+//        Const.GENERATORPASS = "pandatv";
         String hivePath = Const.COMPETITORDIR + "crawler_twitch_detail_channel/" + date;
         String firstUrl = "https://api.twitch.tv/kraken/games/top?limit=40&on_site=1";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
         long start = System.currentTimeMillis();
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));
-        Spider.create(new TwitchDetailChannelProcessor()).thread(22).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
+        Spider.create(new TwitchDetailChannelProcessor()).thread(thread).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler()).run();
         System.out.println("end:" + format.format(new Date()));
         System.out.println(cnt);
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / (0 == secs ? 1 : secs)) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (Map.Entry<String, TwitchDetailChannel> entry : map.entrySet()) {
 //            TwitchDetailChannel tdc = entry.getValue();
 //            if (null != tdc.getTeamName() && null != tdc.getVideos() && null != tdc.getFollowing()) {
@@ -239,17 +242,17 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
                 resultSetStr.add(entry.getValue().toString());
             }
         }
-        logger.info("resultSetStr.size:"+resultSetStr.size());
+        logger.info("resultSetStr.size:" + resultSetStr.size());
         String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
-        CommonTools.write2Local(dirFile,resultSetStr);
+        CommonTools.write2Local(dirFile, resultSetStr);
     }
 
     private static class ShutDownHook implements Runnable {
 
         @Override
         public void run() {
-            logger.info("writeSuccess:"+writeSuccess);
-            if (!writeSuccess){
+            logger.info("writeSuccess:" + writeSuccess);
+            if (!writeSuccess) {
                 executeMapResults();
             }
         }

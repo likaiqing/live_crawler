@@ -187,6 +187,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
+        super.getSite();
         return this.site.setSleepTime(500);
     }
 
@@ -200,9 +201,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         date = args[1];
         hour = args[2];
         thread = 24;
-        if (args.length == 4) {
-            thread = Integer.parseInt(args[3]);
-        }
+        initParam(args);
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Runtime.getRuntime().addShutdownHook(new Thread(new DouyuDetailShutDownHook()));

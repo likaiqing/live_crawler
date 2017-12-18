@@ -5,10 +5,7 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
-import com.pandatv.tools.UnicodeTools;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +16,9 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.selector.Html;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -135,7 +130,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             }
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (++exCnt % 600==0) {
+            if (++exCnt % 600 == 0) {
                 MailTools.sendAlarmmail("huyadetailanchor 异常请求个数过多", "url: " + failedUrl.toString());
 //                System.exit(1);
             }
@@ -145,7 +140,8 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.setSleepTime(1);
+        super.getSite();
+        return site;
     }
 
     public static void crawler(String[] args) {
@@ -156,12 +152,12 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         job = args[0];//
         date = args[1];
         hour = args[2];
-        Const.GENERATORKEY = "H05972909IM78TAP";
-        Const.GENERATORPASS = "36F7B5D8703A39C5";
-        thread = 5;
-        if (args.length == 4) {
-            thread = Integer.parseInt(args[3]);
-        }
+//        Const.GENERATORKEY = "H05972909IM78TAP";
+//        Const.GENERATORPASS = "36F7B5D8703A39C5";
+//        Const.GENERATORKEY = "H7ABSOS1FI3M9I4P";
+//        Const.GENERATORPASS = "97CCB7E9284ACAF0";
+        thread = 20;
+        initParam(args);
         String firstUrl = "http://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=1";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         //钩子
@@ -171,7 +167,7 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
         Spider.create(new HuyaDetailAnchorProcessor()).thread(thread).addUrl(tmpUrl + 1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / (0 == secs ? 1 : secs)) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (DetailAnchor detailAnchor : detailAnchorObjs) {
 //            detailAnchors.add(detailAnchor.toString());
 //        }

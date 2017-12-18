@@ -197,16 +197,17 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site.addHeader("client-id", "jzkbprff40iqj646a697cyrvl0zt2m6");
+        super.getSite();
+        site.addHeader("client-id", "jzkbprff40iqj646a697cyrvl0zt2m6");
+        return site;
     }
 
     public static void crawler(String[] args) {
         job = args[0];
         date = args[1];
         hour = args[2];
-        if (args.length == 4 && args[3].contains(",")) {
-            mailHours = args[3];
-        }
+        thread = 18;
+        initParam(args);
         Const.GENERATORKEY = "H05972909IM78TAP";
         Const.GENERATORPASS = "36F7B5D8703A39C5";
         String twitchCateHivePaht = Const.COMPETITORDIR + "crawler_twitch_category/" + date;
@@ -218,7 +219,7 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("start:" + format.format(new Date()));
         long start = System.currentTimeMillis();
-        Spider spider = Spider.create(new TwitchCateAndListProcessor()).thread(18).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler());//.run();
+        Spider spider = Spider.create(new TwitchCateAndListProcessor()).thread(thread).addUrl(firstUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).setScheduler(new PriorityScheduler());//.run();
         try {
             SpiderMonitor.instance().register(spider);
         } catch (JMException e) {
@@ -228,7 +229,11 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
 
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+        try {
+            logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / (0 == secs ? 1 : secs))+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 //        System.out.println("end:" + format.format(new Date()));
 //        System.out.println(cnt);
 

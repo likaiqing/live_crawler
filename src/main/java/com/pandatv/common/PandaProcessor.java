@@ -39,6 +39,7 @@ public abstract class PandaProcessor implements PageProcessor {
     public static String mailHours = "";
     public static String douyuGiftHours = "02,06,09,12,15,18,22";
     public static boolean writeSuccess = false;
+    protected static boolean useProxy = true;
 
     protected static String randomStr = RandomStringUtils.random(10, new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});
     private static String randomTime = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
@@ -57,6 +58,9 @@ public abstract class PandaProcessor implements PageProcessor {
 
     protected static Set<IndexRec> indexRecObjes = new HashSet<>();
 //    public static Base64.Encoder encoder;
+    private static List<String[]> httpProxyList = new ArrayList<>();
+
+    protected static HttpHost httpHost = new HttpHost("180.97.220.231", 9997);
 
     static {
         int r = (int) Math.random() * 20;
@@ -83,6 +87,13 @@ public abstract class PandaProcessor implements PageProcessor {
         userAgents.add("Mozilla/5.0 (Windows NT 6.1; Win64; x64; Trident/7.0; rv:11.0) like Gecko");
         userAgent = userAgents.get(r);
 //        encoder = Base64.getEncoder();
+        httpProxyList.add(new String[]{"222.186.169.4","9997","panda","pandatvpassw0rd"});
+        httpProxyList.add(new String[]{"222.186.169.13","9997","panda","pandatvpassw0rd"});
+        httpProxyList.add(new String[]{"222.186.169.66","9997","panda","pandatvpassw0rd"});
+        httpProxyList.add(new String[]{"222.186.169.76","9997","panda","pandatvpassw0rd"});
+        httpProxyList.add(new String[]{"222.186.42.79","9997","panda","pandatvpassw0rd"});
+        httpProxyList.add(new String[]{"180.97.220.210","9997","panda","pandatvpassw0rd"});
+        httpProxyList.add(new String[]{"180.97.220.231","9997","panda","pandatvpassw0rd"});
     }
 
     protected Site site = Site.me()
@@ -94,6 +105,7 @@ public abstract class PandaProcessor implements PageProcessor {
             .setRetrySleepTime(1)
             .setCycleRetryTimes(Const.CYCLERETRYTIMES)
             .setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT))
+//            .setHttpProxyPool(httpProxyList)
             .addHeader("Proxy-Switch-Ip", "yes")
             .setUserAgent(userAgent)
             .addHeader("Proxy-Authorization", "Basic " + (new BASE64Encoder()).encode((Const.GENERATORKEY + ":" + Const.GENERATORPASS).getBytes()));
@@ -114,6 +126,44 @@ public abstract class PandaProcessor implements PageProcessor {
             logger.info("writeSuccess:"+writeSuccess);
             if (!writeSuccess) {
                 executeResults();
+            }
+        }
+    }
+
+    @Override
+    public Site getSite() {
+        if (!useProxy) {
+            site.setHttpProxy(null);
+        }
+//        int i = (int) Math.random() * 7;
+//        HttpHost httpHost = new HttpHost("180.97.220.231", 9997);
+//        try {
+//            httpHost = new HttpHost(httpProxyList.get(i)[0],Integer.parseInt(httpProxyList.get(i)[1]));
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        return site.setHttpProxy(httpHost);
+        return site;
+    }
+
+    protected static void initParam(String[] args){
+        if (args.length == 4 && args[3].matches("\\d+")) {
+            try {
+                thread = Integer.parseInt(args[3]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (args.length == 4 && args[3].equals("false")) {
+            useProxy = false;
+        }
+        if (args.length == 5) {
+            try {
+                thread = Integer.parseInt(args[3]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (args[4].equals("false")) {
+                useProxy = false;
             }
         }
     }

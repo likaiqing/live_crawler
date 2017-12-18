@@ -42,8 +42,8 @@ public class Const {
     public static final String TAB = "\t";
     public static final String DOUYUFULLCATE = "douyufullcate";
     //    public static final String CRAWLER_DATA_DIR = "/Users/likaiqing/Downloads/category_test/";
-    public static String GENERATORKEY = "H04Y776P798V9KWP";//PandaHttpClientGenerator设置代理验证的常量
-    public static String GENERATORPASS = "680DB7FCBC8D123C";
+    public static String GENERATORKEY = "H05972909IM78TAP";//PandaHttpClientGenerator设置代理验证的常量
+    public static String GENERATORPASS = "36F7B5D8703A39C5";
 
     public static final String HIVEDIR = "/bigdata/hive/panda_realtime/";
 //        public static final String HIVEDIR = "/tmp/hive/likaiqing/panda_realtime/";

@@ -125,6 +125,7 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
+        super.getSite();
         return this.site;
     }
 
@@ -132,14 +133,13 @@ public class QuanminDetailAnchorProcessor extends PandaProcessor {
         job = args[0];//quanminanchor
         date = args[1];//20161114
         hour = args[2];//10
-        if (args.length == 4 && args[3].contains(",")) {
-            mailHours = args[3];
-        }
+        thread = 2;
+        initParam(args);
         //钩子
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));
 
         long start = System.currentTimeMillis();
-        Spider.create(new QuanminDetailAnchorProcessor()).thread(2).addUrl(firUrl,"https://www.quanmin.tv/21408864").addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new QuanminDetailAnchorProcessor()).thread(thread).addUrl(firUrl,"https://www.quanmin.tv/21408864").addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());

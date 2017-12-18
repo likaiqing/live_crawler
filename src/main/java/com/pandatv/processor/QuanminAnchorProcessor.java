@@ -4,8 +4,8 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
-import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.MailTools;
+import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -115,6 +115,7 @@ public class QuanminAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
+        super.getSite();
         return this.site;
     }
 
@@ -122,9 +123,9 @@ public class QuanminAnchorProcessor extends PandaProcessor {
         job = args[0];//quanminanchor
         date = args[1];//20161114
         hour = args[2];//10
-        if (args.length == 4 && args[3].contains(",")) {
-            mailHours = args[3];
-        }
+        Const.GENERATORKEY = "panda";
+        Const.GENERATORPASS = "pandatvpassw0rd";
+        initParam(args);
         //钩子
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));
 

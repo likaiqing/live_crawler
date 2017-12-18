@@ -42,8 +42,6 @@ public class AnJuKeProcessor extends PandaProcessor {
         job = args[0];//chushouanchor
         date = args[1];//20161114
         hour = args[2];
-        Const.GENERATORKEY = "H05972909IM78TAP";
-        Const.GENERATORPASS = "36F7B5D8703A39C5";
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {

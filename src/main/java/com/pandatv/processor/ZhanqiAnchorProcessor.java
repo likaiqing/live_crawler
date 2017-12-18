@@ -108,9 +108,7 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
         job = args[0];//zhanqianchor
         date = args[1];//20161114
         hour = args[2];//10
-        if (args.length == 4 && args[3].contains(",")) {
-            mailHours = args[3];
-        }
+        initParam(args);
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         //钩子
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));

@@ -102,11 +102,10 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
         job = args[0];
         date = args[1];
         hour = args[2];
-        if (args.length == 4 && args[3].contains(",")) {
-            mailHours = args[3];
-        }
+        thread = 1;
+        initParam(args);
         String hivePaht = Const.COMPETITORDIR + "crawler_newlive_anchor/" + date;
-        Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(1).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new PandaDownloader())
+        Spider.create(new DouyuNewLiveProccessor()).addUrl(url + "1").thread(thread).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();//.setDownloader(new PandaDownloader())
 //        List<String> anchorList = new ArrayList<>();
 //        for (DetailAnchor detailAnchor : detailAnchorSet) {
 //            anchorList.add(detailAnchor.toString());
@@ -114,7 +113,7 @@ public class DouyuNewLiveProccessor extends PandaProcessor {
         for (DetailAnchor anchor : detailAnchorSet) {
             detailAnchors.add(anchor.toString());
         }
-        CommonTools.writeAndMail(hivePaht, Const.DOUYUNEWLIVEFINISH, detailAnchors);
+//        CommonTools.writeAndMail(hivePaht, Const.DOUYUNEWLIVEFINISH, detailAnchors);
     }
 
     public static void main(String[] args) {

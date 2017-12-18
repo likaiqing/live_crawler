@@ -112,6 +112,10 @@ public class Work {
                 logger.info("DouyuFullCateProcessor.crawler start");
                 DouyuFullCateProcessor.crawler(args);
                 break;
+            case "proxy_ip":
+                logger.info("ProxyIpTest.crawler start");
+//                ProxyIpTest.crawler(args);
+                break;
         }
     }
 }

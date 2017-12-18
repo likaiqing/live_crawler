@@ -29,16 +29,15 @@ public class DouyuAnchorProccessor extends PandaProcessor {
         job = args[0];//douyuanchor
         date = args[1];
         hour = args[2];
-        if (args.length == 4 && args[3].contains(",")) {
-            mailHours = args[3];
-        }
+        thread = 2;
+        initParam(args);
 //        String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         String firstUrl = "https://www.douyu.com/directory/all";
         //钩子
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));
 
         long start = System.currentTimeMillis();
-        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(2).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
+        Spider.create(new DouyuAnchorProccessor()).addUrl(firstUrl).thread(thread).setDownloader(new PandaDownloader()).addPipeline(new ConsolePipeline()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
@@ -137,6 +136,7 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
+        super.getSite();
         return this.site;
     }
 

@@ -3,6 +3,7 @@ package com.pandatv.processor;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
+import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HiveJDBCConnect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ public class DouyuFullCateProcessor extends PandaProcessor {
     private static final String ylUrl = "https://www.douyu.com/directory/category/yl";
     private static final String kjUrl = "https://www.douyu.com/directory/category/kj";
     private static final String sep = "\u0001";
-    private static Set<String> results = new HashSet<>();//ename cname f_ename f_cname panda_f_cname
+    private static Set<String> results = new HashSet<>();//ename cname f_ename f_cname panda_f_ename
     private static Map<String, String> douyuPandaEFullMap = new HashMap();
     private static Map<String, String> pandaFullMap = new HashMap();
 
@@ -33,8 +34,6 @@ public class DouyuFullCateProcessor extends PandaProcessor {
         job = args[0];//douyufullcate
         date = args[1];//20161114
         hour = args[2];
-        Const.GENERATORKEY = "H05972909IM78TAP";
-        Const.GENERATORPASS = "36F7B5D8703A39C5";
         douyuPandaEFullMap.put("wykt", "recorded");
         douyuPandaEFullMap.put("znl", "recorded");
         douyuPandaEFullMap.put("game", "jingji");
@@ -43,14 +42,16 @@ public class DouyuFullCateProcessor extends PandaProcessor {
         douyuPandaEFullMap.put("yl", "yllm");
         douyuPandaEFullMap.put("kj", "recorded");
 
-        pandaFullMap.put("zjdj", "主机单机");
-        pandaFullMap.put("recorded", "大杂烩");
-        pandaFullMap.put("yllm", "娱乐联盟");
-        pandaFullMap.put("shouyou", "手游专区");
-        pandaFullMap.put("jingji", "热门竞技");
-        pandaFullMap.put("wangyou", "网游专区");
+//        pandaFullMap.put("zjdj", "主机单机");
+//        pandaFullMap.put("recorded", "大杂烩");
+//        pandaFullMap.put("yllm", "娱乐联盟");
+//        pandaFullMap.put("shouyou", "手游专区");
+//        pandaFullMap.put("jingji", "热门竞技");
+//        pandaFullMap.put("wangyou", "网游专区");
         Spider.create(new DouyuFullCateProcessor()).thread(1).addUrl(gameUrl, ktyxUrl, syxxUrl, ylUrl, kjUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        executeResults();
+        logger.info("executeResults resultSetStr.size:"+results.size());
+        String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
+        CommonTools.write2Local(dirFile, results);
     }
 
     @Override
