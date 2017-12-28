@@ -6,7 +6,6 @@ import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.IndexRec;
 import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import com.pandatv.tools.UnicodeTools;
 import net.minidev.json.JSONArray;
@@ -74,7 +73,7 @@ public class IndexRecProcessor extends PandaProcessor {
                 executeZhanqiIndex(page);
             } else if (curUrl.equals(longzhuIndex)) {
                 executeLongzhuIndex(page);
-            } else if (curUrl.startsWith("http://www.quanmin.tv/json/page/pc-index/info2.json")) {
+            } else if (curUrl.equals(quanminIndex)) {
                 executeQuanminIndex(page);
             } else if (curUrl.equals(chushouindex)) {
                 executeChushouIndex(page);
@@ -103,7 +102,7 @@ public class IndexRecProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();
-            if (++exCnt % 4==0) {
+            if (++exCnt % 4 == 0) {
                 MailTools.sendAlarmmail("indexrec 异常请求个数过多", "url: " + failedUrl.toString());
 //                System.exit(1);
             }
@@ -190,11 +189,17 @@ public class IndexRecProcessor extends PandaProcessor {
     }
 
     private void executeQuanminIndex(Page page) {
-        JSONArray livelist = JsonPath.read(page.getJson().toString(), "$.backpic.livelist");
-        for (int i = 0; i < livelist.size(); i++) {
-            Integer room = JsonPath.read(livelist.get(i), "$.room");
-            page.addTargetRequest(new Request(quanminDetailUrlPre + room + quanminDetailUrlSuf).putExtra("location", i + 1));
+        Html html = page.getHtml();
+        List<String> all = html.xpath("//ul[@class='index_w-recommend-live_yy-list']/li/@data-uid").all();
+        for (int i = 0; i < all.size(); i++) {
+            page.addTargetRequest(new Request(quanminDetailUrlPre + all.get(i) + quanminDetailUrlSuf).putExtra("location", i + 1));
         }
+//
+//        JSONArray livelist = JsonPath.read(page.getJson().toString(), "$.backpic.livelist");
+//        for (int i = 0; i < livelist.size(); i++) {
+//            Integer room = JsonPath.read(livelist.get(i), "$.room");
+//            page.addTargetRequest(new Request(quanminDetailUrlPre + room + quanminDetailUrlSuf).putExtra("location", i + 1));
+//        }
     }
 
     private void executeLongzhuDetail(Page page, String curUrl) {
@@ -461,7 +466,7 @@ public class IndexRecProcessor extends PandaProcessor {
     public Site getSite() {
 //        super.getSite();
         site.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36").setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
-        if (!useProxy){
+        if (!useProxy) {
             site.setHttpProxy(null);
         }
         return site;
@@ -481,7 +486,8 @@ public class IndexRecProcessor extends PandaProcessor {
         zhanqiIndex = "https://www.zhanqi.tv/";
         longzhuIndex = "http://www.longzhu.com/";
         String quanminDf = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
-        quanminIndex = "http://www.quanmin.tv/json/page/pc-index/info2.json?_t=" + quanminDf;
+//        quanminIndex = "http://www.quanmin.tv/json/page/pc-index/info2.json?_t=" + quanminDf;
+        quanminIndex = "https://www.quanmin.tv/";
         chushouindex = "https://chushou.tv/";
         String hivePaht = Const.COMPETITORDIR + "crawler_indexrec_detail_anchor/" + date;//douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex
         long start = System.currentTimeMillis();
@@ -523,7 +529,7 @@ public class IndexRecProcessor extends PandaProcessor {
 //            }
 //            resultSetStr.add(indexRec.toString());
 //        }
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString()+",indexrec,获取个数:" + resultSetStr.size());
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString() + ",indexrec,获取个数:" + resultSetStr.size());
 //        CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
 
         executeMapResults();
@@ -536,16 +542,16 @@ public class IndexRecProcessor extends PandaProcessor {
         for (IndexRec indexRec : indexRecObjes) {
             resultSetStr.add(indexRec.toString());
         }
-        logger.info("resultSetStr.size:"+resultSetStr.size());
+        logger.info("resultSetStr.size:" + resultSetStr.size());
         String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
-        CommonTools.write2Local(dirFile,resultSetStr);
+        CommonTools.write2Local(dirFile, resultSetStr);
     }
 
     private static class IndexRecShutDownHook implements Runnable {
         @Override
         public void run() {
-            logger.info("writeSuccess:"+writeSuccess);
-            if (!writeSuccess){
+            logger.info("writeSuccess:" + writeSuccess);
+            if (!writeSuccess) {
                 executeMapResults();
             }
         }
