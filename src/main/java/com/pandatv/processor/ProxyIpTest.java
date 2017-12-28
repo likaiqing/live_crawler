@@ -1,14 +1,14 @@
 package com.pandatv.processor;
 
+import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
-import com.pandatv.tools.CommonTools;
+import org.apache.http.HttpHost;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
-import us.codecraft.webmagic.selector.Html;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,31 +19,33 @@ import java.util.Set;
  * Created by likaiqing on 2017/12/13.
  */
 public class ProxyIpTest extends PandaProcessor {
-//    private static final String url = "http://1212.ip138.com/ic.asp";
-    private static final String url = "http://www.ip138.com/";
+    //    private static final String url = "http://1212.ip138.com/ic.asp";
+    private static final String url = "http://ip.chinaz.com/getip.aspx";
     private static Set<String> ips = new HashSet<>();
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static int i = 0;
     private static int total = 2000;
 
     public static void main(String[] args) {
-        if (args.length == 2 && args[1].matches("\\d+")) {
-            total = Integer.parseInt(args[1]);
-        }
-        Const.GENERATORKEY = "panda";
-        Const.GENERATORPASS = "pandatvpassw0rd";
-        Spider.create(new ProxyIpTest()).thread(thread).addUrl(url).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+//        if (args.length == 2 && args[1].matches("\\d+")) {
+//            total = Integer.parseInt(args[1]);
+//        }
+//        Const.GENERATORKEY = "panda";
+//        Const.GENERATORPASS = "pandatvpassw0rd";
+        Const.GENERATORKEY = "H05972909IM78TAP";
+        Const.GENERATORPASS = "36F7B5D8703A39C5";
+        Spider.create(new ProxyIpTest()).thread(1).addUrl(url).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
     }
 
     @Override
     public void process(Page page) {
-        Html html = page.getHtml();
         String curUrl = page.getUrl().get();
         try {
 //            String[] split = html.xpath("//div[@align='center']/text()").get().split("\\[|\\]");
 //            String ip = split[1];
-            String ip = html.xpath("//div[@class='well']/p/code/text()").get();
-            ips.add(sdf.format(new Date()) + "--" + ip);
+            String json = page.getJson().get();
+            String ip = JsonPath.read(json, "$.ip").toString();
+            System.out.println(sdf.format(new Date()) + " " + ip);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,7 +57,7 @@ public class ProxyIpTest extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        super.getSite();
-        return site.setSleepTime(2000).setCharset("gb2312");
+//        super.getSite();
+        return site.setSleepTime(1000).setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36").setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
     }
 }
