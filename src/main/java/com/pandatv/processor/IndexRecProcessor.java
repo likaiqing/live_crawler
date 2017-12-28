@@ -469,14 +469,14 @@ public class IndexRecProcessor extends PandaProcessor {
         if (!useProxy) {
             site.setHttpProxy(null);
         }
-        return site;
+        return site.setSleepTime(1000);
     }
 
     public static void crawler(String[] args) {
         job = args[0];
         date = args[1];
         hour = args[2];
-        thread = 2;
+        thread = 1;
         Const.GENERATORKEY = "H05972909IM78TAP";
         Const.GENERATORPASS = "36F7B5D8703A39C5";
         initParam(args);
