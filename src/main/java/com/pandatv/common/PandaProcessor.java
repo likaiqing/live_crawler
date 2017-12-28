@@ -104,7 +104,7 @@ public abstract class PandaProcessor implements PageProcessor {
             .setCharset("UTF-8")
             .setRetrySleepTime(1)
             .setCycleRetryTimes(Const.CYCLERETRYTIMES)
-            .setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT))
+//            .setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT))
 //            .setHttpProxyPool(httpProxyList)
             .addHeader("Proxy-Switch-Ip", "yes")
             .setUserAgent(userAgent)
@@ -134,16 +134,19 @@ public abstract class PandaProcessor implements PageProcessor {
     public Site getSite() {
         if (!useProxy) {
             site.setHttpProxy(null);
+        }else {
+            //需要修改Const.GENERATORKEY="panda";Const.GENERATORPASS="pandatvpassw0rd";
+            int i = (int) ((Math.random()) * 7);
+            HttpHost httpHost = new HttpHost("180.97.220.231", 9997);
+            try {
+                httpHost = new HttpHost(httpProxyList.get(i)[0],Integer.parseInt(httpProxyList.get(i)[1]));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            site.setHttpProxy(httpHost);
         }
-        //需要修改Const.GENERATORKEY="panda";Const.GENERATORPASS="pandatvpassw0rd";
-        int i = (int) ((Math.random()) * 7);
-        HttpHost httpHost = new HttpHost("180.97.220.231", 9997);
-        try {
-            httpHost = new HttpHost(httpProxyList.get(i)[0],Integer.parseInt(httpProxyList.get(i)[1]));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return site.setHttpProxy(httpHost);
+
+        return site;
 //        return site;
     }
 

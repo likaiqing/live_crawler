@@ -100,6 +100,7 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
+        super.getSite();
         return this.site;
     }
 

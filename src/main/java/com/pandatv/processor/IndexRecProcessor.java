@@ -12,6 +12,7 @@ import com.pandatv.tools.UnicodeTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpHost;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -458,7 +459,12 @@ public class IndexRecProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        return this.site;
+//        super.getSite();
+        site.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36").setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
+        if (!useProxy){
+            site.setHttpProxy(null);
+        }
+        return site;
     }
 
     public static void crawler(String[] args) {
@@ -466,6 +472,8 @@ public class IndexRecProcessor extends PandaProcessor {
         date = args[1];
         hour = args[2];
         thread = 2;
+        Const.GENERATORKEY = "H05972909IM78TAP";
+        Const.GENERATORPASS = "36F7B5D8703A39C5";
         initParam(args);
         douyuIndex = "https://www.douyu.com/";
         huyaIndex = "http://www.huya.com/";

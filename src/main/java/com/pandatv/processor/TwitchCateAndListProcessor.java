@@ -208,8 +208,8 @@ public class TwitchCateAndListProcessor extends PandaProcessor {
         hour = args[2];
         thread = 18;
         initParam(args);
-        Const.GENERATORKEY = "H05972909IM78TAP";
-        Const.GENERATORPASS = "36F7B5D8703A39C5";
+//        Const.GENERATORKEY = "H05972909IM78TAP";
+//        Const.GENERATORPASS = "36F7B5D8703A39C5";
         String twitchCateHivePaht = Const.COMPETITORDIR + "crawler_twitch_category/" + date;
         String twitchListHivePaht = Const.COMPETITORDIR + "crawler_twitch_channel/" + date;
         //钩子
