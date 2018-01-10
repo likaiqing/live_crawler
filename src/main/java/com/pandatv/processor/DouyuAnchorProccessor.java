@@ -1,5 +1,6 @@
 package com.pandatv.processor;
 
+import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
@@ -7,6 +8,7 @@ import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
+import net.minidev.json.JSONArray;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,26 +68,27 @@ public class DouyuAnchorProccessor extends PandaProcessor {
                     }
                 }
                 for (int i = 1; i < endPage; i++) {
-                    page.addTargetRequest("https://www.douyu.com/directory/all?isAjax=1&page=" + i);
+//                    page.addTargetRequest("https://www.douyu.com/directory/all?isAjax=1&page=" + i);
+                    page.addTargetRequest("https://www.douyu.com/gapi/rkc/directory/0_0/" + i);
                 }
                 page.setSkip(true);
             } else {
-                List<String> rids = page.getHtml().xpath("//body/li/@data-rid").all();
-                List<String> names = page.getHtml().xpath("//body/li/a/div[@class='mes']/p/span[@class='dy-name ellipsis fl']/text()").all();
-                List<String> titles = page.getHtml().xpath("//body/li/a/@title").all();
-                List<String> popularities = page.getHtml().xpath("//body/li/a/div[@class='mes']/p/span[@class='dy-num fr']/text()").all();
-                List<String> categories = page.getHtml().xpath("//body/li/a/div[@class='mes']/div[@class='mes-tit']/span/text()").all();
-                for (int i = 0; i < names.size(); i++) {
-                    Anchor anchor = new Anchor();
-                    String popularitiyStr = popularities.get(i);
-                    int popularitiyNum = CommonTools.createNum(popularitiyStr);
-                    String rid = rids.get(i);
-                    if (rid.contains("\u0001")) {
-                        logger.info("rid contains SEP,url:{},rid:{}", url, rid);
-                    }
-                    if (!CommonTools.isValidUnicode(rid)) {
-                        logger.info("rid is not valid unicode,url:{},rid:{}", url, rid);
-                    }
+//                List<String> rids = page.getHtml().xpath("//body/li/@data-rid").all();
+//                List<String> names = page.getHtml().xpath("//body/li/a/div[@class='mes']/p/span[@class='dy-name ellipsis fl']/text()").all();
+//                List<String> titles = page.getHtml().xpath("//body/li/a/@title").all();
+//                List<String> popularities = page.getHtml().xpath("//body/li/a/div[@class='mes']/p/span[@class='dy-num fr']/text()").all();
+//                List<String> categories = page.getHtml().xpath("//body/li/a/div[@class='mes']/div[@class='mes-tit']/span/text()").all();
+//                for (int i = 0; i < names.size(); i++) {
+//                    Anchor anchor = new Anchor();
+//                    String popularitiyStr = popularities.get(i);
+//                    int popularitiyNum = CommonTools.createNum(popularitiyStr);
+//                    String rid = rids.get(i);
+//                    if (rid.contains("\u0001")) {
+//                        logger.info("rid contains SEP,url:{},rid:{}", url, rid);
+//                    }
+//                    if (!CommonTools.isValidUnicode(rid)) {
+//                        logger.info("rid is not valid unicode,url:{},rid:{}", url, rid);
+//                    }
 //                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
 //                            .append("&par_d=").append(date)
 //                            .append("&rid=").append(rid)
@@ -100,16 +103,16 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 //                            .append("&c_time=").append(createTimeFormat.format(new Date()))
 //                            .append("&url=").append(curUrl)
 //                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
-                    anchor.setRid(rid);
-                    anchor.setName(names.get(i));
-                    anchor.setTitle(titles.get(i));
-                    anchor.setCategory(categories.get(i));
-                    anchor.setPopularityStr(popularitiyStr);
-                    anchor.setPopularityNum(popularitiyNum);
-                    anchor.setJob(job);
-                    anchor.setPlat(Const.DOUYU);
-                    anchor.setGame(Const.GAMEALL);
-                    anchor.setUrl(curUrl);
+//                    anchor.setRid(rid);
+//                    anchor.setName(names.get(i));
+//                    anchor.setTitle(titles.get(i));
+//                    anchor.setCategory(categories.get(i));
+//                    anchor.setPopularityStr(popularitiyStr);
+//                    anchor.setPopularityNum(popularitiyNum);
+//                    anchor.setJob(job);
+//                    anchor.setPlat(Const.DOUYU);
+//                    anchor.setGame(Const.GAMEALL);
+//                    anchor.setUrl(curUrl);
 //                    new Thread(new Runnable() {
 //                        @Override
 //                        public void run() {
@@ -119,6 +122,23 @@ public class DouyuAnchorProccessor extends PandaProcessor {
 //                    }).start();
 //                    Thread.sleep(5);
 //                    anchorObjs.add(anchor);
+
+//                    resultSetStr.add(anchor.toString());
+//                }
+                String json = page.getJson().get();
+                JSONArray list = JsonPath.read(json,"$.data.rl");
+                for (int i=0;i<list.size();i++){
+                    Anchor anchor = new Anchor();
+                    String room = list.get(i).toString();
+                    anchor.setRid(JsonPath.read(room,"$.rid").toString());
+                    anchor.setName(JsonPath.read(room,"$.nn"));
+                    anchor.setTitle(JsonPath.read(room,"$.rn"));
+                    anchor.setCategory(JsonPath.read(room,"$.c2name"));
+                    anchor.setPopularityNum(JsonPath.read(room,"$.ol"));
+                    anchor.setJob(job);
+                    anchor.setPlat(Const.DOUYU);
+                    anchor.setGame(Const.GAMEALL);
+                    anchor.setUrl(curUrl);
                     resultSetStr.add(anchor.toString());
                 }
             }

@@ -20,7 +20,8 @@ import java.util.Set;
  */
 public class ProxyIpTest extends PandaProcessor {
     //    private static final String url = "http://1212.ip138.com/ic.asp";
-    private static final String url = "http://ip.chinaz.com/getip.aspx";
+//    private static final String url = "http://ip.chinaz.com/getip.aspx";
+    private static final String url = "https://www.panda.tv/610956";
     private static Set<String> ips = new HashSet<>();
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static int i = 0;
@@ -43,9 +44,11 @@ public class ProxyIpTest extends PandaProcessor {
         try {
 //            String[] split = html.xpath("//div[@align='center']/text()").get().split("\\[|\\]");
 //            String ip = split[1];
-            String json = page.getJson().get();
-            String ip = JsonPath.read(json, "$.ip").toString();
-            System.out.println(sdf.format(new Date()) + " " + ip);
+//            String json = page.getJson().get();
+//            String ip = JsonPath.read(json, "$.ip").toString();
+//            System.out.println(sdf.format(new Date()) + " " + ip);
+            System.out.printf(curUrl);
+            page.addTargetRequest(url+"?a="+Math.random());
         } catch (Exception e) {
             e.printStackTrace();
         }

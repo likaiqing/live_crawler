@@ -28,7 +28,8 @@ import java.util.regex.Pattern;
  */
 public class DouyuDetailAnchorProcessor extends PandaProcessor {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(DouyuDetailAnchorProcessor.class);
-    private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room";
+    private static String thirdApi = "http://open.douyucdn.cn/api/RoomApi/room/";
+    private static String listPre = "https://www.douyu.com/gapi/rkc/directory/0_0/";
     private static int exCnt;
     private static Pattern showStatus = Pattern.compile("\"show_status\":(\\d*),");
 
@@ -50,13 +51,20 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
                 }
                 endPage = endPage > 150 ? 150 : endPage;
                 for (int i = 1; i < endPage; i++) {
-                    Request request = new Request("https://www.douyu.com/directory/all?isAjax=1&page=" + i).setPriority(1);
+                    Request request = new Request(listPre + i).setPriority(1);
                     page.addTargetRequest(request);
                 }
-            } else if (curUrl.startsWith("https://www.douyu.com/directory/all?isAjax=1&page=")) {
-                List<String> detailUrls = page.getHtml().xpath("//body/li/a/@href").all();
-                for (String url : detailUrls) {
-                    Request request = new Request(thirdApi + url.substring(url.lastIndexOf("/"))).setPriority(3);
+            } else if (curUrl.startsWith(listPre)) {
+//                List<String> detailUrls = page.getHtml().xpath("//body/li/a/@href").all();
+//                for (String url : detailUrls) {
+//                    Request request = new Request(thirdApi + url.substring(url.lastIndexOf("/"))).setPriority(3);
+//                    page.addTargetRequest(request);
+//                }
+                String json = page.getJson().get();
+                JSONArray list = JsonPath.read(json,"$.data.rl");
+                for (int i=0;i<list.size();i++){
+                    String room = list.get(i).toString();
+                    Request request = new Request(thirdApi + JsonPath.read(room,"$.rid").toString()).setPriority(3);
                     page.addTargetRequest(request);
                 }
             } else {
