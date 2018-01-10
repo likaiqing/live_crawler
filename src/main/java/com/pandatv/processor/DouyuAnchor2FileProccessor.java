@@ -1,11 +1,14 @@
 package com.pandatv.processor;
 
+import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
+import com.pandatv.pojo.Anchor;
 import com.pandatv.tools.DateTools;
 import com.pandatv.tools.IOTools;
 import com.pandatv.tools.MailTools;
+import net.minidev.json.JSONArray;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,7 @@ import java.util.*;
  */
 public class DouyuAnchor2FileProccessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(DouyuAnchor2FileProccessor.class);
+    private static String listPre = "https://www.douyu.com/gapi/rkc/directory/0_0/";
     private static int exCnt;
     public static void crawler(String[] args) {
         String destFile = args[1];
@@ -56,12 +60,19 @@ public class DouyuAnchor2FileProccessor extends PandaProcessor {
                 }
             }
             for (int i = 1; i < endPage; i++) {
-                page.addTargetRequest("https://www.douyu.com/directory/all?isAjax=1&page=" + i);
+                page.addTargetRequest(listPre + i);
             }
             page.setSkip(true);
         } else {
-            List<String> rids = page.getHtml().xpath("//body/li/@data-rid").all();
-            anchors.addAll(rids);
+//            List<String> rids = page.getHtml().xpath("//body/li/@data-rid").all();
+//            anchors.addAll(rids);
+
+            String json = page.getJson().get();
+            JSONArray list = JsonPath.read(json,"$.data.rl");
+            for (int i=0;i<list.size();i++) {
+                String room = list.get(i).toString();
+                anchors.add(JsonPath.read(room,"$.rid").toString());
+            }
             page.setSkip(true);
         }
     }
