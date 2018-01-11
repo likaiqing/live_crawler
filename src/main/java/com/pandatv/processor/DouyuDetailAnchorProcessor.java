@@ -11,6 +11,7 @@ import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpHost;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import us.codecraft.webmagic.Page;
@@ -195,7 +196,7 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        super.getSite();
+        site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
         return this.site.setSleepTime(500);
     }
 
@@ -210,6 +211,8 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
         hour = args[2];
         thread = 24;
         initParam(args);
+        Const.GENERATORKEY = "H05972909IM78TAP";
+        Const.GENERATORPASS = "36F7B5D8703A39C5";
         String firstUrl = "https://www.douyu.com/directory/all";
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         Runtime.getRuntime().addShutdownHook(new Thread(new DouyuDetailShutDownHook()));
