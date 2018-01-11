@@ -87,7 +87,7 @@ public class PandaDownloader extends AbstractDownloader {
         int statusCode = 0;
         try {
             HttpUriRequest httpUriRequest = getHttpUriRequest(request, site, headers);
-            if (httpUriRequest.getURI().toString().equals("https://www.panda.tv/349158")){
+            if (httpUriRequest.getURI().toString().equals("https://www.panda.tv/349158")) {
                 System.out.println("stop");
             }
             httpResponse = getHttpClient(site).execute(httpUriRequest);
@@ -101,16 +101,18 @@ public class PandaDownloader extends AbstractDownloader {
             } else {
                 logger.warn(" PandaDownloader code error " + statusCode + "\t" + request.getUrl());
 //                System.out.println("code error " + statusCode + "\t" + request.getUrl());
-                if (statusCode==429){
+                if (statusCode == 429) {
                     try {
                         Thread.sleep(300);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                proxyRetry++;
-                if (proxyRetry > Const.PROXYRETRY && proxyRetry % 200 == 0) {
-                    new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", PandaProcessor.job + "代理非200次数超出" + Const.PROXYRETRY);
+                synchronized (this) {
+                    proxyRetry++;
+                    if (proxyRetry > Const.PROXYRETRY && proxyRetry % 500 == 0) {
+                        new SendMail("likaiqing@panda.tv", "").sendAlarmmail("代理异常", PandaProcessor.job + "代理非200次数超出" + Const.PROXYRETRY + ",当前次数:" + proxyRetry);
+                    }
                 }
                 return addToCycleRetry(request, site);//默认只会再重复1次
             }
