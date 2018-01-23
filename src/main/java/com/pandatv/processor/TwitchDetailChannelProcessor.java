@@ -150,9 +150,9 @@ public class TwitchDetailChannelProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}" + curUrl);
             e.printStackTrace();
-            if (++exCnt % 1000 == 0) {
-                MailTools.sendAlarmmail("twitchdetailchannel 异常请求个数过多", "url: " + failedUrl.toString());
-//                System.exit(1);
+            if (++exCnt % 3000 == 0) {
+                MailTools.sendAlarmmail("twitchdetailchannel 异常请求个数过多", "exCnt:" + exCnt);
+                System.exit(1);
             }
         }
     }
