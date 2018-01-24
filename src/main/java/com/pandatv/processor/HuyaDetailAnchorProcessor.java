@@ -63,14 +63,14 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
             } else {
                 Html html = page.getHtml();
                 String rid = page.getRequest().getExtra("rid").toString();
-                String name = html.xpath("//span[@class='host-name']/text()").get();
+                String name = html.xpath("//h3[@class='host-name']/text()").get();
                 String title = html.xpath("//h1[@class='host-title']/text()").get();
                 String categoryFir = "";
                 String categorySec = "";
                 List<String> category = html.xpath("//span[@class='host-channel']/a/text()").all();
                 if (category.size() == 2) {
                     categoryFir = category.get(0);
-                    categorySec = category.get(1);
+                    categorySec = html.xpath("//span[@class='host-channel']/a[2]/h3/text()").get();
                 } else if (category.size() == 1) {
                     categoryFir = category.get(0);
                     categorySec = category.get(0);
