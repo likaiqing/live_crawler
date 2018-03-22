@@ -9,3 +9,6 @@ src/test
 *.txt
 src/main/java/META-INF
 classes/
+src/main/java/com/pandatv/processor/AnJuKeProcessor.java
+src/main/java/com/pandatv/processor/LianJiaProcessor.java
+db-ip/
