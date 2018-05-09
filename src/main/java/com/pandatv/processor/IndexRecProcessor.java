@@ -319,7 +319,7 @@ public class IndexRecProcessor extends PandaProcessor {
                 int nameLastIndex = hostInfoJson.indexOf("\"", nameFirstIndex);
                 String originName = hostInfoJson.substring(nameFirstIndex, nameLastIndex);
                 String name = UnicodeTools.unicodeToString(originName);
-                int bamboosFirstIndex = hostInfoJson.indexOf("bamboos\":\"") + 7;
+                int bamboosFirstIndex = hostInfoJson.indexOf("bamboos\":\"") + 10;
                 int bamboosLastIndex = hostInfoJson.indexOf("\"", bamboosFirstIndex);
                 String originBamboos = hostInfoJson.substring(bamboosFirstIndex, bamboosLastIndex);
                 String weightStr = UnicodeTools.unicodeToString(originBamboos);
@@ -500,7 +500,7 @@ public class IndexRecProcessor extends PandaProcessor {
         //钩子
         Runtime.getRuntime().addShutdownHook(new Thread(new IndexRecShutDownHook()));
 
-        Spider.create(new IndexRecProcessor()).thread(thread).addUrl(pandaIndex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new IndexRecProcessor()).thread(thread).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000 + 1;
 
