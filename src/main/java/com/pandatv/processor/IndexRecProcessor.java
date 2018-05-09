@@ -44,7 +44,7 @@ public class IndexRecProcessor extends PandaProcessor {
     private static String chushouindex;
     private static int exCnt;
     private static final Map<String, IndexRec> map = new HashMap<>();
-    private static final String pandaDetailPrefex = "http://www.panda.tv/";
+    private static final String pandaDetailPrefex = "https://www.panda.tv/";
     private static final String pandaFollowJsonPrefex = "http://www.panda.tv/room_followinfo?roomid=";
     private static final String pandaV2DetailJsonPrefex = "http://www.panda.tv/api_room_v2?roomid=";
     private static final String longzhuDetailJsonPrefex = "http://roomapicdn.plu.cn/room/roomstatus?roomid=";
@@ -482,7 +482,7 @@ public class IndexRecProcessor extends PandaProcessor {
         initParam(args);
         douyuIndex = "https://www.douyu.com/";
         huyaIndex = "http://www.huya.com/";
-        pandaIndex = "http://www.panda.tv/";
+        pandaIndex = "https://www.panda.tv/";
         zhanqiIndex = "https://www.zhanqi.tv/";
         longzhuIndex = "http://www.longzhu.com/";
         String quanminDf = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
