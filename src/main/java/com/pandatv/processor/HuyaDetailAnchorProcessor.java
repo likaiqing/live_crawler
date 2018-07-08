@@ -54,7 +54,9 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
                     List<String> rooms = page.getJson().jsonPath("$.data.datas").all();
                     for (String room : rooms) {
                         String privateHost = JsonPath.read(room, "$.privateHost").toString();
-                        Request request = new Request(huyaDomain + privateHost);
+                        String profileRoom = JsonPath.read(room, "$.profileRoom").toString();
+//                        Request request = new Request(huyaDomain + privateHost);
+                        Request request = new Request(huyaDomain + profileRoom);
                         request.putExtra("rid", privateHost);
                         page.addTargetRequest(request);
                     }
@@ -145,10 +147,10 @@ public class HuyaDetailAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        competitionLive.add("http://www.huya.com/1584989003");
-        competitionLive.add("http://www.huya.com/1735596609");
-        competitionLive.add("http://www.huya.com/1735597169");
-        competitionLive.add("http://www.huya.com/1773588838");
+        competitionLive.add(huyaDomain + "1584989003");
+        competitionLive.add(huyaDomain + "1735596609");
+        competitionLive.add(huyaDomain + "1735597169");
+        competitionLive.add(huyaDomain + "1773588838");
         job = args[0];//
         date = args[1];
         hour = args[2];

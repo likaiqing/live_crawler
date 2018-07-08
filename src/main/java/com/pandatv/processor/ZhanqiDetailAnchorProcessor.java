@@ -1,13 +1,10 @@
 package com.pandatv.processor;
 
-import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.JsonPath;
 import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
-import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -19,7 +16,6 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,45 +54,29 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
                 List<String> allScript = page.getHtml().xpath("//script").all();
                 for (String script : allScript) {
                     if (script.contains("window.oPageConfig.oRoom")) {
-                        String json = script.substring(script.indexOf("{"), script.lastIndexOf("}") + 1);
                         String rid = page.getRequest().getExtra("rid").toString();
-                        String name = "";
-                        try {
-                            name = JsonPath.read(json, "$.nickname").toString();
-                        }catch (InvalidJsonException e){
-                            e.printStackTrace();
-                            json = json.replace("\"","");
-                            name = JsonPath.read(json, "$.nickname").toString();
-                        }
-                        String title = JsonPath.read(json, "$.title").toString();
-                        String gameName = JsonPath.read(json, "$.gameName").toString();
-                        String onlineStr = JsonPath.read(json, "$.online").toString();
+                        int start = script.indexOf("nickname") + 11;
+                        String name = script.substring(start, script.indexOf("\"", start));
+                        start = script.indexOf("title") + 8;
+                        String title = script.substring(start, script.indexOf("\"", start));
+                        start = script.indexOf("gameName") + 11;
+                        String gameName = script.substring(start, script.indexOf("\"", start));
+                        start = script.indexOf("online") + 9;
+                        String onlineStr = script.substring(start, script.indexOf("\"", start));
                         int onlineNum = Integer.parseInt(onlineStr);
-                        String liveTime = JsonPath.read(json, "$.liveTime").toString();
+                        String liveTime = "";
                         String lastStartTime = "";
                         int follows = 0;
+                        long fight = 0;
                         try {
-                            lastStartTime = getLastStartTime(Long.parseLong(liveTime) * 1000);
-                            follows = Integer.parseInt(JsonPath.read(json, "$.follows").toString());
+                            start = script.indexOf("follows") + 10;
+                            follows = Integer.parseInt(script.substring(start, script.indexOf("\"", start)));
+                            start = script.indexOf("fight") + 9;
+                            fight = Long.parseLong(script.substring(start, script.indexOf("\"", start)));//经验值
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                             logger.error("NumberFormatException url:{})", curUrl);
                         }
-                        long fight = Long.parseLong(JsonPath.read(json, "$.anchorAttr.hots.fight").toString());//经验值
-//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-//                                .append("&par_d=").append(date)
-//                                .append("&rid=").append(rid)
-//                                .append("&nm=").append(CommonTools.getFormatStr(name))
-//                                .append("&tt=").append(CommonTools.getFormatStr(title))
-//                                .append("&cate_fir=&cate_sec=").append(gameName)
-//                                .append("&on_num=").append(onlineNum)
-//                                .append("&fol_num=").append(follows)
-//                                .append("&task=").append(job)
-//                                .append("&rank=&w_str=&w_num=").append(fight)
-//                                .append("&tag=&url=").append(curUrl)
-//                                .append("&c_time=").append(createTimeFormat.format(new Date()))
-//                                .append("&notice=&last_s_t=").append(lastStartTime.substring(0, 16))
-//                                .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
                         detailAnchor.setRid(rid);
                         detailAnchor.setName(name);
                         detailAnchor.setTitle(title);
@@ -107,14 +87,6 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
                         detailAnchor.setFollowerNum(follows);
                         detailAnchor.setViewerNum(onlineNum);
                         detailAnchor.setWeightNum(fight);
-//                        new Thread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.DETAILANCHOREVENT)
-//                                        .append("&par_d=").append(date).append(detailAnchor.toString()).toString());
-//                            }
-//                        }).start();
-//                        Thread.sleep(10);
                         resultSetStr.add(detailAnchor.toString());
                     }
                 }
@@ -124,7 +96,7 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.info("process exception,url:{}", curUrl);
             e.printStackTrace();
-            if (++exCnt % 100==0) {
+            if (++exCnt % 100 == 0) {
                 MailTools.sendAlarmmail("zhanqidetailanchor 异常请求个数过多", "url: " + failedUrl.toString());
 //                System.exit(1);
             }
@@ -156,7 +128,7 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
         Spider.create(new ZhanqiDetailAnchorProcessor()).thread(1).addUrl(firUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000 + 1;
-        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs)+ ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
+        logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());
 //        for (DetailAnchor detailAnchor : detailAnchorObjs) {
 //            detailAnchors.add(detailAnchor.toString());
 //        }
