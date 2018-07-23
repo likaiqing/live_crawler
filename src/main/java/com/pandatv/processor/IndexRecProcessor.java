@@ -45,6 +45,7 @@ public class IndexRecProcessor extends PandaProcessor {
     private static int exCnt;
     private static final Map<String, IndexRec> map = new HashMap<>();
     private static final String pandaDetailPrefex = "https://www.panda.tv/";
+    private static final String xingxiuDetailPrefex = "https://xingyan.panda.tv/";
     private static final String pandaFollowJsonPrefex = "http://www.panda.tv/room_followinfo?roomid=";
     private static final String pandaV2DetailJsonPrefex = "http://www.panda.tv/api_room_v2?roomid=";
     private static final String longzhuDetailJsonPrefex = "http://roomapicdn.plu.cn/room/roomstatus?roomid=";
@@ -97,6 +98,8 @@ public class IndexRecProcessor extends PandaProcessor {
                 executeDouyRecDetail(page, curUrl);
             } else if (curUrl.startsWith(huyaIndex) && !curUrl.endsWith("/")) {
                 executeHuyaRecDetail(page, curUrl);
+            } else if (curUrl.startsWith(xingxiuDetailPrefex)) {
+                executeXingXiuRecDetail(page, curUrl);
             }
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
@@ -109,6 +112,27 @@ public class IndexRecProcessor extends PandaProcessor {
 
         }
         page.setSkip(true);
+    }
+
+    private void executeXingXiuRecDetail(Page page, String curUrl) {
+        String rid = page.getRequest().getExtra("rid").toString();
+        IndexRec indexRec = map.get(rid + Const.PANDAINDEXREC);
+        Html html = page.getHtml();
+        String docStr = html.get();
+        String name = html.xpath("//span[@class='room-head-info-hostname']/text()").get();
+        String title = html.xpath("//h1[@class='room-head-info-title']/text()").get();
+        String online = "0";
+        if (docStr.contains("\"personnum\":")) {
+            int index = docStr.indexOf("\"personnum\":");
+            int lastIndex = docStr.indexOf("\"", index + 13);
+            online = docStr.substring(index + 13, lastIndex);
+        }
+        indexRec.setName(name);
+        indexRec.setTitle(title);
+        indexRec.setCategorySec("xingxiu");
+        indexRec.setWeightNum(Long.parseLong("0"));
+        indexRec.setViewerNum(Integer.parseInt(online));
+        indexRec.setUrl(curUrl);
     }
 
     private void executeChushouPoint(Page page, String curUrl) {
@@ -241,15 +265,39 @@ public class IndexRecProcessor extends PandaProcessor {
         String location = page.getRequest().getExtra("location").toString();
         for (String script : allScript) {
             if (script.contains("window.oPageConfig.oRoom")) {
-                String json = script.substring(script.indexOf("{"), script.lastIndexOf("}") + 1);
-                String rid = JsonPath.read(json, "$.url").toString().replace("/", "");
-                String name = JsonPath.read(json, "$.nickname").toString();
-                String title = JsonPath.read(json, "$.title").toString();
-                String gameName = JsonPath.read(json, "$.gameName").toString();
-                String onlineStr = JsonPath.read(json, "$.online").toString();
+//                String json = script.substring(script.indexOf("{"), script.lastIndexOf("}") + 1);
+//                String rid = JsonPath.read(json, "$.url").toString().replace("/", "");
+//                String name = JsonPath.read(json, "$.nickname").toString();
+//                String title = JsonPath.read(json, "$.title").toString();
+//                String gameName = JsonPath.read(json, "$.gameName").toString();
+//                String onlineStr = JsonPath.read(json, "$.online").toString();
+//                int onlineNum = Integer.parseInt(onlineStr);
+//                int follows = Integer.parseInt(JsonPath.read(json, "$.follows").toString());
+//                long fight = Long.parseLong(JsonPath.read(json, "$.anchorAttr.hots.fight").toString());//经验值
+                int start = script.indexOf("url") + 6;
+                String rid = script.substring(start, script.indexOf("\"", start)).replace("/", "");
+                start = script.indexOf("nickname") + 11;
+                String name = script.substring(start, script.indexOf("\"", start));
+                start = script.indexOf("title") + 8;
+                String title = script.substring(start, script.indexOf("\"", start));
+                start = script.indexOf("gameName") + 11;
+                String gameName = script.substring(start, script.indexOf("\"", start));
+                start = script.indexOf("online") + 9;
+                String onlineStr = script.substring(start, script.indexOf("\"", start));
                 int onlineNum = Integer.parseInt(onlineStr);
-                int follows = Integer.parseInt(JsonPath.read(json, "$.follows").toString());
-                long fight = Long.parseLong(JsonPath.read(json, "$.anchorAttr.hots.fight").toString());//经验值
+                String liveTime = "";
+                String lastStartTime = "";
+                int follows = 0;
+                long fight = 0;
+                try {
+                    start = script.indexOf("follows") + 10;
+                    follows = Integer.parseInt(script.substring(start, script.indexOf("\"", start)));
+                    start = script.indexOf("fight") + 9;
+                    fight = Long.parseLong(script.substring(start, script.indexOf("\"", start)));//经验值
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    logger.error("NumberFormatException url:{})", curUrl);
+                }
                 indexRec.setLocation(location);
                 indexRec.setRid(rid);
                 indexRec.setName(name);
@@ -349,6 +397,7 @@ public class IndexRecProcessor extends PandaProcessor {
 
     private void executePandaIndex(Page page) {
         List<String> all = page.getHtml().xpath("//div[@class='small-pic-container']/a[@class='small-pic-item-a']/@data-id").all();
+        List<String> streams = page.getHtml().xpath("//div[@class='small-pic-container']/a[@class='small-pic-item-a']/@data-stream-url").all();
         for (int i = 0; i < all.size(); i++) {
             //迭代方式location需加1
             IndexRec indexRec = new IndexRec();
@@ -357,7 +406,12 @@ public class IndexRecProcessor extends PandaProcessor {
             indexRec.setLocation((i + 1) + "");
             indexRec.setJob(Const.PANDAINDEXREC);
             map.put(rid + Const.PANDAINDEXREC, indexRec);
-            page.addTargetRequest(new Request(pandaDetailPrefex + rid).putExtra("rid", rid));
+            String s = streams.get(i);
+            if (StringUtils.isEmpty(s)) {
+                page.addTargetRequest(new Request(pandaDetailPrefex + rid).putExtra("rid", rid));
+            } else if (s.contains("xingxiu")) {
+                page.addTargetRequest(new Request(xingxiuDetailPrefex + rid).putExtra("rid", rid));
+            }
         }
     }
 
