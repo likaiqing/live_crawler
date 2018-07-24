@@ -23,7 +23,7 @@ import java.util.List;
  * Created by likaiqing on 2016/11/14.
  */
 public class ZhanqiAnchorProcessor extends PandaProcessor {
-    private static final String urlTmp = "https://www.zhanqi.tv/api/static/v2.1/live/list/30/";
+    private static final String urlTmp = "https://www.zhanqi.tv/api/static/v2.1/live/list/20/";
     private static final String jsonStr = ".json";
     //    private static final int cntPerPage = 30;
     private static final Logger logger = LoggerFactory.getLogger(ZhanqiAnchorProcessor.class);
@@ -38,7 +38,7 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
             int curPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf("/") + 1, curUrl.lastIndexOf(".json")));
             String json = page.getJson().toString();
             int cnt = JsonPath.read(json, "$.data.cnt");
-            if (curPage * 30 < cnt) {
+            if (curPage * 20 < cnt) {
                 page.addTargetRequest(urlTmp + (curPage + 1) + jsonStr);
             }
             JSONArray rooms = JsonPath.read(json, "$.data.rooms");
@@ -105,7 +105,7 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        String firUrl = "https://www.zhanqi.tv/api/static/v2.1/live/list/30/1.json";
+        String firUrl = "https://www.zhanqi.tv/api/static/v2.1/live/list/20/1.json";
         job = args[0];//zhanqianchor
         date = args[1];//20161114
         hour = args[2];//10

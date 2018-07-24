@@ -7,6 +7,7 @@ import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.DetailAnchor;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
+import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -22,7 +23,7 @@ import java.util.List;
  * Created by likaiqing on 2016/11/14.
  */
 public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
-    private static final String urlTmp = "https://www.zhanqi.tv/api/static/v2.1/live/list/30/";
+    private static final String urlTmp = "https://www.zhanqi.tv/api/static/v2.1/live/list/20/";
     private static final String jsonStr = ".json";
     //    private static final int cntPerPage = 30;
     private static final String domain = "https://www.zhanqi.tv";
@@ -40,14 +41,15 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
                 int curPage = Integer.parseInt(curUrl.substring(curUrl.lastIndexOf("/") + 1, curUrl.lastIndexOf(".json")));
                 String json = page.getJson().toString();
                 int cnt = JsonPath.read(json, "$.data.cnt");
-                if (curPage * 30 < cnt) {
+                if (curPage * 20 < cnt) {
                     page.addTargetRequest(urlTmp + (curPage + 1) + jsonStr);
                 }
                 JSONArray rooms = JsonPath.read(json, "$.data.rooms");
                 for (int i = 0; i < rooms.size(); i++) {
                     String room = rooms.get(i).toString();
                     String url = JsonPath.read(room, "$.url");
-                    page.addTargetRequest(new Request(domain + url).putExtra("rid", url.replace("/", "")));
+                    Request request = new Request(domain + url).putExtra("rid", url.replace("/", ""));
+                    page.addTargetRequest(request);
                 }
             } else {
                 DetailAnchor detailAnchor = new DetailAnchor();
@@ -111,14 +113,19 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
     @Override
     public Site getSite() {
         super.getSite();
-        return this.site;
+        site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
+        return this.site.setSleepTime(400);
     }
 
     public static void crawler(String[] args) {
-        String firUrl = "https://www.zhanqi.tv/api/static/v2.1/live/list/30/1.json";
+        String firUrl = "https://www.zhanqi.tv/api/static/v2.1/live/list/20/1.json";
         job = args[0];//zhanqidetailanchor
         date = args[1];//20161114
         hour = args[2];//10
+//        Const.GENERATORKEY = "H05972909IM78TAP";
+//        Const.GENERATORPASS = "36F7B5D8703A39C5";
+        Const.GENERATORKEY = "H7ABSOS1FI3M9I4P";
+        Const.GENERATORPASS = "97CCB7E9284ACAF0";
         initParam(args);
         String hivePaht = Const.COMPETITORDIR + "crawler_detail_anchor/" + date;
         //钩子
