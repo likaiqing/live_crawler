@@ -9,6 +9,7 @@ import com.pandatv.tools.CommonTools;
 import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
+import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -101,6 +102,7 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
     @Override
     public Site getSite() {
         super.getSite();
+        site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
         return this.site;
     }
 
@@ -109,6 +111,8 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
         job = args[0];//zhanqianchor
         date = args[1];//20161114
         hour = args[2];//10
+        Const.GENERATORKEY = "H7ABSOS1FI3M9I4P";
+        Const.GENERATORPASS = "97CCB7E9284ACAF0";
         initParam(args);
         String hivePaht = Const.COMPETITORDIR + "crawler_anchor/" + date;
         //钩子
