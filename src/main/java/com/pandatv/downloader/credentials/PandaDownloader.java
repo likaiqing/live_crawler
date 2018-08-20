@@ -108,6 +108,9 @@ public class PandaDownloader extends AbstractDownloader {
                         e.printStackTrace();
                     }
                 }
+                if (statusCode == 404) {
+                    return null;
+                }
                 synchronized (this) {
                     proxyRetry++;
                     if (proxyRetry > Const.PROXYRETRY && proxyRetry % Const.PROXYRETRY == 0) {
