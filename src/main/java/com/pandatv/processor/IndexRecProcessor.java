@@ -105,7 +105,7 @@ public class IndexRecProcessor extends PandaProcessor {
             failedUrl.append(curUrl + ";  ");
             logger.error("execute faild,url:" + curUrl);
             e.printStackTrace();
-            if (++exCnt % 5 == 0) {
+            if (++exCnt % 8 == 0) {
                 MailTools.sendAlarmmail("indexrec 异常请求个数过多", "url: " + failedUrl.toString());
 //                System.exit(1);
             }
