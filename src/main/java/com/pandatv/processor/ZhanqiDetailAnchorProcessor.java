@@ -113,8 +113,11 @@ public class ZhanqiDetailAnchorProcessor extends PandaProcessor {
     @Override
     public Site getSite() {
         super.getSite();
-        site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
-        return this.site.setSleepTime(400);
+        if (useProxy) {
+            site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
+        }
+
+        return this.site.setSleepTime(400).setTimeOut(10 * 1000);
     }
 
     public static void crawler(String[] args) {

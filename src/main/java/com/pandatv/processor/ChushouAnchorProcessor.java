@@ -5,8 +5,6 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.pojo.Anchor;
-import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.HttpUtil;
 import com.pandatv.tools.MailTools;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
@@ -23,8 +21,11 @@ import java.util.List;
  * Created by likaiqing on 2016/11/14.
  */
 public class ChushouAnchorProcessor extends PandaProcessor {
-    private static String urlTmp = "https://chushou.tv/live/down-v2.htm?&breakpoint=";
     private static final Logger logger = LoggerFactory.getLogger(ChushouAnchorProcessor.class);
+    private static final String firstUrl = "https://chushou.tv/livezone.htm";//链接版区页第一页
+    private static final String nextCatePre = "https://chushou.tv/livezone/down.htm?breakpoint=";//链接版区页第二页及以后的
+    private static final String cateUrlPre = "https://chushou.tv/nav-list.htm?targetKey=";//链接版区页第二页及以后的
+    private static final String nextRoomListPre = "https://chushou.tv/nav-list/down.htm?targetKey=";//链接版区页第二页及以后的
     private static int exCnt;
     private static int cnt;
 
@@ -34,101 +35,83 @@ public class ChushouAnchorProcessor extends PandaProcessor {
         String curUrl = page.getUrl().get();
         logger.info("process url:{}", curUrl);
         try {
-            if (!curUrl.equals("https://chushou.tv/live/list.htm")) {
+            if (curUrl.equals(firstUrl)) {
+                Html html = page.getHtml();
+                List<String> urls = html.xpath("//div[@class='gamezone-areas-con']/a/@href").all();
+                page.addTargetRequests(urls);//单个版区房间列表firsturl
+                String firBreakPoint = html.xpath("//div[@id='gamezone-areas-container']/@data-breakpoint").get();
+                page.addTargetRequest(nextCatePre + firBreakPoint);//添加下一页版区列表url
+            } else if (curUrl.startsWith(nextCatePre)) {
                 String json = page.getJson().toString();
                 JSONArray items = JsonPath.read(json, "$.data.items");
-                String breakpoint = JsonPath.read(json, "$.data.breakpoint");
-                if (items.size() > 0 && cnt++ < Const.CHUSHOUMAX) {
-                    page.addTargetRequest(urlTmp + breakpoint);
-                    JSONArray read = JsonPath.read(json, "$.data.items");
-                    for (int i = 0; i < read.size(); i++) {
-                        String room = read.get(i).toString();
-//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-//                                .append("&par_d=").append(date)
-//                                .append("&rid=").append(JsonPath.read(room, "$.targetKey").toString())
-//                                .append("&nm=").append(CommonTools.getFormatStr(JsonPath.read(room, "$.meta.creator").toString()))
-//                                .append("&tt=").append(CommonTools.getFormatStr(JsonPath.read(room, "$.name").toString()))
-//                                .append("&cate=").append(JsonPath.read(room, "$.meta.gameName").toString())
-//                                .append("&pop_s=").append(JsonPath.read(room, "$.meta.onlineCount").toString())
-//                                .append("&pop_n=").append(CommonTools.createNum(JsonPath.read(room, "$.meta.onlineCount").toString()))
-//                                .append("&task=").append(job)
-//                                .append("&plat=").append(Const.CHUSHOU)
-//                                .append("&url_c=").append(Const.GAMEALL)
-//                                .append("&c_time=").append(createTimeFormat.format(new Date()))
-//                                .append("&url=").append(curUrl)
-//                                .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
-                        Anchor anchor = new Anchor();
-                        anchor.setRid(JsonPath.read(room, "$.targetKey").toString());
-                        anchor.setName(JsonPath.read(room, "$.meta.creator").toString());
-                        anchor.setTitle(JsonPath.read(room, "$.name").toString());
-                        anchor.setCategory(JsonPath.read(room, "$.meta.gameName").toString());
-                        String popularyStr = JsonPath.read(room, "$.meta.onlineCount").toString();
-                        anchor.setPopularityStr(popularyStr);
-                        anchor.setPopularityNum(CommonTools.createNum(popularyStr));
-                        anchor.setJob(job);
-                        anchor.setPlat(Const.CHUSHOU);
-                        anchor.setGame(Const.GAMEALL);
-                        anchor.setUrl(curUrl.replace("&", "").replace("=", ":"));
-//                        new Thread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-//                                        .append("&par_d=").append(date).append(anchor.toString()).toString());
-//                            }
-//                        }).start();
-//                        Thread.sleep(3);
-//                        anchorObjs.add(anchor);
-                        resultSetStr.add(anchor.toString());
+                if (items.size() > 0) {
+                    String breakpoint = JsonPath.read(json, "$.data.breakpoint");
+                    page.addTargetRequest(nextCatePre + breakpoint);
+                    for (int i = 0; i < items.size(); i++) {
+                        String targetKey = JsonPath.read(items.get(i), "$.targetKey").toString();
+                        page.addTargetRequest(cateUrlPre + targetKey);
                     }
                 }
-            } else {
-                String breakPoint = page.getHtml().xpath("//div[@class='more']/@data-break").toString();
-                page.addTargetRequest(urlTmp + breakPoint);
+            } else if (curUrl.startsWith(cateUrlPre)) {
                 Html html = page.getHtml();
-                List<String> rids = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='home_live_block']/a/@href").all();
-                List<String> titles = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/a/text()").all();
-                List<String> names = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='liveDetail']/span[@class='livePlayerName]/text()").all();
-                List<String> categories = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='liveDetail']/a[@class='game_Name]/text()").all();
-                List<String> popularitiyStrs = html.xpath("//div[@class='block_content']/div[@class='liveCon']/div[@class='liveOne']/div[@class='liveDetail']/span[@class='liveCount]/text()").all();
-                for (int i = 0; i < rids.size(); i++) {
-//                    HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-//                            .append("&par_d=").append(date)
-//                            .append("&rid=").append(rids.get(i))
-//                            .append("&nm=").append(CommonTools.getFormatStr(names.get(i)))
-//                            .append("&tt=").append(CommonTools.getFormatStr(titles.get(i)))
-//                            .append("&cate=").append(categories.get(i))
-//                            .append("&pop_s=").append(popularitiyStrs.get(i))
-//                            .append("&pop_n=").append(CommonTools.createNum(popularitiyStrs.get(i)))
-//                            .append("&task=").append(job)
-//                            .append("&plat=").append(Const.CHUSHOU)
-//                            .append("&url_c=").append(Const.GAMEALL)
-//                            .append("&c_time=").append(createTimeFormat.format(new Date()))
-//                            .append("&url=").append(curUrl)
-//                            .append("&t_ran=").append(PandaProcessor.getRandomStr()).toString());
+                String cate = html.xpath("//span[@class='liveTitle']/text()").get();
+                List<String> detailUrls = html.xpath("//div[@id='liveContent']/a/@href").all();
+                List<String> titles = html.xpath("//div[@id='liveContent']/a/div[@class='home_live_bottom']/div[@class='home_live_info']/span[@class='videoName']/@title").all();
+                List<String> nicknames = html.xpath("//div[@id='liveContent']/a/div[@class='home_live_bottom']/div[@class='home_live_info']/div[@class='liveDetail']/span[@class='livePlayerName']/@title").all();
+                List<String> liveCountList = html.xpath("//div[@id='liveContent']/a/div[@class='home_live_bottom']/div[@class='home_live_info']/div[@class='liveDetail']/span[@class='liveCount']/text()").all();
+                for (int i = 0; i < detailUrls.size(); i++) {
                     Anchor anchor = new Anchor();
-                    String rid = rids.get(i);
-                    anchor.setRid(rid.substring(rid.lastIndexOf("/") + 1, rid.lastIndexOf(".")));
-                    anchor.setName(names.get(i));
+                    String roomUrl = detailUrls.get(i);
+                    anchor.setRid(roomUrl.substring(roomUrl.lastIndexOf("/") + 1, roomUrl.lastIndexOf(".")));
+                    anchor.setName(nicknames.get(i));
                     anchor.setTitle(titles.get(i));
-                    anchor.setCategory(categories.get(i));
-                    anchor.setPopularityStr(popularitiyStrs.get(i));
-                    anchor.setPopularityNum(CommonTools.createNum(popularitiyStrs.get(i)));
+                    anchor.setCategory(cate);
+                    String liveStr = liveCountList.get(i);
+                    anchor.setPopularityStr(liveStr);
+                    int liveNumber = getLiveNumber(liveStr);
+                    anchor.setPopularityNum(liveNumber);
                     anchor.setJob(job);
                     anchor.setPlat(Const.CHUSHOU);
                     anchor.setGame(Const.GAMEALL);
                     anchor.setUrl(curUrl);
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.ANCHOREVENT)
-//                                    .append("&par_d=").append(date).append(anchor.toString()).toString());
-//                        }
-//                    }).start();
-//                    Thread.sleep(3);
-//                    anchorObjs.add(anchor);
                     resultSetStr.add(anchor.toString());
+                    cnt++;
+                }
+                String dataBreak = html.xpath("//div[@class='more']/@data-break").get();
+                String target = html.xpath("//div[@class='more']/@data-target-key").get();
+                page.addTargetRequest(new StringBuffer(nextRoomListPre).append(target).append("&").append("breakpoint=").append(dataBreak).toString());
+            } else if (curUrl.startsWith(nextRoomListPre)) {
+                String json = page.getJson().toString();
+                JSONArray items = JsonPath.read(json, "$.data.items");
+                if (items.size() > 0) {
+                    String cate = "";
+                    String breakpoint = JsonPath.read(json, "$.data.breakpoint");
+                    page.addTargetRequest(curUrl.substring(0, curUrl.lastIndexOf("=")) + breakpoint);
+                    for (int i = 0; i < items.size(); i++) {
+                        String title = JsonPath.read(items.get(i), "$.name").toString();
+                        String name = JsonPath.read(items.get(i), "$.meta.creator").toString();
+                        cate = JsonPath.read(items.get(i), "$.meta.gameName").toString();
+                        String liveCnt = JsonPath.read(items.get(i), "$.meta.onlineCount").toString();
+                        String rid = JsonPath.read(items.get(i), "$.meta.roomId").toString();
+                        Anchor anchor = new Anchor();
+                        anchor.setRid(rid);
+                        anchor.setName(name);
+                        anchor.setTitle(title);
+                        anchor.setCategory(cate);
+                        anchor.setPopularityNum(Integer.parseInt(liveCnt));
+                        anchor.setJob(job);
+                        anchor.setPlat(Const.CHUSHOU);
+                        anchor.setGame(Const.GAMEALL);
+                        anchor.setUrl(curUrl);
+                        resultSetStr.add(anchor.toString());
+                        cnt++;
+                    }
                 }
             }
+//            else if (curUrl.startsWith("https://chushou.tv/room/")) {
+//                Html html = page.getHtml();
+//
+//            }
             page.setSkip(true);
         } catch (Exception e) {
             failedUrl.append(curUrl + ";  ");
@@ -141,6 +124,25 @@ public class ChushouAnchorProcessor extends PandaProcessor {
         }
     }
 
+    private int getLiveNumber(String liveStr) {
+        double liveNumber = 0.0;
+        boolean contains = false;
+        if (liveStr.contains("万")) {
+            liveStr = liveStr.substring(0, liveStr.indexOf("万"));
+            contains = true;
+        }
+        try {
+            liveNumber = Double.parseDouble(liveStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("liveStr:" + liveStr);
+        }
+        if (contains) {
+            liveNumber = liveNumber * 10000;
+        }
+        return (int) Math.ceil(liveNumber);
+    }
+
     @Override
     public Site getSite() {
         super.getSite();
@@ -148,7 +150,6 @@ public class ChushouAnchorProcessor extends PandaProcessor {
     }
 
     public static void crawler(String[] args) {
-        String firUrl = "https://chushou.tv/live/list.htm";
         job = args[0];//chushouanchor
         date = args[1];//20161114
         hour = args[2];//10
@@ -159,7 +160,7 @@ public class ChushouAnchorProcessor extends PandaProcessor {
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutDownHook()));
 
         long start = System.currentTimeMillis();
-        Spider.create(new ChushouAnchorProcessor()).addUrl(firUrl).thread(thread).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        Spider.create(new ChushouAnchorProcessor()).addUrl(firstUrl).thread(thread).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000 + 1;
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString());

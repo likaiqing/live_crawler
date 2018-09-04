@@ -196,7 +196,9 @@ public class DouyuDetailAnchorProcessor extends PandaProcessor {
 
     @Override
     public Site getSite() {
-        site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
+        if (useProxy){
+            site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
+        }
         return this.site.setSleepTime(500);
     }
 

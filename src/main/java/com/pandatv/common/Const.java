@@ -30,7 +30,8 @@ public class Const {
     public static final String secret = "c6d9df4bad11759d321e090ab2655c5e";
     public static final String MAYIHOST = "123.56.249.247";
     public static final int MAYIPORT = 8123;
-    public static final String ABUYUNPHOST = "proxy.abuyun.com";
+//    public static final String ABUYUNPHOST = "proxy.abuyun.com";
+    public static final String ABUYUNPHOST = "http-pro.abuyun.com";
     public static final int ABUYUNPORT = 9010;
     public static final String TWITCHCATEFINISH = "twitch版区结束";
     public static final String TWITCHLISTFINISH = "twitch列表页结束";

@@ -102,7 +102,9 @@ public class ZhanqiAnchorProcessor extends PandaProcessor {
     @Override
     public Site getSite() {
         super.getSite();
-        site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
+        if (useProxy){
+            site.setHttpProxy(new HttpHost(Const.ABUYUNPHOST, Const.ABUYUNPORT));
+        }
         return this.site;
     }
 

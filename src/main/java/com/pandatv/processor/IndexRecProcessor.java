@@ -25,8 +25,6 @@ import us.codecraft.webmagic.selector.Html;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by likaiqing on 2016/11/29.
@@ -42,6 +40,8 @@ public class IndexRecProcessor extends PandaProcessor {
     private static String longzhuIndex;
     private static String quanminIndex;
     private static String chushouindex;
+    private static String chushouDetailPre = "https://chushou.tv/room/.htm";
+    private static String chushouDetailSuf = ".htm";
     private static int exCnt;
     private static final Map<String, IndexRec> map = new HashMap<>();
     private static final String pandaDetailPrefex = "https://www.panda.tv/";
@@ -78,9 +78,13 @@ public class IndexRecProcessor extends PandaProcessor {
                 executeQuanminIndex(page);
             } else if (curUrl.equals(chushouindex)) {
                 executeChushouIndex(page);
-            } else if (curUrl.startsWith(chushouDetailUrlPre)) {
+            } else if (curUrl.startsWith(chushouDetailPre)) {
                 executeChushouDetail(page, curUrl);
-            } else if (curUrl.startsWith(chushouPointUrlTmpPre)) {
+            }
+//            else if (curUrl.startsWith(chushouDetailUrlPre)) {
+//                executeChushouDetail(page, curUrl);
+//            }
+            else if (curUrl.startsWith(chushouPointUrlTmpPre)) {
                 executeChushouPoint(page, curUrl);
             } else if (curUrl.startsWith(quanminDetailUrlPre) && curUrl.endsWith(quanminDetailUrlSuf)) {
                 executeQuanminDetail(page, curUrl);
@@ -146,44 +150,51 @@ public class IndexRecProcessor extends PandaProcessor {
     }
 
     private void executeChushouDetail(Page page, String curUrl) {
-        String rid = page.getRequest().getExtra("rid").toString();
-        IndexRec indexRec = map.get(rid + Const.CHUSHOUINDEXREC);
+        IndexRec indexRec = new IndexRec();
+        String rid = curUrl.substring(curUrl.lastIndexOf("/") + 1, curUrl.lastIndexOf("."));
         Html html = page.getHtml();
         String title = StringEscapeUtils.unescapeHtml(html.xpath("//p[@class='zb_player_gamedesc']/@title").get());
         String name = StringEscapeUtils.unescapeHtml(html.xpath("//span[@id='sp1']/@title").get());
         String category = StringEscapeUtils.unescapeHtml(html.xpath("//a[@id='sp2']/@title").get());
         String online = StringEscapeUtils.unescapeHtml(html.xpath("//span[@class='onlineCount']/text()").get());
         String follow = StringEscapeUtils.unescapeHtml(html.xpath("//div[@class='zb_attention_left']/@data-subscribercount").get());
+        indexRec.setRid(rid);
         indexRec.setName(name);
         indexRec.setTitle(title);
         indexRec.setViewerNum(Integer.parseInt(online));
         indexRec.setFollowerNum(Integer.parseInt(follow));
         indexRec.setCategorySec(category);
         indexRec.setUrl(curUrl);
+        indexRec.setJob(Const.CHUSHOUINDEXREC);
     }
 
     private void executeChushouIndex(Page page) {
-        List<String> scripts = page.getHtml().xpath("//script").all();
-        for (int i = 0; i < scripts.size(); i++) {
-            String script = scripts.get(i);
-            if (script.contains("statserver")) {
-                Pattern compile = Pattern.compile("poster\\['targetKey'\\]=\"\\d+\";");
-                Matcher matcher = compile.matcher(script);
-                int index = 0;
-                while (matcher.find()) {
-                    String targetStr = matcher.group(0);
-                    String targetKey = targetStr.substring(targetStr.indexOf("=") + 2, targetStr.lastIndexOf("\";"));
-                    page.addTargetRequest(new Request(chushouDetailUrlPre + targetKey + chushouDetailUrlSuf).putExtra("rid", targetKey));
-                    page.addTargetRequest(new Request(chushouPointUrlTmpPre + targetKey + chushouPointUrlTmpSuf + new Date().getTime()).putExtra("rid", targetKey));
-                    page.addTargetRequest("");
-                    IndexRec indexRec = new IndexRec();
-                    indexRec.setRid(targetKey);
-                    indexRec.setLocation((++index) + "");
-                    indexRec.setJob(Const.CHUSHOUINDEXREC);
-                    map.put(targetKey + Const.CHUSHOUINDEXREC, indexRec);
-                }
-            }
+        Html html = page.getHtml();
+        List<String> all = html.xpath("//ul[@class='perRoom swiper-wrapper']/li/div/@data-targetkey").all();
+        for (int i = 0; i < all.size(); i++) {
+            page.addTargetRequest(chushouDetailPre + all.get(i) + chushouDetailSuf);
         }
+//        List<String> scripts = page.getHtml().xpath("//script").all();
+//        for (int i = 0; i < scripts.size(); i++) {
+//            String script = scripts.get(i);
+//            if (script.contains("statserver")) {
+//                Pattern compile = Pattern.compile("poster\\['targetKey'\\]=\"\\d+\";");
+//                Matcher matcher = compile.matcher(script);
+//                int index = 0;
+//                while (matcher.find()) {
+//                    String targetStr = matcher.group(0);
+//                    String targetKey = targetStr.substring(targetStr.indexOf("=") + 2, targetStr.lastIndexOf("\";"));
+//                    page.addTargetRequest(new Request(chushouDetailUrlPre + targetKey + chushouDetailUrlSuf).putExtra("rid", targetKey));
+//                    page.addTargetRequest(new Request(chushouPointUrlTmpPre + targetKey + chushouPointUrlTmpSuf + new Date().getTime()).putExtra("rid", targetKey));
+//                    page.addTargetRequest("");
+//                    IndexRec indexRec = new IndexRec();
+//                    indexRec.setRid(targetKey);
+//                    indexRec.setLocation((++index) + "");
+//                    indexRec.setJob(Const.CHUSHOUINDEXREC);
+//                    map.put(targetKey + Const.CHUSHOUINDEXREC, indexRec);
+//                }
+//            }
+//        }
     }
 
     private void executeQuanminDetail(Page page, String curUrl) {
