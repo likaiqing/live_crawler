@@ -166,6 +166,7 @@ public class IndexRecProcessor extends PandaProcessor {
         indexRec.setCategorySec(category);
         indexRec.setUrl(curUrl);
         indexRec.setJob(Const.CHUSHOUINDEXREC);
+        indexRecObjes.add(indexRec);
     }
 
     private void executeChushouIndex(Page page) {
@@ -568,38 +569,6 @@ public class IndexRecProcessor extends PandaProcessor {
         Spider.create(new IndexRecProcessor()).thread(thread).addUrl(douyuIndex, huyaIndex, pandaIndex, zhanqiIndex, longzhuIndex, quanminIndex, chushouindex).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
         long end = System.currentTimeMillis();
         long secs = (end - start) / 1000 + 1;
-
-//        for (Map.Entry<String, IndexRec> entry : map.entrySet()) {
-//            resultSetStr.add(entry.getValue().toString());
-//                    .append("&rid=").append(indexRec.getRid())
-//                    .append("&nm=").append(indexRec.getName())
-//                    .append("&tt=").append(indexRec.getTitle())
-//                    .append("&cate_fir=").append(indexRec.getCategoryFir())
-//                    .append("&cate_sec=").append(indexRec.getCategorySec())
-//                    .append("&on_num=").append(indexRec.getViewerNum())
-//                    .append("&fol_num=").append(indexRec.getFollowerNum())
-//                    .append("&task=").append(job)
-//                    .append("&rank=&w_str=&w_num=&tag=&url=").append(indexRec.getUrl())
-//                    .append("&c_time=").append(createTimeFormat.format(new Date()))
-//                    .append("&notice=&last_s_t=&t_ran=").append(getRandomStr())
-//                    .append("&loc=").append(indexRec.getLocation()).toString());
-//        }
-//        for (IndexRec indexRec : indexRecObjes) {
-//            try {
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        HttpUtil.sendGet(new StringBuffer(Const.DDPUNCHDOMAIN).append(Const.INDEXRECEVENT)
-//                                .append("&par_d=").append(date).append(indexRec.toString()).toString());
-//                    }
-//                }).start();
-//
-//                Thread.sleep(3);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            resultSetStr.add(indexRec.toString());
-//        }
         logger.info(job + ",用时:" + end + "-" + start + "=" + secs + "秒," + "请求数:" + requests + ",qps:" + (requests / secs) + ",异常个数:" + exCnt + ",fialedurl:" + failedUrl.toString() + ",indexrec,获取个数:" + resultSetStr.size());
 //        CommonTools.writeAndMail(hivePaht, Const.INDEXRECEXIT, detailAnchors);
 
