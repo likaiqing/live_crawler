@@ -4,7 +4,6 @@ import com.pandatv.common.Const;
 import com.pandatv.common.PandaProcessor;
 import com.pandatv.downloader.credentials.PandaDownloader;
 import com.pandatv.tools.CommonTools;
-import com.pandatv.tools.HiveJDBCConnect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -20,11 +19,13 @@ import java.util.*;
  */
 public class DouyuFullCateProcessor extends PandaProcessor {
     private static final Logger logger = LoggerFactory.getLogger(DouyuFullCateProcessor.class);
-    private static final String gameUrl = "https://www.douyu.com/directory/category/game";
-    private static final String ktyxUrl = "https://www.douyu.com/directory/category/ktyx";
-    private static final String syxxUrl = "https://www.douyu.com/directory/category/syxx";
-    private static final String ylUrl = "https://www.douyu.com/directory/category/yl";
-    private static final String kjUrl = "https://www.douyu.com/directory/category/kj";
+    private static final String PCgame = "https://www.douyu.com/directory/category/PCgame";//斗鱼网游竞技
+    private static final String djry = "https://www.douyu.com/directory/category/djry";//单机热游
+    private static final String syxx = "https://www.douyu.com/directory/category/syxx";//手游休闲
+    private static final String yl = "https://www.douyu.com/directory/category/yl";//娱乐天地
+    private static final String kjjy = "https://www.douyu.com/directory/category/kjjy";//科技教育
+    private static final String voice = "https://www.douyu.com/directory/category/voice";//语音直播
+    private static final String znl = "https://www.douyu.com/directory/category/znl";//正能量
     private static final String sep = "\u0001";
     private static Set<String> results = new HashSet<>();//ename cname f_ename f_cname panda_f_ename
     private static Map<String, String> douyuPandaEFullMap = new HashMap();
@@ -34,13 +35,13 @@ public class DouyuFullCateProcessor extends PandaProcessor {
         job = args[0];//douyufullcate
         date = args[1];//20161114
         hour = args[2];
-        douyuPandaEFullMap.put("wykt", "recorded");
-        douyuPandaEFullMap.put("znl", "recorded");
-        douyuPandaEFullMap.put("game", "jingji");
-        douyuPandaEFullMap.put("ktyx", "zjdj");
+        douyuPandaEFullMap.put("PCgame", "jingji");
+        douyuPandaEFullMap.put("djry", "zjdj");
         douyuPandaEFullMap.put("syxx", "shouyou");
         douyuPandaEFullMap.put("yl", "yllm");
-        douyuPandaEFullMap.put("kj", "recorded");
+        douyuPandaEFullMap.put("kjjy", "recorded");
+        douyuPandaEFullMap.put("voice", "recorded");
+        douyuPandaEFullMap.put("znl", "recorded");
 
 //        pandaFullMap.put("zjdj", "主机单机");
 //        pandaFullMap.put("recorded", "大杂烩");
@@ -48,8 +49,8 @@ public class DouyuFullCateProcessor extends PandaProcessor {
 //        pandaFullMap.put("shouyou", "手游专区");
 //        pandaFullMap.put("jingji", "热门竞技");
 //        pandaFullMap.put("wangyou", "网游专区");
-        Spider.create(new DouyuFullCateProcessor()).thread(1).addUrl(gameUrl, ktyxUrl, syxxUrl, ylUrl, kjUrl).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
-        logger.info("executeResults resultSetStr.size:"+results.size());
+        Spider.create(new DouyuFullCateProcessor()).thread(1).addUrl(PCgame, djry, syxx, yl, kjjy, voice).addPipeline(new ConsolePipeline()).setDownloader(new PandaDownloader()).run();
+        logger.info("executeResults resultSetStr.size:" + results.size());
         String dirFile = new StringBuffer(Const.CRAWLER_DATA_DIR).append(date).append("/").append(hour).append("/").append(job).append("_").append(date).append("_").append(hour).append(randomStr).toString();
         CommonTools.write2Local(dirFile, results);
     }
@@ -60,9 +61,6 @@ public class DouyuFullCateProcessor extends PandaProcessor {
         logger.info("process url:{}", curUrl);
         try {
             Html html = page.getHtml();
-            if (curUrl.equals(gameUrl)) {
-                executeColumnOther(html);
-            }
             String f_ename = curUrl.substring(curUrl.lastIndexOf("/") + 1);
             executeList(f_ename, html);
         } catch (Exception e) {
@@ -72,51 +70,20 @@ public class DouyuFullCateProcessor extends PandaProcessor {
     }
 
     private void executeList(String f_ename, Html html) {
-        String f_cname = html.xpath("//div[@class='player-column']//div[@class='real-title js-title pagelive']/text()").get().trim();
-        List<String> all = html.xpath("//div[@class='player-column']/div[@id='live-list-content']/ul/li/html()").all();
-        for (String a : all) {
-            Html aHtml = new Html(a);
-            String url = aHtml.xpath("//a/@href").get();
-            String title = aHtml.xpath("//p/text()").get();
-            results.add(new StringBuffer(url.substring(url.lastIndexOf("/") + 1)).append(sep)
-                    .append(title).append(sep)
+        String f_cname = html.xpath("//div[@class='real-title js-title pagelive']/text()").get().trim();
+        List<String> cateUrls = html.xpath("//ul[@id='live-list-contentbox']/li/a/@href").all();
+        List<String> cateCNames = html.xpath("//ul[@id='live-list-contentbox']/li/a/p[@class='title']/text()").all();
+        for (int i = 0; i < cateUrls.size(); i++) {
+            String cateUrl = cateUrls.get(i);
+            String cateEName = cateUrl.substring(cateUrl.lastIndexOf("/") + 1);
+            String cateCName = cateCNames.get(i);
+            results.add(new StringBuffer(cateEName).append(sep)
+                    .append(cateCName).append(sep)
                     .append(f_ename).append(sep)
                     .append(f_cname).append(sep)
                     .append(douyuPandaEFullMap.get(f_ename) == null ? "other" : douyuPandaEFullMap.get(f_ename))
                     .toString());
         }
-
-    }
-
-    /**
-     * 处理热门游戏
-     *
-     * @param html
-     */
-    private void executeColumnOther(Html html) {
-        String wenYuStr = html.xpath("//div[@class='r-cont column-cont ']/dl/dd[@data-left-item='文娱课堂']/html()").get();
-        String zhengNengLiangStr = html.xpath("//div[@class='r-cont column-cont ']/dl/dd[@data-left-item='正能量']/html()").get();
-        List<String> wenYuUrls = new Html(wenYuStr).xpath("//ul/li/a/@href").all();
-        List<String> zhengNengLiangUrls = new Html(zhengNengLiangStr).xpath("//ul/li/a/@href").all();
-        List<String> wenYuTitles = new Html(wenYuStr).xpath("//ul/li/a/@title").all();
-        List<String> zhengNengLiangTitles = new Html(zhengNengLiangStr).xpath("//ul/li/a/@title").all();
-        for (int i = 0; i < wenYuUrls.size(); i++) {
-            String url = wenYuUrls.get(i);
-            results.add(new StringBuffer(url.substring(url.lastIndexOf("/") + 1)).append(sep)
-                    .append(wenYuTitles.get(i)).append(sep)
-                    .append("wykt").append(sep)
-                    .append("文娱课堂").append(sep)
-                    .append("recorded").toString());
-        }
-        for (int i = 0; i < zhengNengLiangUrls.size(); i++) {
-            String url = zhengNengLiangUrls.get(i);
-            results.add(new StringBuffer(url.substring(url.lastIndexOf("/") + 1)).append(sep)
-                    .append(zhengNengLiangTitles.get(i)).append(sep)
-                    .append("znl").append(sep)
-                    .append("正能量").append(sep)
-                    .append("recorded").toString());
-        }
-
     }
 
     @Override
