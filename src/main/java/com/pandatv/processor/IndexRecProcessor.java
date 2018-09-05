@@ -40,7 +40,7 @@ public class IndexRecProcessor extends PandaProcessor {
     private static String longzhuIndex;
     private static String quanminIndex;
     private static String chushouindex;
-    private static String chushouDetailPre = "https://chushou.tv/room/.htm";
+    private static String chushouDetailPre = "https://chushou.tv/room/";
     private static String chushouDetailSuf = ".htm";
     private static int exCnt;
     private static final Map<String, IndexRec> map = new HashMap<>();
