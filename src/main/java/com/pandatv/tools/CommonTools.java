@@ -188,16 +188,18 @@ public class CommonTools {
     }
 
     public static void write2Local(String dirFile, Set<String> set) {
-        logger.info("dirFile:{},set.size:{}",dirFile,set.size());
-        if (null==set || set.size()==0){
+        logger.info("dirFile:{},set.size:{}", dirFile, set.size());
+        if (null == set || set.size() == 0) {
+            logger.error("write2Local;null==set || set.size()==0");
             return;
         }
-        String dir = dirFile.substring(0,dirFile.lastIndexOf("/"));
+        String dir = dirFile.substring(0, dirFile.lastIndexOf("/"));
         File file = new File(dir);
-        if (!file.exists()){
+        if (!file.exists()) {
+            logger.warn("!file.exists();create dir:" + dir);
             file.mkdirs();
         }
-        BufferedWriter bw = IOTools.getBW(dirFile+".txt");
+        BufferedWriter bw = IOTools.getBW(dirFile + ".txt");
         try {
             for (Object s : set) {
                 bw.write(s.toString());
@@ -205,7 +207,7 @@ public class CommonTools {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             IOTools.closeBw(bw);
         }
         set.clear();
